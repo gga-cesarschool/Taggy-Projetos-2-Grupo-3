@@ -1,10 +1,10 @@
-# <img src="./images/logo.png" width="40" style="vertical-align: middle;"> Grupo 3 - Projetos 2
+# <img src="./images/logo.png" width="40" style="vertical-align: middle;"> Green Idea
 
 ---
 
-## 📌 Sobre o Projeto - Taggy
+## 📌 Sobre o Green Idea
 
-O projeto **Taggy** tem como objetivo desenvolver uma solução que permita calcular e comunicar o impacto ambiental evitado pelos usuários ao utilizarem pagamentos automáticos em pedágios e estacionamentos. A proposta é criar uma calculadora que estime a redução de emissões de carbono e consumo de papel, tornando esses dados mais visíveis e compreensíveis para os clientes.
+O projeto **Green Idea** tem como objetivo desenvolver uma solução que permita calcular e comunicar o impacto ambiental evitado pelos usuários ao utilizarem pagamentos automáticos em pedágios e estacionamentos. A proposta é criar uma calculadora que estime a redução de emissões de carbono e consumo de papel, tornando esses dados mais visíveis e compreensíveis para os clientes.
 
 ## 📋 Trello
 🔗 https://trello.com/b/xu6y0RGl/projeto-fds  
