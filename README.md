@@ -1,4 +1,4 @@
-# <img src="./images/logo.png" width="40" style="vertical-align: middle;"> Green Idea
+# <img src="./images/logo.png" width="40" style="vertical-align: middle;"> TagGreen
 
 ---
 
