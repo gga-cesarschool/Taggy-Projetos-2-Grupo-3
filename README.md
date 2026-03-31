@@ -2,9 +2,9 @@
 
 ---
 
-## 📌 Sobre o Green Idea
+## 📌 Sobre o TagGreen
 
-O projeto **Green Idea** tem como objetivo desenvolver uma solução que permita calcular e comunicar o impacto ambiental evitado pelos usuários ao utilizarem pagamentos automáticos em pedágios e estacionamentos. A proposta é criar uma calculadora que estime a redução de emissões de carbono e consumo de papel, tornando esses dados mais visíveis e compreensíveis para os clientes.
+O projeto **TagGreen** tem como objetivo desenvolver uma solução que permita calcular e comunicar o impacto ambiental evitado pelos usuários ao utilizarem pagamentos automáticos em pedágios e estacionamentos. A proposta é criar uma calculadora que estime a redução de emissões de carbono e consumo de papel, tornando esses dados mais visíveis e compreensíveis para os clientes.
 
 ## 📋 Trello
 🔗 https://trello.com/b/xu6y0RGl/projeto-fds  
