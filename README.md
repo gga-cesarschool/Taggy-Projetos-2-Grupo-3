@@ -20,12 +20,18 @@ O projeto **TagGreen** tem como objetivo desenvolver uma solução que permita c
 
 <p align="left">
   <a href="https://www.figma.com/board/V2eu8NcUYxzc9d28ktZTeM/Diagrama-de-atividades?node-id=0-1&t=ZtBOVE5u2ECsqwFG-1" target="_blank">
-    <img src="https://img.shields.io/badge/🎨%20Ver%20Protótipos-8A2BE2?style=for-the-badge" alt="Ver protótipos">
+    <img src="https://img.shields.io/badge/🎨%20Ver%20Protótipos-28a745?style=for-the-badge" alt="Ver protótipos">
   </a>
 </p>
 
+---
 ## 📋 Trello
-🔗 https://trello.com/b/xu6y0RGl/projeto-fds  
+
+<p align="left">
+  <a href="https://trello.com/b/xu6y0RGl/projeto-fds" target="_blank">
+    <img src="https://img.shields.io/badge/📋%20Acessar%20Trello-28a745?style=for-the-badge" alt="Acessar Trello">
+  </a>
+</p>
 
 <p align="left">
   <img src="./images/trello.jpeg" width="600">
