@@ -1,4 +1,4 @@
-# <img src="./images/logo.png" width="40" style="vertical-align: middle;"> TagGreen
+# <img src="./images/logo-sem-fundo.png" width="400" style="vertical-align: middle;">
 
 ---
 
@@ -27,8 +27,8 @@ O projeto **TagGreen** tem como objetivo desenvolver uma solução que permita c
 ## 📋 Trello
 🔗 https://trello.com/b/xu6y0RGl/projeto-fds  
 
-<p align="center">
-  <img src="./images/trello.png" width="600">
+<p align="left">
+  <img src="./images/trello.jpeg" width="600">
 </p>
 
 ---
