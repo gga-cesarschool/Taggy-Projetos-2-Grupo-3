@@ -1,0 +1,74 @@
+@mixin display-flex(
+  $flex-direction: row,
+  $flex-wrap: nowrap,
+  $justify-content: center,
+  $align-items: center,
+  $gap: 20px
+) {
+  display: flex;
+  flex-direction: $flex-direction;
+  flex-wrap: $flex-wrap;
+  justify-content: $justify-content;
+  align-items: $align-items;
+  gap: $gap;
+}
+
+@mixin loader(
+  $width: 5rem,
+  $border-width: 0.5rem,
+  $border-color: black,
+  $border-top-color: blue,
+  $duration: 1s
+) {
+  display: inline-block;
+  width: $width;
+  height: $width;
+  border-radius: 50%;
+  border: $border-width solid $border-color;
+  border-top-color: $border-top-color;
+  animation: animation-loader $duration linear infinite;
+
+  @keyframes animation-loader {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+@mixin padding($top: 2rem, $right: 2rem, $bottom: 2rem, $left: 2rem){
+  padding-top: $top;
+  padding-right: $right;
+  padding-bottom: $bottom;
+  padding-left: $left;
+}
+
+@mixin margin($top: 2rem, $right: 2rem, $bottom: 2rem, $left: 2rem){
+  margin-top: $top;
+  margin-right: $right;
+  margin-bottom: $bottom;
+  margin-left: $left;
+}
+
+@mixin transform-scale($scale: 1.01){
+  transform: scale($scale);
+}
+
+@mixin border-radius($radius){
+  border-radius: $radius;
+}
+
+@mixin border($color: red, $width: 0.2rem, $style: solid, $radius: 1rem){
+  border-color: $color;
+  border-width: $width;
+  border-style: $style;
+  border-radius: $radius;
+}
+
+@mixin transition($property: all, $duration: 0.5s, $timing-function: ease-in-out, $delay: 0s, $behavior: normal){
+  transition-property: $property;
+  transition-duration: $duration;
+  transition-timing-function: $timing-function;
+  transition-delay: $delay;
+  transition-behavior: $behavior;
+}
+

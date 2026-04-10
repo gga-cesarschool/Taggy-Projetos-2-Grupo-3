@@ -34,7 +34,7 @@ O projeto **TagGreen** tem como objetivo desenvolver uma solução que permita c
 </p>
 
 <p align="left">
-  <img src="./images/trello.jpeg" width="600">
+  <img src="templates/static/images/trello.jpeg" width="600">
 </p>
 
 ---

@@ -1,0 +1,153 @@
+// =============================================
+// TagGreen — Home (Header)
+// base: html { font-size: 62.5% } → 1rem = 10px
+// =============================================
+@import 'global';
+@import 'variables';
+@import 'utils';
+
+// ── Mensagens de feedback ─────────────────────
+div.sucesso,
+div.erro,
+div.info {
+  @include border-radius(1rem);
+  @include padding(1rem, 2rem, 1rem, 2rem);
+  font-weight: $fw-bold;
+  width: 100%;
+  text-align: center;
+}
+
+div.sucesso { color: $color-text-dark; background: #2ff15d; }
+div.erro    { color: $color-white;     background: #e71717; }
+div.info    { color: $color-text-dark; background: #0aa2e9; }
+
+// ── Container ────────────────────────────────
+.container {
+  max-width: 120rem;   // 1200px
+  margin: 0 auto;
+  padding: 0 3.2rem;   // 32px
+}
+
+// =============================================
+// HEADER
+// =============================================
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  height: 6.8rem;      // 68px
+  background-color: $color-white;
+  border-bottom: 0.1rem solid $color-border;
+  box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.08);
+
+  &__inner {
+    @include display-flex($justify-content: space-between, $gap: 0);
+    max-width: 120rem;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 3.2rem;
+  }
+}
+
+// ── Logo ─────────────────────────────────────
+.logo {
+  @include display-flex($gap: 0);
+
+  img {
+    height: 3.6rem;    // 36px
+    width: auto;
+    display: block;
+  }
+}
+
+// ── Nav ──────────────────────────────────────
+.nav {
+  &__list {
+    @include display-flex($gap: 0.4rem);  // 4px
+  }
+
+  &__link {
+    @include display-flex($gap: 0);
+    @include padding(0.8rem, 1.6rem, 0.8rem, 1.6rem);  // 8px 16px
+    @include border-radius(9999px);
+    @include transition(color, 0.15s, ease-in-out);
+
+    font-family: $font-primary;
+    font-size: 1.4rem;   // 14px
+    font-weight: $fw-medium;
+    color: $color-text-body;
+
+    &:hover {
+      color: $color-primary;
+      background-color: rgba($color-primary-light, 0.08);
+    }
+
+    &--active {
+      color: $color-primary-dark;
+      background-color: rgba(#76C442, 0.18);
+      font-weight: $fw-semibold;
+
+      &:hover {
+        background-color: rgba(#76C442, 0.26);
+      }
+    }
+  }
+}
+
+// ── Hamburger (mobile) ───────────────────────
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.8rem;    // 8px
+
+  span {
+    display: block;
+    width: 2.2rem;    // 22px
+    height: 0.2rem;   // 2px
+    background-color: $color-text-dark;
+    @include border-radius(9999px);
+    @include transition(transform, 0.25s, ease-in-out);
+  }
+
+  &.is-open {
+    span:nth-child(1) { transform: translateY(0.7rem) rotate(45deg); }
+    span:nth-child(2) { opacity: 0; }
+    span:nth-child(3) { transform: translateY(-0.7rem) rotate(-45deg); }
+  }
+}
+
+// ── Responsive ───────────────────────────────
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .nav {
+    display: none;
+    position: absolute;
+    top: 6.8rem;       // $header-height
+    left: 0;
+    right: 0;
+    background-color: $color-white;
+    border-bottom: 0.1rem solid $color-border;
+    padding: 1.6rem 3.2rem;   // 16px 32px
+    box-shadow: 0 0.4rem 1.6rem rgba(0, 0, 0, 0.10);
+
+    &.is-open {
+      display: block;
+    }
+
+    &__list {
+      @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 0.4rem);
+    }
+
+    &__link {
+      width: 100%;
+    }
+  }
+}

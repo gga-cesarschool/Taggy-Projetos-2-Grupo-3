@@ -1,0 +1,62 @@
+{% load static %}
+{% load sass_tags %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TagGreen</title>
+  <link rel="stylesheet" href="{% sass_src 'scss/home.scss' %}">
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="header__inner">
+
+      <!-- Logo -->
+      <a href="#" class="logo">
+        <img src="{% static 'images/logo-sem-fundo.png' %}" alt="TagGreen" />
+      </a>
+
+      <!-- Nav principal -->
+      <nav class="nav" id="main-nav" aria-label="Menu principal">
+        <ul class="nav__list">
+          <li>
+            <a href="#" class="nav__link nav__link--active">Home</a>
+          </li>
+          <li>
+            <a href="#" class="nav__link">Calculadora</a>
+          </li>
+          <li>
+            <a href="#" class="nav__link">Meu Impacto</a>
+          </li>
+          <li>
+            <a href="#" class="nav__link">Metodologia</a>
+          </li>
+          <li>
+            <a href="#" class="nav__link">FAQ</a>
+          </li>
+          <li>
+            <a href="#" class="nav__link">Empresas</a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Hamburger (mobile) -->
+      <button class="hamburger" id="hamburger-btn" aria-label="Abrir menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+    </div>
+  </header>
+  <!-- ===== /HEADER ===== -->
+
+  <main>
+    {# Próximas seções virão aqui #}
+  </main>
+
+</body>
+</html>

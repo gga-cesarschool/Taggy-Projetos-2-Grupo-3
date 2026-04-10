@@ -1,0 +1,14 @@
+{% extends 'admin/base.html' %}
+{% load static %}
+
+{% block branding %}
+    <a href="https://ezcar.com.br/">
+        <img src='{% static "images/logo_ezcar.webp" %}' alt="EZCAR">
+    </a>
+{% endblock %}
+
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/admin/admin.css' %}">
+    <link rel="icon" href='{% static "images/favicon_ezcar.webp" %}'>
+    <title> {% block title %} EZCar - Área administrativa {% endblock %}</title>
+{% endblock %}
