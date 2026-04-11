@@ -1,32 +1,25 @@
 // =============================================
-// TagGreen — Home (Header)
+// TagGreen — Home
 // base: html { font-size: 62.5% } → 1rem = 10px
 // =============================================
 @import 'global';
 @import 'variables';
 @import 'utils';
 
-// ── Mensagens de feedback ─────────────────────
-div.sucesso,
-div.erro,
-div.info {
+// ── Feedback ─────────────────────────────────
+div.sucesso, div.erro, div.info {
   @include border-radius(1rem);
   @include padding(1rem, 2rem, 1rem, 2rem);
   font-weight: $fw-bold;
   width: 100%;
   text-align: center;
 }
-
 div.sucesso { color: $color-text-dark; background: #2ff15d; }
 div.erro    { color: $color-white;     background: #e71717; }
 div.info    { color: $color-text-dark; background: #0aa2e9; }
 
 // ── Container ────────────────────────────────
-.container {
-  max-width: 120rem;   // 1200px
-  margin: 0 auto;
-  padding: 0 3.2rem;   // 32px
-}
+.container { max-width: 120rem; margin: 0 auto; padding: 0 3.2rem; }
 
 // =============================================
 // HEADER
@@ -36,7 +29,7 @@ div.info    { color: $color-text-dark; background: #0aa2e9; }
   top: 0;
   z-index: 100;
   width: 100%;
-  height: 6.8rem;      // 68px
+  height: 6.8rem;
   background-color: $color-white;
   border-bottom: 0.1rem solid $color-border;
   box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.08);
@@ -50,52 +43,32 @@ div.info    { color: $color-text-dark; background: #0aa2e9; }
   }
 }
 
-// ── Logo ─────────────────────────────────────
 .logo {
   @include display-flex($gap: 0);
-
-  img {
-    height: 3.6rem;    // 36px
-    width: auto;
-    display: block;
-  }
+  img { height: 3.6rem; width: auto; display: block; }
 }
 
-// ── Nav ──────────────────────────────────────
 .nav {
-  &__list {
-    @include display-flex($gap: 0.4rem);  // 4px
-  }
-
+  &__list { @include display-flex($gap: 0.4rem); }
   &__link {
     @include display-flex($gap: 0);
-    @include padding(0.8rem, 1.6rem, 0.8rem, 1.6rem);  // 8px 16px
+    @include padding(0.8rem, 1.6rem, 0.8rem, 1.6rem);
     @include border-radius(9999px);
     @include transition(color, 0.15s, ease-in-out);
-
     font-family: $font-primary;
-    font-size: 1.4rem;   // 14px
+    font-size: 1.4rem;
     font-weight: $fw-medium;
     color: $color-text-body;
-
-    &:hover {
-      color: $color-primary;
-      background-color: rgba($color-primary-light, 0.08);
-    }
-
+    &:hover { color: $color-primary; background-color: rgba($color-primary-light, 0.08); }
     &--active {
       color: $color-primary-dark;
       background-color: rgba(#76C442, 0.18);
       font-weight: $fw-semibold;
-
-      &:hover {
-        background-color: rgba(#76C442, 0.26);
-      }
+      &:hover { background-color: rgba(#76C442, 0.26); }
     }
   }
 }
 
-// ── Hamburger (mobile) ───────────────────────
 .hamburger {
   display: none;
   flex-direction: column;
@@ -103,17 +76,15 @@ div.info    { color: $color-text-dark; background: #0aa2e9; }
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0.8rem;    // 8px
-
+  padding: 0.8rem;
   span {
     display: block;
-    width: 2.2rem;    // 22px
-    height: 0.2rem;   // 2px
+    width: 2.2rem;
+    height: 0.2rem;
     background-color: $color-text-dark;
     @include border-radius(9999px);
     @include transition(transform, 0.25s, ease-in-out);
   }
-
   &.is-open {
     span:nth-child(1) { transform: translateY(0.7rem) rotate(45deg); }
     span:nth-child(2) { opacity: 0; }
@@ -121,33 +92,631 @@ div.info    { color: $color-text-dark; background: #0aa2e9; }
   }
 }
 
-// ── Responsive ───────────────────────────────
 @media (max-width: 768px) {
-  .hamburger {
-    display: flex;
-  }
-
+  .hamburger { display: flex; }
   .nav {
     display: none;
     position: absolute;
-    top: 6.8rem;       // $header-height
-    left: 0;
-    right: 0;
+    top: 6.8rem;
+    left: 0; right: 0;
     background-color: $color-white;
     border-bottom: 0.1rem solid $color-border;
-    padding: 1.6rem 3.2rem;   // 16px 32px
+    padding: 1.6rem 3.2rem;
     box-shadow: 0 0.4rem 1.6rem rgba(0, 0, 0, 0.10);
+    &.is-open { display: block; }
+    &__list { @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 0.4rem); }
+    &__link { width: 100%; }
+  }
+}
 
-    &.is-open {
-      display: block;
-    }
+// =============================================
+// BUTTONS
+// =============================================
+.btn {
+  @include display-flex($gap: 0.8rem);
+  @include padding(1.4rem, 2.8rem, 1.4rem, 2.8rem);
+  @include border-radius(9999px);
+  @include transition(all, 0.2s, ease-in-out);
+  font-family: $font-primary;
+  font-size: 1.5rem;
+  font-weight: $fw-semibold;
+  cursor: pointer;
+  white-space: nowrap;
+  border: none;
+  .material-symbols-outlined { font-size: 1.8rem; }
 
-    &__list {
-      @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 0.4rem);
-    }
+  &--primary {
+    background-color: $color-primary;
+    color: $color-white;
+    &:hover { background-color: $color-primary-dark; @include transform-scale(1.02); }
+  }
 
-    &__link {
-      width: 100%;
+  &--outline {
+    background-color: transparent;
+    color: $color-text-dark;
+    border: 0.15rem solid $color-border;
+    &:hover { border-color: $color-primary; color: $color-primary; background-color: rgba($color-primary-light, 0.05); }
+  }
+
+  &--calc {
+    width: 100%;
+    justify-content: center;
+    background: linear-gradient(90deg, $color-primary 0%, $color-primary-light 100%);
+    color: $color-white;
+    font-size: 1.6rem;
+    @include padding(1.6rem, 2.8rem, 1.6rem, 2.8rem);
+    @include border-radius(1.2rem);
+    margin-top: 0.8rem;
+    &:hover { background: linear-gradient(90deg, $color-primary-dark 0%, $color-primary 100%); @include transform-scale(1.01); }
+  }
+
+  &--cta-light {
+    @include padding(1.1rem, 2rem, 1.1rem, 2rem);
+    background-color: $color-white;
+    color: $color-primary-dark;
+    font-size: 1.4rem;
+    &:hover { background-color: rgba($color-white, 0.9); @include transform-scale(1.02); }
+  }
+
+  &--cta-blue {
+    @include padding(1.1rem, 2rem, 1.1rem, 2rem);
+    background-color: $color-blue;
+    color: $color-white;
+    font-size: 1.4rem;
+    &:hover { background-color: darken($color-blue, 8%); @include transform-scale(1.02); }
+  }
+}
+
+// =============================================
+// HERO
+// =============================================
+.hero {
+  background: linear-gradient(160deg, #edf7ed 0%, #f4faf4 60%, #ffffff 100%);
+  padding: 8rem 3.2rem;
+
+  &__inner {
+    @include display-flex($justify-content: space-between, $align-items: center, $gap: 6rem);
+    max-width: 120rem;
+    margin: 0 auto;
+  }
+
+  &__content {
+    @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 2.4rem);
+    flex: 1;
+    max-width: 54rem;
+  }
+
+  &__badge {
+    @include display-flex($gap: 0.6rem);
+    @include padding(0.7rem, 1.4rem, 0.7rem, 1.4rem);
+    @include border-radius(9999px);
+    background-color: rgba($color-accent, 0.15);
+    color: $color-primary-dark;
+    font-size: 1.3rem;
+    font-weight: $fw-semibold;
+    .material-symbols-outlined { font-size: 1.6rem; color: $color-primary-light; }
+  }
+
+  &__title {
+    font-family: $font-primary;
+    font-size: 5rem;
+    font-weight: $fw-extrabold;
+    line-height: 1.15;
+    color: $color-text-dark;
+    letter-spacing: -0.02em;
+    sub { font-size: 3rem; vertical-align: sub; line-height: 0; }
+    &--accent { color: $color-primary-light; }
+  }
+
+  &__description { font-size: 1.6rem; line-height: 1.7; color: $color-text-muted; }
+  &__actions { @include display-flex($justify-content: flex-start, $gap: 1.6rem); }
+
+  &__media { position: relative; flex: 1; max-width: 58rem; }
+
+  &__image {
+    width: 100%;
+    height: 42rem;
+    object-fit: cover;
+    @include border-radius(2rem);
+    display: block;
+    box-shadow: 0 0.8rem 3.2rem rgba(0, 0, 0, 0.14);
+  }
+
+  &__card {
+    @include display-flex($justify-content: flex-start, $gap: 1.2rem);
+    @include padding(1.2rem, 1.6rem, 1.2rem, 1.6rem);
+    @include border-radius(1.4rem);
+    position: absolute;
+    background-color: $color-white;
+    box-shadow: 0 0.4rem 2rem rgba(0, 0, 0, 0.12);
+    min-width: 18rem;
+    z-index: 2;
+    &--top    { top: -2rem;    right: -2rem; }
+    &--bottom { bottom: -2rem; left: 2rem;   }
+  }
+
+  &__card-icon {
+    @include display-flex($gap: 0);
+    @include border-radius(1rem);
+    width: 4rem; height: 4rem;
+    flex-shrink: 0;
+    .material-symbols-outlined { font-size: 2rem; }
+    &--blue  { background-color: rgba($color-blue, 0.12);   color: $color-blue; }
+    &--green { background-color: rgba($color-accent, 0.15); color: $color-primary; }
+  }
+
+  &__card-info {
+    @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 0.2rem);
+    strong { font-size: 1.8rem; font-weight: $fw-bold; color: $color-text-dark; line-height: 1.1; }
+    span   { font-size: 1.2rem; color: $color-text-muted; }
+  }
+}
+
+@media (max-width: 992px) {
+  .hero {
+    &__inner { @include display-flex($flex-direction: column, $gap: 4.8rem); }
+    &__content { max-width: 100%; @include display-flex($flex-direction: column, $align-items: center, $gap: 2rem); text-align: center; }
+    &__actions { @include display-flex($justify-content: center, $gap: 1.6rem); }
+    &__media { max-width: 100%; width: 100%; }
+    &__title { font-size: 4rem; }
+  }
+}
+@media (max-width: 480px) {
+  .hero {
+    padding: 5rem 2rem;
+    &__title { font-size: 3.2rem; }
+    &__actions { flex-direction: column; width: 100%; }
+    .btn { justify-content: center; }
+    &__card--top    { top: -1rem; right: 0.5rem; }
+    &__card--bottom { bottom: -1rem; left: 0.5rem; }
+  }
+}
+
+// =============================================
+// CALCULADORA
+// =============================================
+.calc-section {
+  padding: 8rem 3.2rem;
+  background-color: $color-bg;
+
+  &__header { @include display-flex($flex-direction: column, $gap: 0.8rem); text-align: center; margin-bottom: 4rem; }
+  &__title  { font-family: $font-primary; font-size: 3.2rem; font-weight: $fw-bold; color: $color-text-dark; letter-spacing: -0.01em; }
+  &__subtitle { font-size: 1.5rem; color: $color-text-muted; }
+}
+
+.calc-card {
+  max-width: 104rem;
+  margin: 0 auto;
+  background-color: $color-card-dark;
+  @include border-radius(2rem);
+  @include padding(3.2rem, 3.2rem, 3.2rem, 3.2rem);
+  box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.35);
+
+  &__top { @include display-flex($justify-content: space-between, $align-items: flex-start, $gap: 0); margin-bottom: 3.2rem; }
+  &__title { font-family: $font-primary; font-size: 2rem; font-weight: $fw-bold; color: $color-white; margin-bottom: 0.4rem; }
+  &__desc  { font-size: 1.4rem; color: rgba($color-white, 0.5); }
+  &__mute {
+    @include display-flex($gap: 0);
+    @include border-radius(1rem);
+    width: 3.6rem; height: 3.6rem;
+    background-color: $color-card-dark-3;
+    border: 0.1rem solid $color-card-border;
+    cursor: pointer;
+    color: rgba($color-white, 0.5);
+    flex-shrink: 0;
+    @include transition(all, 0.15s, ease-in-out);
+    .material-symbols-outlined { font-size: 1.8rem; }
+    &:hover { background-color: $color-card-dark-2; color: $color-white; }
+  }
+  &__body { @include display-flex($justify-content: space-between, $align-items: flex-start, $gap: 3.2rem); }
+}
+
+.calc-inputs { @include display-flex($flex-direction: column, $align-items: stretch, $gap: 2.8rem); flex: 1; }
+
+.calc-group {
+  @include display-flex($flex-direction: column, $align-items: stretch, $gap: 1.2rem);
+  &__label { font-size: 1.1rem; font-weight: $fw-semibold; letter-spacing: 0.08em; color: rgba($color-white, 0.5); font-family: $font-primary; }
+  &__row   { @include display-flex($justify-content: space-between, $gap: 0); }
+  &__value { font-size: 1.4rem; font-weight: $fw-bold; font-family: $font-primary;
+    &--green { color: $color-accent; }
+    &--blue  { color: $color-blue; }
+  }
+}
+
+.calc-vehicles { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+.calc-vehicle {
+  @include display-flex($justify-content: flex-start, $gap: 1rem);
+  @include padding(1.2rem, 1.6rem, 1.2rem, 1.6rem);
+  @include border-radius(1rem);
+  background-color: $color-card-dark-2;
+  border: 0.15rem solid $color-card-border;
+  color: rgba($color-white, 0.75);
+  font-family: $font-primary;
+  font-size: 1.4rem;
+  font-weight: $fw-medium;
+  cursor: pointer;
+  @include transition(all, 0.15s, ease-in-out);
+  .material-symbols-outlined { font-size: 1.8rem; }
+  &:hover { border-color: rgba($color-accent, 0.5); color: $color-white; }
+  &--active { background-color: rgba($color-accent, 0.12); border-color: $color-accent; color: $color-accent; }
+}
+
+.calc-contexts { @include display-flex($justify-content: flex-start, $gap: 1rem); }
+
+.calc-context {
+  @include display-flex($flex-direction: column, $gap: 0.6rem);
+  @include padding(1.2rem, 1.4rem, 1.2rem, 1.4rem);
+  @include border-radius(1rem);
+  background-color: $color-card-dark-2;
+  border: 0.15rem solid $color-card-border;
+  color: rgba($color-white, 0.75);
+  font-family: $font-primary;
+  font-size: 1.3rem;
+  font-weight: $fw-medium;
+  cursor: pointer;
+  flex: 1;
+  text-align: center;
+  @include transition(all, 0.15s, ease-in-out);
+  .material-symbols-outlined { font-size: 2rem; }
+  &:hover { border-color: rgba($color-blue, 0.5); color: $color-white; }
+  &--active { background-color: rgba($color-blue, 0.18); border-color: $color-blue; color: $color-blue; }
+}
+
+.calc-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%; height: 0.5rem;
+  @include border-radius(9999px);
+  outline: none;
+  cursor: pointer;
+  &--green {
+    background: linear-gradient(to right, $color-accent 0%, $color-accent 33%, $color-card-dark-3 33%);
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 1.8rem; height: 1.8rem;
+      @include border-radius(50%);
+      background: $color-accent;
+      box-shadow: 0 0 0 0.3rem rgba($color-accent, 0.25);
+      cursor: pointer;
     }
   }
+  &--blue {
+    background: linear-gradient(to right, $color-blue 0%, $color-blue 20%, $color-card-dark-3 20%);
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 1.8rem; height: 1.8rem;
+      @include border-radius(50%);
+      background: $color-blue;
+      box-shadow: 0 0 0 0.3rem rgba($color-blue, 0.25);
+      cursor: pointer;
+    }
+  }
+}
+
+.calc-results { @include display-flex($flex-direction: column, $gap: 1.6rem); flex: 1; }
+
+.calc-result-main {
+  @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1.2rem);
+  @include padding(2.4rem, 2.4rem, 2.4rem, 2.4rem);
+  @include border-radius(1.4rem);
+  background-color: rgba($color-accent, 0.07);
+  border: 0.15rem solid rgba($color-accent, 0.2);
+  flex: 1;
+  &__label  { font-size: 1.1rem; font-weight: $fw-semibold; letter-spacing: 0.08em; color: rgba($color-white, 0.45); font-family: $font-primary; }
+  &__value  { @include display-flex($align-items: flex-end, $gap: 0.6rem); }
+  &__number { font-size: 5.6rem; font-weight: $fw-extrabold; color: $color-accent; font-family: $font-primary; line-height: 1; }
+  &__unit   { font-size: 2rem; font-weight: $fw-semibold; color: rgba($color-white, 0.6); padding-bottom: 0.8rem; }
+  &__desc   { font-size: 1.3rem; color: rgba($color-white, 0.45); line-height: 1.5; }
+}
+
+.calc-result-row { @include display-flex($gap: 1.6rem); }
+
+.calc-result-card {
+  @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 0.8rem);
+  @include padding(1.8rem, 2rem, 1.8rem, 2rem);
+  @include border-radius(1.4rem);
+  flex: 1;
+  &__label  { font-size: 1rem; font-weight: $fw-semibold; letter-spacing: 0.08em; font-family: $font-primary; }
+  &__value  { @include display-flex($align-items: flex-end, $gap: 0.4rem); }
+  &__number { font-size: 3.2rem; font-weight: $fw-extrabold; font-family: $font-primary; line-height: 1; }
+  &__unit   { font-size: 1.4rem; font-weight: $fw-semibold; padding-bottom: 0.4rem; color: rgba($color-white, 0.5); }
+  &__desc   { font-size: 1.2rem; color: rgba($color-white, 0.4); }
+  &--danger {
+    background-color: rgba($color-danger, 0.1);
+    border: 0.15rem solid rgba($color-danger, 0.25);
+    .calc-result-card__label  { color: lighten($color-danger, 15%); }
+    .calc-result-card__number { color: $color-danger; }
+  }
+  &--success {
+    background-color: rgba($color-accent, 0.08);
+    border: 0.15rem solid rgba($color-accent, 0.25);
+    .calc-result-card__label  { color: $color-accent; }
+    .calc-result-card__number { color: $color-accent; }
+  }
+}
+
+@media (max-width: 900px) {
+  .calc-card { &__body { @include display-flex($flex-direction: column, $gap: 2.4rem); } }
+  .calc-results { flex-direction: row; flex-wrap: wrap; }
+  .calc-result-main { width: 100%; }
+}
+@media (max-width: 560px) {
+  .calc-section { padding: 5rem 1.6rem; }
+  .calc-card { @include padding(2rem, 1.6rem, 2rem, 1.6rem); &__top { flex-direction: column; gap: 1.6rem; } }
+  .calc-vehicles { grid-template-columns: 1fr; }
+  .calc-contexts { flex-direction: column; }
+  .calc-result-row { flex-direction: column; }
+}
+
+// =============================================
+// SEÇÃO CABEÇALHO REUTILIZÁVEL
+// =============================================
+.section-header {
+  @include display-flex($flex-direction: column, $gap: 0.8rem);
+  text-align: center;
+  margin-bottom: 4rem;
+  &__title    { font-family: $font-primary; font-size: 2.8rem; font-weight: $fw-bold; color: $color-text-dark; letter-spacing: -0.01em; }
+  &__subtitle { font-size: 1.5rem; color: $color-text-muted; }
+}
+
+// =============================================
+// COMO A TAGGY REDUZ EMISSÕES
+// =============================================
+.reduce-section { padding: 8rem 3.2rem; background-color: $color-white;
+  &__inner { max-width: 120rem; margin: 0 auto; }
+}
+
+.reduce-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+
+.reduce-card {
+  @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1.2rem);
+  @include padding(2.4rem, 2.4rem, 2.4rem, 2.4rem);
+  @include border-radius(1.6rem);
+  background-color: $color-bg;
+  border: 0.1rem solid $color-border;
+  @include transition(all, 0.2s, ease-in-out);
+  &:hover { border-color: rgba($color-primary-light, 0.4); box-shadow: 0 0.4rem 2rem rgba($color-primary, 0.08); @include transform-scale(1.01); }
+  &__icon { @include display-flex($gap: 0); @include border-radius(1rem); width: 4.4rem; height: 4.4rem; background-color: rgba($color-primary-light, 0.12); color: $color-primary-light; .material-symbols-outlined { font-size: 2.2rem; } }
+  &__title { font-family: $font-primary; font-size: 1.6rem; font-weight: $fw-semibold; color: $color-text-dark; }
+  &__desc  { font-size: 1.3rem; color: $color-text-muted; line-height: 1.6; }
+}
+
+@media (max-width: 900px) { .reduce-cards { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .reduce-section { padding: 5rem 1.6rem; } .reduce-cards { grid-template-columns: 1fr; } }
+
+// =============================================
+// IMPACTO EM NÚMEROS REAIS
+// =============================================
+.impact-section { padding: 8rem 3.2rem; background-color: $color-bg;
+  &__inner { max-width: 120rem; margin: 0 auto; }
+}
+
+.impact-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.6rem; }
+
+.impact-stat {
+  @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1rem);
+  @include padding(2.4rem, 2rem, 2.4rem, 2rem);
+  @include border-radius(1.6rem);
+  background-color: $color-white;
+  border: 0.1rem solid $color-border;
+  @include transition(all, 0.2s, ease-in-out);
+  &:hover { border-color: rgba($color-primary-light, 0.4); box-shadow: 0 0.4rem 2rem rgba($color-primary, 0.08); }
+  &__icon   { @include display-flex($gap: 0); @include border-radius(1rem); width: 4rem; height: 4rem; background-color: rgba($color-primary-light, 0.12); color: $color-primary-light; .material-symbols-outlined { font-size: 2rem; } }
+  &__number { font-family: $font-primary; font-size: 2.8rem; font-weight: $fw-extrabold; color: $color-text-dark; line-height: 1; small { font-size: 1.6rem; font-weight: $fw-semibold; color: $color-text-muted; } }
+  &__label  { font-size: 1.3rem; color: $color-text-muted; font-family: $font-primary; }
+}
+
+@media (max-width: 900px) { .impact-stats { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 560px) { .impact-section { padding: 5rem 1.6rem; } .impact-stats { grid-template-columns: repeat(2, 1fr); } }
+
+// =============================================
+// CTA DUPLO
+// =============================================
+.cta-section { padding: 8rem 3.2rem; background-color: $color-white;
+  &__inner { @include display-flex($gap: 2.4rem); max-width: 104rem; margin: 0 auto; }
+}
+
+.cta-card {
+  @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1.6rem);
+  @include padding(4rem, 4rem, 4rem, 4rem);
+  @include border-radius(2rem);
+  flex: 1;
+  &__icon  { @include display-flex($gap: 0); @include border-radius(1.2rem); width: 5rem; height: 5rem; .material-symbols-outlined { font-size: 2.6rem; } }
+  &__title { font-family: $font-primary; font-size: 2rem; font-weight: $fw-bold; line-height: 1.3; }
+  &__desc  { font-size: 1.4rem; line-height: 1.7; flex: 1; }
+  &--green {
+    background: linear-gradient(140deg, $color-primary 0%, $color-primary-light 100%);
+    .cta-card__icon  { background-color: rgba($color-white, 0.2); color: $color-white; }
+    .cta-card__title { color: $color-white; }
+    .cta-card__desc  { color: rgba($color-white, 0.85); }
+  }
+  &--dark {
+    background-color: $color-card-dark;
+    border: 0.1rem solid $color-card-border;
+    .cta-card__icon  { background-color: rgba($color-blue, 0.2); color: $color-blue; }
+    .cta-card__title { color: $color-white; }
+    .cta-card__desc  { color: rgba($color-white, 0.65); }
+  }
+}
+
+@media (max-width: 768px) { .cta-section { padding: 5rem 1.6rem; &__inner { flex-direction: column; } } }
+
+// =============================================
+// FAQ
+// =============================================
+.faq-section {
+  padding: 8rem 3.2rem;
+  background-color: $color-bg;
+
+  &__inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    @include display-flex($flex-direction: column, $align-items: center, $gap: 0);
+  }
+
+  &__link {
+    @include display-flex($gap: 0.6rem);
+    margin-top: 3.2rem;
+    font-family: $font-primary;
+    font-size: 1.4rem;
+    font-weight: $fw-semibold;
+    color: $color-primary;
+    @include transition(gap, 0.2s, ease-in-out);
+    .material-symbols-outlined { font-size: 1.6rem; }
+    &:hover { gap: 1.2rem; }
+  }
+}
+
+.faq-list {
+  width: 100%;
+  @include display-flex($flex-direction: column, $gap: 0);
+  border: 0.1rem solid $color-border;
+  @include border-radius(1.4rem);
+  overflow: hidden;
+  background-color: $color-white;
+}
+
+.faq-item {
+  border-bottom: 0.1rem solid $color-border;
+
+  &:last-child { border-bottom: none; }
+
+  &__btn {
+    @include display-flex($justify-content: space-between, $gap: 1.6rem);
+    width: 100%;
+    @include padding(2rem, 2.4rem, 2rem, 2.4rem);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: $font-primary;
+    font-size: 1.5rem;
+    font-weight: $fw-semibold;
+    color: $color-text-dark;
+    @include transition(background-color, 0.15s, ease-in-out);
+
+    &:hover { background-color: $color-bg; }
+  }
+
+  &__icon {
+    font-size: 2rem;
+    color: $color-text-muted;
+    flex-shrink: 0;
+    @include transition(transform, 0.25s, ease-in-out);
+  }
+
+  &__answer {
+    max-height: 0;
+    overflow: hidden;
+    @include transition(max-height, 0.35s, ease-in-out);
+
+    p {
+      @include padding(0, 2.4rem, 2rem, 2.4rem);
+      font-size: 1.4rem;
+      line-height: 1.7;
+      color: $color-text-muted;
+    }
+  }
+
+  // Estado aberto
+  &--open {
+    .faq-item__icon { transform: rotate(180deg); color: $color-primary; }
+    .faq-item__btn  { color: $color-primary-dark; }
+  }
+}
+
+@media (max-width: 560px) {
+  .faq-section { padding: 5rem 1.6rem; }
+  .faq-item__btn { @include padding(1.6rem, 1.6rem, 1.6rem, 1.6rem); font-size: 1.4rem; }
+  .faq-item__answer p { @include padding(0, 1.6rem, 1.6rem, 1.6rem); }
+}
+
+// =============================================
+// FOOTER
+// =============================================
+.footer {
+  background-color: $color-card-dark;
+  padding: 6rem 3.2rem 0;
+
+  &__inner {
+    @include display-flex($justify-content: space-between, $align-items: flex-start, $gap: 4rem);
+    max-width: 120rem;
+    margin: 0 auto;
+    padding-bottom: 5rem;
+    border-bottom: 0.1rem solid $color-card-border;
+  }
+
+  &__brand {
+    @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1.6rem);
+    max-width: 26rem;
+    flex-shrink: 0;
+  }
+
+  &__tagline {
+    font-size: 1.4rem;
+    color: rgba($color-white, 0.55);
+    line-height: 1.7;
+  }
+
+  &__col {
+    @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1.6rem);
+    min-width: 14rem;
+  }
+
+  &__col-title {
+    font-family: $font-primary;
+    font-size: 1.1rem;
+    font-weight: $fw-semibold;
+    letter-spacing: 0.1em;
+    color: rgba($color-white, 0.4);
+  }
+
+  &__links {
+    @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1.2rem);
+
+    li a, li span {
+      font-size: 1.4rem;
+      color: rgba($color-white, 0.7);
+      @include transition(color, 0.15s, ease-in-out);
+      &:hover { color: $color-white; }
+    }
+
+    &--contact li {
+      @include display-flex($justify-content: flex-start, $gap: 0.8rem);
+      .material-symbols-outlined { font-size: 1.6rem; color: rgba($color-white, 0.4); flex-shrink: 0; }
+    }
+  }
+
+  &__bottom {
+    @include display-flex($justify-content: space-between, $gap: 0);
+    max-width: 120rem;
+    margin: 0 auto;
+    padding: 2.4rem 0;
+    font-size: 1.3rem;
+    color: rgba($color-white, 0.35);
+  }
+
+  &__bottom-links {
+    @include display-flex($gap: 2.4rem);
+    a {
+      font-size: 1.3rem;
+      color: rgba($color-white, 0.35);
+      @include transition(color, 0.15s, ease-in-out);
+      &:hover { color: rgba($color-white, 0.7); }
+    }
+  }
+}
+
+.logo--light img { filter: brightness(0) invert(1); }
+
+@media (max-width: 900px) {
+  .footer {
+    &__inner { flex-wrap: wrap; gap: 3.2rem; }
+    &__brand { max-width: 100%; }
+  }
+}
+@media (max-width: 560px) {
+  .footer { padding: 4rem 1.6rem 0; }
+  .footer__bottom { flex-direction: column; align-items: center; gap: 1.2rem; text-align: center; }
 }

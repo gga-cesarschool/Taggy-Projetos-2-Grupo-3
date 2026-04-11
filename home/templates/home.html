@@ -13,50 +13,382 @@
   <!-- ===== HEADER ===== -->
   <header class="header">
     <div class="header__inner">
-
-      <!-- Logo -->
       <a href="#" class="logo">
         <img src="{% static 'images/logo-sem-fundo.png' %}" alt="TagGreen" />
       </a>
-
-      <!-- Nav principal -->
       <nav class="nav" id="main-nav" aria-label="Menu principal">
         <ul class="nav__list">
-          <li>
-            <a href="#" class="nav__link nav__link--active">Home</a>
-          </li>
-          <li>
-            <a href="#" class="nav__link">Calculadora</a>
-          </li>
-          <li>
-            <a href="#" class="nav__link">Meu Impacto</a>
-          </li>
-          <li>
-            <a href="#" class="nav__link">Metodologia</a>
-          </li>
-          <li>
-            <a href="#" class="nav__link">FAQ</a>
-          </li>
-          <li>
-            <a href="#" class="nav__link">Empresas</a>
-          </li>
+          <li><a href="#" class="nav__link nav__link--active">Home</a></li>
+          <li><a href="#" class="nav__link">Calculadora</a></li>
+          <li><a href="#" class="nav__link">Meu Impacto</a></li>
+          <li><a href="#" class="nav__link">Metodologia</a></li>
+          <li><a href="#" class="nav__link">FAQ</a></li>
+          <li><a href="#" class="nav__link">Empresas</a></li>
         </ul>
       </nav>
-
-      <!-- Hamburger (mobile) -->
       <button class="hamburger" id="hamburger-btn" aria-label="Abrir menu" aria-expanded="false">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span></span><span></span><span></span>
       </button>
-
     </div>
   </header>
-  <!-- ===== /HEADER ===== -->
 
-  <main>
-    {# Próximas seções virão aqui #}
-  </main>
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero__inner">
+      <div class="hero__content">
+        <span class="hero__badge">
+          <span class="material-symbols-outlined">eco</span>
+          Mobilidade Sustentável
+        </span>
+        <h1 class="hero__title">
+          Descubra quanto CO<sub>2</sub>e<br>
+          você evita com <span class="hero__title--accent">Taggy</span>
+        </h1>
+        <p class="hero__description">
+          Hoje sua escolha ajudou a reduzir o impacto no trânsito.<br>
+          Menos fila, menos marcha lenta, menos emissão.
+        </p>
+        <div class="hero__actions">
+          <a href="#" class="btn btn--primary">
+            Calcular meu impacto
+            <span class="material-symbols-outlined">arrow_forward</span>
+          </a>
+          <a href="#" class="btn btn--outline">Como funciona</a>
+        </div>
+      </div>
+      <div class="hero__media">
+        <div class="hero__card hero__card--top">
+          <span class="hero__card-icon hero__card-icon--blue">
+            <span class="material-symbols-outlined">bolt</span>
+          </span>
+          <div class="hero__card-info">
+            <strong>850K</strong>
+            <span>passagens fluidas</span>
+          </div>
+        </div>
+        <img src="{% static 'images/hero-tunnel.jpg' %}" alt="Túnel com trânsito fluido" class="hero__image" />
+        <div class="hero__card hero__card--bottom">
+          <span class="hero__card-icon hero__card-icon--green">
+            <span class="material-symbols-outlined">forest</span>
+          </span>
+          <div class="hero__card-info">
+            <strong>2.4M</strong>
+            <span>kg CO2e evitados</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CALCULADORA ===== -->
+  <section class="calc-section">
+    <div class="calc-section__header">
+      <h2 class="calc-section__title">Calcule suas emissões evitadas</h2>
+      <p class="calc-section__subtitle">Simule seu impacto comparando o cenário com e sem Taggy</p>
+    </div>
+    <div class="calc-card">
+      <div class="calc-card__top">
+        <div>
+          <h3 class="calc-card__title">Calculadora de Impacto</h3>
+          <p class="calc-card__desc">Compare o cenário com Taggy vs sem Taggy</p>
+        </div>
+        <button class="calc-card__mute" aria-label="Mudo">
+          <span class="material-symbols-outlined">volume_off</span>
+        </button>
+      </div>
+      <div class="calc-card__body">
+
+        <!-- Inputs -->
+        <div class="calc-inputs">
+          <div class="calc-group">
+            <span class="calc-group__label">TIPO DE VEÍCULO</span>
+            <div class="calc-vehicles">
+              <button class="calc-vehicle calc-vehicle--active" data-vehicle="carro_combustao">
+                <span class="material-symbols-outlined">directions_car</span>Carro Combustão
+              </button>
+              <button class="calc-vehicle" data-vehicle="carro_eletrico">
+                <span class="material-symbols-outlined">electric_car</span>Carro Elétrico
+              </button>
+              <button class="calc-vehicle" data-vehicle="moto">
+                <span class="material-symbols-outlined">two_wheeler</span>Moto
+              </button>
+              <button class="calc-vehicle" data-vehicle="caminhao">
+                <span class="material-symbols-outlined">local_shipping</span>Caminhão
+              </button>
+            </div>
+          </div>
+
+          <div class="calc-group">
+            <span class="calc-group__label">CONTEXTO DE USO</span>
+            <div class="calc-contexts">
+              <button class="calc-context calc-context--active" data-context="pedagio">
+                <span class="material-symbols-outlined">directions_car</span>Pedágio
+              </button>
+              <button class="calc-context" data-context="estacionamento">
+                <span class="material-symbols-outlined">local_parking</span>Estacionamento
+              </button>
+              <button class="calc-context" data-context="acesso_controlado">
+                <span class="material-symbols-outlined">security</span>Acesso Controlado
+              </button>
+            </div>
+          </div>
+
+          <div class="calc-group">
+            <div class="calc-group__row">
+              <span class="calc-group__label">FREQUÊNCIA MENSAL</span>
+              <span class="calc-group__value calc-group__value--green" id="freq-val">20x</span>
+            </div>
+            <input type="range" class="calc-slider calc-slider--green" id="freq-slider" min="1" max="60" value="20">
+          </div>
+
+          <div class="calc-group">
+            <div class="calc-group__row">
+              <span class="calc-group__label">NÚMERO DE PASSAGENS</span>
+              <span class="calc-group__value calc-group__value--blue" id="pass-val">40</span>
+            </div>
+            <input type="range" class="calc-slider calc-slider--blue" id="pass-slider" min="1" max="200" value="40">
+          </div>
+
+          <button class="btn btn--calc" id="calc-btn">Calcular meu impacto</button>
+        </div>
+
+        <!-- Resultados -->
+        <div class="calc-results">
+
+          <div class="calc-result-main">
+            <span class="calc-result-main__label">CO2E EVITADO</span>
+            <div class="calc-result-main__value">
+              <span class="calc-result-main__number" id="result-evitado">0.0</span>
+              <span class="calc-result-main__unit" id="result-evitado-unit">kg</span>
+            </div>
+            <p class="calc-result-main__desc" id="result-evitado-desc">
+              Hoje sua escolha ajudou a reduzir o impacto no trânsito
+            </p>
+          </div>
+
+          <div class="calc-result-row">
+            <div class="calc-result-card calc-result-card--danger">
+              <span class="calc-result-card__label">SEM TAGGY</span>
+              <div class="calc-result-card__value">
+                <span class="calc-result-card__number" id="result-sem">0.0</span>
+                <span class="calc-result-card__unit" id="result-sem-unit">kg</span>
+              </div>
+              <p class="calc-result-card__desc">Fila + marcha lenta + papel</p>
+            </div>
+            <div class="calc-result-card calc-result-card--success">
+              <span class="calc-result-card__label">COM TAGGY</span>
+              <div class="calc-result-card__value">
+                <span class="calc-result-card__number" id="result-com">0.0</span>
+                <span class="calc-result-card__unit" id="result-com-unit">kg</span>
+              </div>
+              <p class="calc-result-card__desc">Passagem fluida e digital</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== COMO A TAGGY REDUZ EMISSÕES ===== -->
+  <section class="reduce-section">
+    <div class="reduce-section__inner">
+      <div class="section-header">
+        <h2 class="section-header__title">Como a Taggy reduz emissões</h2>
+        <p class="section-header__subtitle">Cada passagem com Taggy elimina fontes de poluição no trânsito</p>
+      </div>
+      <div class="reduce-cards">
+        <div class="reduce-card">
+          <span class="reduce-card__icon"><span class="material-symbols-outlined">speed</span></span>
+          <h4 class="reduce-card__title">Menos Fila</h4>
+          <p class="reduce-card__desc">Passagem automática elimina filas em pedágios e estacionamentos</p>
+        </div>
+        <div class="reduce-card">
+          <span class="reduce-card__icon"><span class="material-symbols-outlined">directions_car</span></span>
+          <h4 class="reduce-card__title">Menos Marcha Lenta</h4>
+          <p class="reduce-card__desc">Sem parar no guichê, seu motor não fica ligado sem necessidade</p>
+        </div>
+        <div class="reduce-card">
+          <span class="reduce-card__icon"><span class="material-symbols-outlined">bolt</span></span>
+          <h4 class="reduce-card__title">Menos Aceleração</h4>
+          <p class="reduce-card__desc">Fluxo contínuo evita frenagens e acelerações desnecessárias</p>
+        </div>
+        <div class="reduce-card">
+          <span class="reduce-card__icon"><span class="material-symbols-outlined">description</span></span>
+          <h4 class="reduce-card__title">Menos Papel</h4>
+          <p class="reduce-card__desc">Comprovantes digitais eliminam impressão de ticket físico</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== IMPACTO EM NÚMEROS ===== -->
+  <section class="impact-section">
+    <div class="impact-section__inner">
+      <div class="section-header">
+        <h2 class="section-header__title">Impacto em números reais</h2>
+        <p class="section-header__subtitle">Entenda o que suas emissões evitadas significam na prática</p>
+      </div>
+      <div class="impact-stats">
+        <div class="impact-stat">
+          <span class="impact-stat__icon"><span class="material-symbols-outlined">forest</span></span>
+          <strong class="impact-stat__number">12.4K</strong>
+          <span class="impact-stat__label">Árvores preservadas</span>
+        </div>
+        <div class="impact-stat">
+          <span class="impact-stat__icon"><span class="material-symbols-outlined">local_gas_station</span></span>
+          <strong class="impact-stat__number">8.2K <small>L</small></strong>
+          <span class="impact-stat__label">Combustível poupado</span>
+        </div>
+        <div class="impact-stat">
+          <span class="impact-stat__icon"><span class="material-symbols-outlined">schedule</span></span>
+          <strong class="impact-stat__number">45K <small>h</small></strong>
+          <span class="impact-stat__label">Tempo economizado</span>
+        </div>
+        <div class="impact-stat">
+          <span class="impact-stat__icon"><span class="material-symbols-outlined">description</span></span>
+          <strong class="impact-stat__number">320K</strong>
+          <span class="impact-stat__label">Papéis evitados</span>
+        </div>
+        <div class="impact-stat">
+          <span class="impact-stat__icon"><span class="material-symbols-outlined">directions_car</span></span>
+          <strong class="impact-stat__number">180K <small>km</small></strong>
+          <span class="impact-stat__label">Distância equivalente</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA DUPLO ===== -->
+  <section class="cta-section">
+    <div class="cta-section__inner">
+      <div class="cta-card cta-card--green">
+        <span class="cta-card__icon"><span class="material-symbols-outlined">shield</span></span>
+        <h3 class="cta-card__title">Acompanhe seu Impacto pessoal</h3>
+        <p class="cta-card__desc">Crie sua conta gratuita e veja seu histórico mensal, evolução e Wrapped personalizado.</p>
+        <a href="#" class="btn btn--cta-light">
+          Criar conta grátis <span class="material-symbols-outlined">arrow_forward</span>
+        </a>
+      </div>
+      <div class="cta-card cta-card--dark">
+        <span class="cta-card__icon"><span class="material-symbols-outlined">insert_chart</span></span>
+        <h3 class="cta-card__title">Relatórios ESG para empresas</h3>
+        <p class="cta-card__desc">Acesse dashboards com indicadores por estado, evolução anual e Wrapped corporativo.</p>
+        <a href="#" class="btn btn--cta-blue">
+          Área Empresa <span class="material-symbols-outlined">arrow_forward</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="faq-section">
+    <div class="faq-section__inner">
+      <div class="section-header">
+        <h2 class="section-header__title">Perguntas frequentes</h2>
+        <p class="section-header__subtitle">Tire suas dúvidas sobre a Taggy e emissões</p>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item faq-item--open">
+          <button class="faq-item__btn" aria-expanded="true">
+            <span>Como a Taggy reduz emissões?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_less</span>
+          </button>
+          <div class="faq-item__answer">
+            <p>A Taggy elimina filas em pedágios e estacionamentos, reduzindo marcha lenta, acelerações desnecessárias e uso de papel, o que diminui diretamente as emissões de CO2e.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Preciso pagar a mais para isso?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer">
+            <p>Não. O cálculo de impacto ambiental é gratuito para todos os usuários Taggy. Basta ter uma conta ativa e usar normalmente o produto.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Como o cálculo é feito?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer">
+            <p>Usamos fatores de emissão do GHG Protocol Brasil 2023 (gasolina: 2,212 kg CO2e/L; diesel: 2,603 kg CO2e/L) e dados reais de tempo médio de fila em pedágios (~3 minutos) e consumo em marcha lenta para estimar o CO2e evitado a cada passagem.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Posso compartilhar meus resultados?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer">
+            <p>Sim! Após calcular seu impacto, você pode gerar um cartão personalizável para compartilhar nas redes sociais ou enviar por mensagem.</p>
+          </div>
+        </div>
+      </div>
+      <a href="#" class="faq-section__link">
+        Ver todas as perguntas
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <a href="#" class="logo logo--light">
+          <img src="{% static 'images/logo-sem-fundo.png' %}" alt="TagGreen" />
+        </a>
+        <p class="footer__tagline">
+          Menos fila, menos marcha lenta, menos emissão. Mobilidade inteligente e sustentável.
+        </p>
+      </div>
+      <div class="footer__col">
+        <h5 class="footer__col-title">PLATAFORMA</h5>
+        <ul class="footer__links">
+          <li><a href="#">Calculadora</a></li>
+          <li><a href="#">Meu Impacto</a></li>
+          <li><a href="#">Metodologia</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h5 class="footer__col-title">EMPRESAS</h5>
+        <ul class="footer__links">
+          <li><a href="#">Área B2B</a></li>
+          <li><a href="#">Wrapped Corporativo</a></li>
+          <li><a href="#">Relatórios ESG</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h5 class="footer__col-title">CONTATO</h5>
+        <ul class="footer__links footer__links--contact">
+          <li>
+            <span class="material-symbols-outlined">mail</span>
+            <a href="mailto:contato@taggy.com.br">contato@taggy.com.br</a>
+          </li>
+          <li>
+            <span class="material-symbols-outlined">phone</span>
+            <a href="tel:08001234567">0800 123 4567</a>
+          </li>
+          <li>
+            <span class="material-symbols-outlined">location_on</span>
+            <span>São Paulo, Brasil</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 2026 Taggy. Todos os direitos reservados.</span>
+      <div class="footer__bottom-links">
+        <a href="#">Termos de Uso</a>
+        <a href="#">Privacidade</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/home.js' %}"></script>
 
 </body>
 </html>
