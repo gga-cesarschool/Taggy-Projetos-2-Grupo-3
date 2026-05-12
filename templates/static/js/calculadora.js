@@ -1,96 +1,105 @@
 (function () {
 
-  // ===========================================
-  // FATORES DE EMISSÃO — GHG Protocol Brasil 2023
-  // ===========================================
-  //
-  // Metodologia por passagem (kg CO2e):
-  //
-  // PEDÁGIO (sem Taggy):
-  //   Marcha lenta: ~3 min fila × consumo em idle × fator emissão
-  //     Gasolina:  2,212 kg CO2e/L  |  idle: ~0,70 L/h  → 3 min = 0,0350 L → 0,0775 kg
-  //     Diesel:    2,603 kg CO2e/L  |  idle: ~2,50 L/h  → 3 min = 0,1250 L → 0,3254 kg
-  //   Frenagem + aceleração extra: ~0,1 km adicional
-  //     Gasolina: 0,1 km × (8 L/100km) × 2,212 = 0,0177 kg
-  //     Diesel:   0,1 km × (30 L/100km) × 2,603 = 0,0781 kg
-  //   Papel (ticket): 5 g × 1,1 kg CO2e/kg papel = 0,0055 kg
-  //   Elétrico: grid BR 0,0817 kg CO2e/kWh | ~0,2 kWh idle equiv → 0,0163 kg
-  //
-  // ESTACIONAMENTO (sem Taggy):
-  //   Principal: papel do ticket + marcha lenta fila entrada/saída (~1,5 min)
-  //
-  // ACESSO CONTROLADO (sem Taggy):
-  //   Intermediário: tempo menor de fila (~1 min) + papel
-  //
-  // COM TAGGY: apenas emissão residual do deslocamento normal (sem fila, sem papel)
+  'use strict';
 
-  const FATORES = {
-    //                     sem (kg CO2e)   com (kg CO2e)
-    pedagio: {
-      carro_combustao: { sem: 0.095, com: 0.010 },
-      carro_eletrico:  { sem: 0.022, com: 0.004 },
-      moto:            { sem: 0.052, com: 0.006 },
-      caminhao:        { sem: 0.385, com: 0.042 },
-    },
-    estacionamento: {
-      carro_combustao: { sem: 0.032, com: 0.003 },
-      carro_eletrico:  { sem: 0.010, com: 0.002 },
-      moto:            { sem: 0.018, com: 0.002 },
-      caminhao:        { sem: 0.068, com: 0.007 },
-    },
-    acesso_controlado: {
-      carro_combustao: { sem: 0.045, com: 0.005 },
-      carro_eletrico:  { sem: 0.014, com: 0.003 },
-      moto:            { sem: 0.026, com: 0.003 },
-      caminhao:        { sem: 0.145, com: 0.016 },
-    },
-  };
-
-  // ===========================================
-  // ESTADO
-  // ===========================================
+  // =========================================================================
+  // ESTADO GLOBAL
+  // =========================================================================
+  let dadosAPI      = null;
   let veiculoAtivo  = 'carro_combustao';
   let contextoAtivo = 'pedagio';
 
-  // ===========================================
-  // HELPERS
-  // ===========================================
+  // =========================================================================
+  // CARREGA OS FATORES DA ROTA DJANGO
+  // =========================================================================
+  async function carregarFatores() {
+    const btn = document.getElementById('calc-btn');
+    btn.disabled    = true;
+    btn.textContent = 'Carregando fatores…';
 
-  /**
-   * Formata kg CO2e:
-   *   < 1 kg  → "XXX g"
-   *   >= 1 kg → "X.XX kg"
-   *   >= 1000 → "X.XX t"
-   */
+    try {
+      const resp = await fetch('/api/fatores-emissao/', {
+        method:  'GET',
+        headers: { 'Accept': 'application/json' },
+      });
+
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
+      dadosAPI = await resp.json();
+      console.info('[Calculadora] Fatores carregados — base:', dadosAPI.meta.base_emissao);
+
+      btn.disabled    = false;
+      btn.textContent = 'Calcular meu impacto';
+
+    } catch (err) {
+      console.error('[Calculadora] Falha ao carregar fatores:', err);
+      btn.textContent = 'Erro ao carregar — recarregue a página';
+    }
+  }
+
+  // =========================================================================
+  // FÓRMULA DE EMISSÃO POR PASSAGEM (kg CO2e)
+  // =========================================================================
+  //
+  //  E_total = E_idle + E_movimento + E_papel
+  //
+  //  E_idle      = (tempo_fila_min / 60) × consumo_idle × fator_emissao
+  //  E_movimento = dist_extra_km         × consumo_km   × fator_emissao
+  //  E_papel     = (papel_g / 1000)      × fator_papel
+  //
+  function emissaoPorPassagem(veiculoKey, contextoKey, comTag) {
+    const { fatores_emissao: EF, veiculos, contextos } = dadosAPI;
+    const v = veiculos[veiculoKey];
+    const c = contextos[contextoKey];
+
+    const tempoFila = comTag ? c.tempo_fila_com : c.tempo_fila_sem;
+    const distExtra = comTag ? c.dist_extra_com : c.dist_extra_sem;
+    const papelG    = comTag ? c.papel_com_g    : c.papel_sem_g;
+
+    const ef = EF[v.combustivel];
+
+    return (tempoFila / 60) * v.consumo_idle * ef   // E_idle
+         + distExtra        * v.consumo_km   * ef   // E_movimento
+         + (papelG / 1000)  * EF.papel;             // E_papel
+  }
+
+  // =========================================================================
+  // HELPERS DE FORMATAÇÃO
+  // =========================================================================
   function formatarCO2(kg) {
-    if (kg < 1)      return { valor: (kg * 1000).toFixed(0), unidade: 'g'  };
-    if (kg >= 1000)  return { valor: (kg / 1000).toFixed(2), unidade: 't'  };
-    return               { valor: kg.toFixed(2),             unidade: 'kg' };
+    if (kg < 1)     return { valor: (kg * 1000).toFixed(0), unidade: 'g'  };
+    if (kg >= 1000) return { valor: (kg / 1000).toFixed(2), unidade: 't'  };
+    return              { valor: kg.toFixed(2),             unidade: 'kg' };
   }
 
-  /** Descrição contextual do resultado evitado */
   function gerarDescricao(kg, totalPassagens) {
-    if (kg <= 0) return 'Hoje sua escolha ajudou a reduzir o impacto no trânsito';
-    const arvores = (kg / 21.77).toFixed(1);       // IPCC: ~21,77 kg CO2/árvore/ano
-    const litros  = (kg / 2.212).toFixed(1);       // GHG Protocol: gasolina
+    if (kg <= 0) return 'Hoje sua escolha ajudou a reduzir o impacto no trânsito.';
+    const arvores = (kg / 21.77).toFixed(1);
+    const litros  = (kg / 2.212).toFixed(1);
     const papeis  = Math.round(totalPassagens);
-    if (kg < 1)   return `Equivale a ${papeis} ticket(s) de papel evitado(s) este mês`;
-    if (kg < 10)  return `Equivalente a ${litros} L de gasolina não queimada este mês`;
-    if (kg < 100) return `Equivalente ao CO₂ absorvido por ${arvores} árvore(s) em um ano`;
-    return `Redução significativa: ${(kg / 1000).toFixed(3)} toneladas de CO₂e evitadas!`;
+    if (kg < 1)   return `Equivale a ${papeis} ticket(s) de papel evitado(s) este mês.`;
+    if (kg < 10)  return `Equivalente a ${litros} L de gasolina não queimada este mês.`;
+    if (kg < 100) return `Equivalente ao CO₂ absorvido por ${arvores} árvore(s) em um ano.`;
+    return `Redução expressiva: ${(kg / 1000).toFixed(3)} toneladas de CO₂e evitadas!`;
   }
 
-  // ===========================================
+  // =========================================================================
   // CÁLCULO PRINCIPAL
-  // ===========================================
+  // =========================================================================
   function calcular() {
+    if (!dadosAPI) {
+      alert('Os fatores de emissão ainda estão sendo carregados. Aguarde.');
+      return;
+    }
+
     const freq  = parseInt(document.getElementById('freq-slider').value, 10);
     const pass  = parseInt(document.getElementById('pass-slider').value, 10);
     const total = freq * pass;
 
-    const fator   = FATORES[contextoAtivo][veiculoAtivo];
-    const co2Sem  = total * fator.sem;
-    const co2Com  = total * fator.com;
+    const eSem    = emissaoPorPassagem(veiculoAtivo, contextoAtivo, false);
+    const eCom    = emissaoPorPassagem(veiculoAtivo, contextoAtivo, true);
+    const co2Sem  = total * eSem;
+    const co2Com  = total * eCom;
     const evitado = co2Sem - co2Com;
 
     const fmtEvitado = formatarCO2(evitado);
@@ -100,17 +109,23 @@
     document.getElementById('result-evitado').textContent      = fmtEvitado.valor;
     document.getElementById('result-evitado-unit').textContent = fmtEvitado.unidade;
     document.getElementById('result-evitado-desc').textContent = gerarDescricao(evitado, total);
+    document.getElementById('result-sem').textContent          = fmtSem.valor;
+    document.getElementById('result-sem-unit').textContent     = fmtSem.unidade;
+    document.getElementById('result-com').textContent          = fmtCom.valor;
+    document.getElementById('result-com-unit').textContent     = fmtCom.unidade;
 
-    document.getElementById('result-sem').textContent      = fmtSem.valor;
-    document.getElementById('result-sem-unit').textContent = fmtSem.unidade;
-
-    document.getElementById('result-com').textContent      = fmtCom.valor;
-    document.getElementById('result-com-unit').textContent = fmtCom.unidade;
+    console.group('[Calculadora] Resultado');
+    console.log('Veículo:', veiculoAtivo, '| Contexto:', contextoAtivo);
+    console.log(`Passagens: ${freq}x × ${pass} = ${total}`);
+    console.log(`Por passagem s/ Taggy: ${(eSem * 1000).toFixed(3)} g CO2e`);
+    console.log(`Por passagem c/ Taggy: ${(eCom * 1000).toFixed(3)} g CO2e`);
+    console.log(`Total evitado: ${evitado.toFixed(4)} kg CO2e`);
+    console.groupEnd();
   }
 
-  // ===========================================
-  // SELEÇÃO DE VEÍCULO
-  // ===========================================
+  // =========================================================================
+  // EVENTOS — veículo, contexto, sliders, botão
+  // =========================================================================
   document.querySelectorAll('.calc-vehicle').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.calc-vehicle').forEach(b => b.classList.remove('calc-vehicle--active'));
@@ -119,9 +134,6 @@
     });
   });
 
-  // ===========================================
-  // SELEÇÃO DE CONTEXTO
-  // ===========================================
   document.querySelectorAll('.calc-context').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.calc-context').forEach(b => b.classList.remove('calc-context--active'));
@@ -130,9 +142,6 @@
     });
   });
 
-  // ===========================================
-  // SLIDERS
-  // ===========================================
   function atualizarSlider(slider, display, sufixo, cor) {
     const pct = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
     display.textContent = slider.value + sufixo;
@@ -142,19 +151,17 @@
 
   const freqSlider = document.getElementById('freq-slider');
   const freqVal    = document.getElementById('freq-val');
-  freqSlider.addEventListener('input', () =>
-    atualizarSlider(freqSlider, freqVal, 'x', '#76C442')
-  );
+  freqSlider.addEventListener('input', () => atualizarSlider(freqSlider, freqVal, 'x', '#76C442'));
 
   const passSlider = document.getElementById('pass-slider');
   const passVal    = document.getElementById('pass-val');
-  passSlider.addEventListener('input', () =>
-    atualizarSlider(passSlider, passVal, '', '#3B82F6')
-  );
+  passSlider.addEventListener('input', () => atualizarSlider(passSlider, passVal, '', '#3B82F6'));
 
-  // ===========================================
-  // BOTÃO CALCULAR
-  // ===========================================
   document.getElementById('calc-btn').addEventListener('click', calcular);
+
+  // =========================================================================
+  // INICIALIZAÇÃO
+  // =========================================================================
+  carregarFatores();
 
 })();
