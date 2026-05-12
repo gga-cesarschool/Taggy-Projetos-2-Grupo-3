@@ -64,4 +64,4 @@ O projeto **TagGreen** tem como objetivo desenvolver uma solução que permita c
 - **Product Owner (P.O):** Maria Clara  
 - **Scrum Master:** Lisa  
 - **Back-End:** Rafael e Guilherme  
-- **Front-End:** Rhayssa  
+- **Front-End:** Rhayssa e Karollyne
