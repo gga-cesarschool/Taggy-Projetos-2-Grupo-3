@@ -1,0 +1,321 @@
+{% load static %}
+{% load sass_tags %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TagGreen - Painel ESG Corporativo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="{% sass_src 'scss/empresas_relatorios.scss' %}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="{% url 'home' %}" class="logo">
+        <img src="{% static 'images/logo-sem-fundo.png' %}" alt="TagGreen" />
+      </a>
+      <nav class="nav" id="main-nav" aria-label="Menu principal">
+        <ul class="nav__list">
+          <li><a href="{% url 'home' %}" class="nav__link">Home</a></li>
+          <li><a href="#" class="nav__link">Calculadora</a></li>
+          <li><a href="#" class="nav__link">Meu Impacto</a></li>
+          <li><a href="#" class="nav__link">Metodologia</a></li>
+          <li><a href="#" class="nav__link">FAQ</a></li>
+          <li><a href="{% url 'empresas_relatorios' %}" class="nav__link nav__link--active nav__link--pill">Empresas</a></li>
+        </ul>
+      </nav>
+      <button class="hamburger" id="hamburger-btn" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== DASHBOARD ===== -->
+  <main class="dashboard">
+    <div class="dashboard__inner">
+
+      <!-- Cabecalho -->
+      <div class="dashboard__header">
+        <div class="dashboard__title-group">
+          <span class="dashboard__title-icon">
+            <span class="material-symbols-outlined">insert_chart</span>
+          </span>
+          <div>
+            <h1 class="dashboard__title">Painel ESG Corporativo</h1>
+            <p class="dashboard__subtitle">Visao geral de emissoes evitadas pela Taggy</p>
+          </div>
+        </div>
+        <div class="dashboard__actions">
+          <button class="dash-btn dash-btn--ghost">
+            <span class="material-symbols-outlined">filter_list</span>
+            Filtros
+          </button>
+          <button class="dash-btn dash-btn--outline">
+            <span class="material-symbols-outlined">download</span>
+            Exportar Relatorio
+          </button>
+          <button class="dash-btn dash-btn--primary">
+            <span class="material-symbols-outlined">auto_awesome</span>
+            Wrapped
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="kpi-grid">
+
+        <div class="kpi-card">
+          <div class="kpi-card__top">
+            <span class="kpi-card__icon kpi-card__icon--green">
+              <span class="material-symbols-outlined">eco</span>
+            </span>
+            <span class="kpi-card__trend kpi-card__trend--up">
+              <span class="material-symbols-outlined">trending_up</span>+23%
+            </span>
+          </div>
+          <strong class="kpi-card__value">16.49 ton</strong>
+          <span class="kpi-card__label">CO2e Evitado Total</span>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-card__top">
+            <span class="kpi-card__icon kpi-card__icon--blue">
+              <span class="material-symbols-outlined">bolt</span>
+            </span>
+            <span class="kpi-card__trend kpi-card__trend--up">
+              <span class="material-symbols-outlined">trending_up</span>+18%
+            </span>
+          </div>
+          <strong class="kpi-card__value">455K</strong>
+          <span class="kpi-card__label">Passagens Totais</span>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-card__top">
+            <span class="kpi-card__icon kpi-card__icon--teal">
+              <span class="material-symbols-outlined">location_on</span>
+            </span>
+            <span class="kpi-card__trend kpi-card__trend--up">
+              <span class="material-symbols-outlined">trending_up</span>+3
+            </span>
+          </div>
+          <strong class="kpi-card__value">22</strong>
+          <span class="kpi-card__label">Estados Ativos</span>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-card__top">
+            <span class="kpi-card__icon kpi-card__icon--gold">
+              <span class="material-symbols-outlined">emoji_events</span>
+            </span>
+            <span class="kpi-card__trend kpi-card__trend--badge">Top 5</span>
+          </div>
+          <strong class="kpi-card__value">#4</strong>
+          <span class="kpi-card__label">Ranking Nacional</span>
+        </div>
+
+      </div>
+
+      <!-- Linha 1: Evolucao Mensal + Donut -->
+      <div class="charts-row">
+
+        <div class="chart-card">
+          <div class="chart-card__header">
+            <div>
+              <h3 class="chart-card__title">Evolucao Mensal 2025</h3>
+              <p class="chart-card__desc">kg CO2e evitados por mes</p>
+            </div>
+          </div>
+          <div class="chart-card__body chart-card__body--canvas">
+            <canvas id="monthlyChart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-card__header">
+            <h3 class="chart-card__title">Distribuicao por Contexto</h3>
+          </div>
+          <div class="chart-card__body chart-card__body--donut">
+            <div class="donut-wrap">
+              <canvas id="contextChart" width="200" height="200"></canvas>
+            </div>
+            <ul class="donut-legend">
+              <li>
+                <span class="donut-legend__dot donut-legend__dot--dark"></span>
+                Pedagio
+                <span class="donut-legend__pct">62%</span>
+              </li>
+              <li>
+                <span class="donut-legend__dot donut-legend__dot--mid"></span>
+                Estacionamento
+                <span class="donut-legend__pct">25%</span>
+              </li>
+              <li>
+                <span class="donut-legend__dot donut-legend__dot--blue"></span>
+                Acesso
+                <span class="donut-legend__pct">13%</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Linha 2: Ranking + Evolucao Anual -->
+      <div class="charts-row">
+
+        <div class="chart-card">
+          <div class="chart-card__header">
+            <h3 class="chart-card__title">Ranking por Estado</h3>
+            <span class="chart-card__badge">Top 8</span>
+          </div>
+          <div class="chart-card__body">
+            <ul class="state-ranking">
+              <li class="state-ranking__item">
+                <span class="state-ranking__pos">#1</span>
+                <span class="state-ranking__uf">SP</span>
+                <div class="state-ranking__bar-wrap">
+                  <div class="state-ranking__bar" style="width:100%"></div>
+                </div>
+                <span class="state-ranking__val">4.5t CO2e</span>
+              </li>
+              <li class="state-ranking__item">
+                <span class="state-ranking__pos">#2</span>
+                <span class="state-ranking__uf">RJ</span>
+                <div class="state-ranking__bar-wrap">
+                  <div class="state-ranking__bar" style="width:64%"></div>
+                </div>
+                <span class="state-ranking__val">2.9t CO2e</span>
+              </li>
+              <li class="state-ranking__item">
+                <span class="state-ranking__pos">#3</span>
+                <span class="state-ranking__uf">MG</span>
+                <div class="state-ranking__bar-wrap">
+                  <div class="state-ranking__bar" style="width:51%"></div>
+                </div>
+                <span class="state-ranking__val">2.3t CO2e</span>
+              </li>
+              <li class="state-ranking__item">
+                <span class="state-ranking__pos">#4</span>
+                <span class="state-ranking__uf">PR</span>
+                <div class="state-ranking__bar-wrap">
+                  <div class="state-ranking__bar" style="width:42%"></div>
+                </div>
+                <span class="state-ranking__val">1.9t CO2e</span>
+              </li>
+              <li class="state-ranking__item">
+                <span class="state-ranking__pos">#5</span>
+                <span class="state-ranking__uf">RS</span>
+                <div class="state-ranking__bar-wrap">
+                  <div class="state-ranking__bar" style="width:36%"></div>
+                </div>
+                <span class="state-ranking__val">1.6t CO2e</span>
+              </li>
+              <li class="state-ranking__item">
+                <span class="state-ranking__pos">#6</span>
+                <span class="state-ranking__uf">BA</span>
+                <div class="state-ranking__bar-wrap">
+                  <div class="state-ranking__bar" style="width:27%"></div>
+                </div>
+                <span class="state-ranking__val">1.2t CO2e</span>
+              </li>
+              <li class="state-ranking__item">
+                <span class="state-ranking__pos">#7</span>
+                <span class="state-ranking__uf">SC</span>
+                <div class="state-ranking__bar-wrap">
+                  <div class="state-ranking__bar" style="width:24%"></div>
+                </div>
+                <span class="state-ranking__val">1.1t CO2e</span>
+              </li>
+              <li class="state-ranking__item">
+                <span class="state-ranking__pos">#8</span>
+                <span class="state-ranking__uf">GO</span>
+                <div class="state-ranking__bar-wrap">
+                  <div class="state-ranking__bar" style="width:20%"></div>
+                </div>
+                <span class="state-ranking__val">0.9t CO2e</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-card__header">
+            <div>
+              <h3 class="chart-card__title">Evolucao Anual</h3>
+              <p class="chart-card__desc">Toneladas de CO2e evitadas por ano</p>
+            </div>
+          </div>
+          <div class="chart-card__body chart-card__body--canvas">
+            <canvas id="annualChart"></canvas>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <a href="{% url 'home' %}" class="logo logo--light">
+          <img src="{% static 'images/logo-sem-fundo.png' %}" alt="TagGreen" />
+        </a>
+        <p class="footer__tagline">
+          Menos fila, menos marcha lenta, menos emissao. Mobilidade inteligente e sustentavel.
+        </p>
+      </div>
+      <div class="footer__col">
+        <h5 class="footer__col-title">PLATAFORMA</h5>
+        <ul class="footer__links">
+          <li><a href="#">Calculadora</a></li>
+          <li><a href="#">Meu Impacto</a></li>
+          <li><a href="#">Metodologia</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h5 class="footer__col-title">EMPRESAS</h5>
+        <ul class="footer__links">
+          <li><a href="#">Area B2B</a></li>
+          <li><a href="#">Wrapped Corporativo</a></li>
+          <li><a href="#">Relatorios ESG</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h5 class="footer__col-title">CONTATO</h5>
+        <ul class="footer__links footer__links--contact">
+          <li>
+            <span class="material-symbols-outlined">mail</span>
+            <a href="mailto:contato@taggy.com.br">contato@taggy.com.br</a>
+          </li>
+          <li>
+            <span class="material-symbols-outlined">phone</span>
+            <a href="tel:08001234567">0800 123 4567</a>
+          </li>
+          <li>
+            <span class="material-symbols-outlined">location_on</span>
+            <span>Sao Paulo, Brasil</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&#169; 2026 Taggy. Todos os direitos reservados.</span>
+      <div class="footer__bottom-links">
+        <a href="#">Termos de Uso</a>
+        <a href="#">Privacidade</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/home.js' %}"></script>
+  <script src="{% static 'js/empresas_relatorios.js' %}"></script>
+</body>
+</html>

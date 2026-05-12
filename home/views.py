@@ -10,6 +10,14 @@ def home(request):
     return render(request, 'home.html')
 
 
+# ---------------------------------------------------------------------------
+# Página Empresas — Painel ESG Corporativo
+# ---------------------------------------------------------------------------
+
+def empresas_relatorios(request):
+    return render(request, 'empresas_relatorios.html')
+
+
 # ===========================================================================
 # FATORES DE EMISSÃO DE COMBUSTÍVEIS
 # ===========================================================================
