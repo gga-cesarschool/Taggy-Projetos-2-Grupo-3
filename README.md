@@ -58,6 +58,7 @@ O projeto **TagGreen** tem como objetivo desenvolver uma solução que permita c
 - **Rhayssa Santos Barbosa**  
   📧 rsb6@cesar.school  
 
+
 ---
 
 ## 👥 Papéis
