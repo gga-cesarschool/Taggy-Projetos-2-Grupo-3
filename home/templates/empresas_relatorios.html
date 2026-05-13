@@ -39,7 +39,6 @@
   <main class="dashboard">
     <div class="dashboard__inner">
 
-      <!-- Cabecalho -->
       <div class="dashboard__header">
         <div class="dashboard__title-group">
           <span class="dashboard__title-icon">
@@ -47,38 +46,45 @@
           </span>
           <div>
             <h1 class="dashboard__title">Painel ESG Corporativo</h1>
-            <p class="dashboard__subtitle">Visao geral de emissoes evitadas pela Taggy</p>
+            <p class="dashboard__subtitle" id="dash-subtitle">Visao geral de emissoes evitadas pela Taggy</p>
           </div>
         </div>
         <div class="dashboard__actions">
-          <button class="dash-btn dash-btn--ghost">
+
+          <!-- ── Botão FILTROS ── -->
+          <button class="dash-btn dash-btn--ghost" id="btn-filtros" aria-label="Abrir filtros">
             <span class="material-symbols-outlined">filter_list</span>
             Filtros
+            <span class="filter-count" id="filter-count">0</span>
           </button>
-          <button class="dash-btn dash-btn--outline">
+
+          <!-- ── Botão EXPORTAR ── -->
+          <button class="dash-btn dash-btn--outline" id="btn-exportar" aria-label="Exportar relatório">
             <span class="material-symbols-outlined">download</span>
             Exportar Relatorio
           </button>
-          <button class="dash-btn dash-btn--primary">
+
+          <!-- ── Botão WRAPPED ── -->
+          <button class="dash-btn dash-btn--primary" id="btn-wrapped" aria-label="Ver Wrapped">
             <span class="material-symbols-outlined">auto_awesome</span>
             Wrapped
           </button>
+
         </div>
       </div>
 
       <!-- KPI Cards -->
       <div class="kpi-grid">
-
         <div class="kpi-card">
           <div class="kpi-card__top">
             <span class="kpi-card__icon kpi-card__icon--green">
               <span class="material-symbols-outlined">eco</span>
             </span>
-            <span class="kpi-card__trend kpi-card__trend--up">
+            <span class="kpi-card__trend kpi-card__trend--up" id="kpi-co2e-trend">
               <span class="material-symbols-outlined">trending_up</span>+23%
             </span>
           </div>
-          <strong class="kpi-card__value">16.49 ton</strong>
+          <strong class="kpi-card__value" id="kpi-co2e-val">16.49 ton</strong>
           <span class="kpi-card__label">CO2e Evitado Total</span>
         </div>
 
@@ -87,11 +93,11 @@
             <span class="kpi-card__icon kpi-card__icon--blue">
               <span class="material-symbols-outlined">bolt</span>
             </span>
-            <span class="kpi-card__trend kpi-card__trend--up">
+            <span class="kpi-card__trend kpi-card__trend--up" id="kpi-pass-trend">
               <span class="material-symbols-outlined">trending_up</span>+18%
             </span>
           </div>
-          <strong class="kpi-card__value">455K</strong>
+          <strong class="kpi-card__value" id="kpi-pass-val">455K</strong>
           <span class="kpi-card__label">Passagens Totais</span>
         </div>
 
@@ -100,11 +106,11 @@
             <span class="kpi-card__icon kpi-card__icon--teal">
               <span class="material-symbols-outlined">location_on</span>
             </span>
-            <span class="kpi-card__trend kpi-card__trend--up">
+            <span class="kpi-card__trend kpi-card__trend--up" id="kpi-est-trend">
               <span class="material-symbols-outlined">trending_up</span>+3
             </span>
           </div>
-          <strong class="kpi-card__value">22</strong>
+          <strong class="kpi-card__value" id="kpi-est-val">22</strong>
           <span class="kpi-card__label">Estados Ativos</span>
         </div>
 
@@ -113,21 +119,19 @@
             <span class="kpi-card__icon kpi-card__icon--gold">
               <span class="material-symbols-outlined">emoji_events</span>
             </span>
-            <span class="kpi-card__trend kpi-card__trend--badge">Top 5</span>
+            <span class="kpi-card__trend kpi-card__trend--badge" id="kpi-rank-trend">Top 5</span>
           </div>
-          <strong class="kpi-card__value">#4</strong>
+          <strong class="kpi-card__value" id="kpi-rank-val">#4</strong>
           <span class="kpi-card__label">Ranking Nacional</span>
         </div>
-
       </div>
 
       <!-- Linha 1: Evolucao Mensal + Donut -->
       <div class="charts-row">
-
         <div class="chart-card">
           <div class="chart-card__header">
             <div>
-              <h3 class="chart-card__title">Evolucao Mensal 2025</h3>
+              <h3 class="chart-card__title" id="monthly-chart-title">Evolucao Mensal 2025</h3>
               <p class="chart-card__desc">kg CO2e evitados por mes</p>
             </div>
           </div>
@@ -144,102 +148,45 @@
             <div class="donut-wrap">
               <canvas id="contextChart" width="200" height="200"></canvas>
             </div>
-            <ul class="donut-legend">
+            <ul class="donut-legend" id="donut-legend">
               <li>
                 <span class="donut-legend__dot donut-legend__dot--dark"></span>
                 Pedagio
-                <span class="donut-legend__pct">62%</span>
+                <span class="donut-legend__pct" id="ctx-pedagio-pct">62%</span>
               </li>
               <li>
                 <span class="donut-legend__dot donut-legend__dot--mid"></span>
                 Estacionamento
-                <span class="donut-legend__pct">25%</span>
+                <span class="donut-legend__pct" id="ctx-estac-pct">25%</span>
               </li>
               <li>
                 <span class="donut-legend__dot donut-legend__dot--blue"></span>
                 Acesso
-                <span class="donut-legend__pct">13%</span>
+                <span class="donut-legend__pct" id="ctx-acesso-pct">13%</span>
               </li>
             </ul>
           </div>
         </div>
-
       </div>
 
       <!-- Linha 2: Ranking + Evolucao Anual -->
       <div class="charts-row">
-
         <div class="chart-card">
           <div class="chart-card__header">
             <h3 class="chart-card__title">Ranking por Estado</h3>
             <span class="chart-card__badge">Top 8</span>
           </div>
           <div class="chart-card__body">
-            <ul class="state-ranking">
-              <li class="state-ranking__item">
-                <span class="state-ranking__pos">#1</span>
-                <span class="state-ranking__uf">SP</span>
-                <div class="state-ranking__bar-wrap">
-                  <div class="state-ranking__bar" style="width:100%"></div>
-                </div>
-                <span class="state-ranking__val">4.5t CO2e</span>
-              </li>
-              <li class="state-ranking__item">
-                <span class="state-ranking__pos">#2</span>
-                <span class="state-ranking__uf">RJ</span>
-                <div class="state-ranking__bar-wrap">
-                  <div class="state-ranking__bar" style="width:64%"></div>
-                </div>
-                <span class="state-ranking__val">2.9t CO2e</span>
-              </li>
-              <li class="state-ranking__item">
-                <span class="state-ranking__pos">#3</span>
-                <span class="state-ranking__uf">MG</span>
-                <div class="state-ranking__bar-wrap">
-                  <div class="state-ranking__bar" style="width:51%"></div>
-                </div>
-                <span class="state-ranking__val">2.3t CO2e</span>
-              </li>
-              <li class="state-ranking__item">
-                <span class="state-ranking__pos">#4</span>
-                <span class="state-ranking__uf">PR</span>
-                <div class="state-ranking__bar-wrap">
-                  <div class="state-ranking__bar" style="width:42%"></div>
-                </div>
-                <span class="state-ranking__val">1.9t CO2e</span>
-              </li>
-              <li class="state-ranking__item">
-                <span class="state-ranking__pos">#5</span>
-                <span class="state-ranking__uf">RS</span>
-                <div class="state-ranking__bar-wrap">
-                  <div class="state-ranking__bar" style="width:36%"></div>
-                </div>
-                <span class="state-ranking__val">1.6t CO2e</span>
-              </li>
-              <li class="state-ranking__item">
-                <span class="state-ranking__pos">#6</span>
-                <span class="state-ranking__uf">BA</span>
-                <div class="state-ranking__bar-wrap">
-                  <div class="state-ranking__bar" style="width:27%"></div>
-                </div>
-                <span class="state-ranking__val">1.2t CO2e</span>
-              </li>
-              <li class="state-ranking__item">
-                <span class="state-ranking__pos">#7</span>
-                <span class="state-ranking__uf">SC</span>
-                <div class="state-ranking__bar-wrap">
-                  <div class="state-ranking__bar" style="width:24%"></div>
-                </div>
-                <span class="state-ranking__val">1.1t CO2e</span>
-              </li>
-              <li class="state-ranking__item">
-                <span class="state-ranking__pos">#8</span>
-                <span class="state-ranking__uf">GO</span>
-                <div class="state-ranking__bar-wrap">
-                  <div class="state-ranking__bar" style="width:20%"></div>
-                </div>
-                <span class="state-ranking__val">0.9t CO2e</span>
-              </li>
+            <ul class="state-ranking" id="state-ranking-list">
+              <!-- preenchido via JS -->
+              <li class="state-ranking__item"><span class="state-ranking__pos">#1</span><span class="state-ranking__uf">SP</span><div class="state-ranking__bar-wrap"><div class="state-ranking__bar" style="width:100%"></div></div><span class="state-ranking__val">4.5t CO2e</span></li>
+              <li class="state-ranking__item"><span class="state-ranking__pos">#2</span><span class="state-ranking__uf">RJ</span><div class="state-ranking__bar-wrap"><div class="state-ranking__bar" style="width:64%"></div></div><span class="state-ranking__val">2.9t CO2e</span></li>
+              <li class="state-ranking__item"><span class="state-ranking__pos">#3</span><span class="state-ranking__uf">MG</span><div class="state-ranking__bar-wrap"><div class="state-ranking__bar" style="width:51%"></div></div><span class="state-ranking__val">2.3t CO2e</span></li>
+              <li class="state-ranking__item"><span class="state-ranking__pos">#4</span><span class="state-ranking__uf">PR</span><div class="state-ranking__bar-wrap"><div class="state-ranking__bar" style="width:42%"></div></div><span class="state-ranking__val">1.9t CO2e</span></li>
+              <li class="state-ranking__item"><span class="state-ranking__pos">#5</span><span class="state-ranking__uf">RS</span><div class="state-ranking__bar-wrap"><div class="state-ranking__bar" style="width:36%"></div></div><span class="state-ranking__val">1.6t CO2e</span></li>
+              <li class="state-ranking__item"><span class="state-ranking__pos">#6</span><span class="state-ranking__uf">BA</span><div class="state-ranking__bar-wrap"><div class="state-ranking__bar" style="width:27%"></div></div><span class="state-ranking__val">1.2t CO2e</span></li>
+              <li class="state-ranking__item"><span class="state-ranking__pos">#7</span><span class="state-ranking__uf">SC</span><div class="state-ranking__bar-wrap"><div class="state-ranking__bar" style="width:24%"></div></div><span class="state-ranking__val">1.1t CO2e</span></li>
+              <li class="state-ranking__item"><span class="state-ranking__pos">#8</span><span class="state-ranking__uf">GO</span><div class="state-ranking__bar-wrap"><div class="state-ranking__bar" style="width:20%"></div></div><span class="state-ranking__val">0.9t CO2e</span></li>
             </ul>
           </div>
         </div>
@@ -255,8 +202,8 @@
             <canvas id="annualChart"></canvas>
           </div>
         </div>
-
       </div>
+
     </div>
   </main>
 
@@ -315,7 +262,164 @@
     </div>
   </footer>
 
+  <!-- =========================================================
+       OVERLAY DE FILTROS
+       ========================================================= -->
+  <div class="filter-overlay" id="filter-overlay"></div>
+
+  <aside class="filter-drawer" id="filter-drawer" aria-label="Painel de filtros">
+    <div class="filter-drawer__head">
+      <h2>
+        <span class="material-symbols-outlined filter-drawer__head-icon">filter_list</span>
+        Filtros do Painel
+      </h2>
+      <button class="filter-drawer__close" id="filter-close" aria-label="Fechar filtros">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <div class="filter-drawer__body">
+
+      <!-- Ano -->
+      <div class="filter-group">
+        <span class="filter-group__label">Ano</span>
+        <div class="filter-year-pills" id="filter-years">
+          <button class="filter-year-pill" data-year="2022">2022</button>
+          <button class="filter-year-pill" data-year="2023">2023</button>
+          <button class="filter-year-pill" data-year="2024">2024</button>
+          <button class="filter-year-pill active" data-year="2025">2025</button>
+        </div>
+      </div>
+
+      <!-- Contexto -->
+      <div class="filter-group">
+        <span class="filter-group__label">Contexto de Uso</span>
+        <div class="filter-checks" id="filter-contextos">
+          <label class="filter-check">
+            <input type="checkbox" name="contexto" value="pedagio" checked>
+            <span>🛣️ Pedágio</span>
+          </label>
+          <label class="filter-check">
+            <input type="checkbox" name="contexto" value="estacionamento" checked>
+            <span>🅿️ Estacionamento</span>
+          </label>
+          <label class="filter-check">
+            <input type="checkbox" name="contexto" value="acesso_controlado" checked>
+            <span>🔒 Acesso Controlado</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Veículo -->
+      <div class="filter-group">
+        <span class="filter-group__label">Tipo de Veículo</span>
+        <div class="filter-checks" id="filter-veiculos">
+          <label class="filter-check">
+            <input type="checkbox" name="veiculo" value="carro_combustao" checked>
+            <span>🚗 Carro (combustão)</span>
+          </label>
+          <label class="filter-check">
+            <input type="checkbox" name="veiculo" value="carro_eletrico" checked>
+            <span>⚡ Carro (elétrico)</span>
+          </label>
+          <label class="filter-check">
+            <input type="checkbox" name="veiculo" value="moto" checked>
+            <span>🏍️ Moto</span>
+          </label>
+          <label class="filter-check">
+            <input type="checkbox" name="veiculo" value="caminhao" checked>
+            <span>🚛 Caminhão</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Estados -->
+      <div class="filter-group">
+        <span class="filter-group__label">Estado</span>
+        <div class="filter-states-grid" id="filter-estados">
+          <!-- gerado via JS a partir da API -->
+        </div>
+      </div>
+
+    </div>
+
+    <div class="filter-drawer__foot">
+      <button class="filter-btn filter-btn--reset" id="filter-reset">Limpar</button>
+      <button class="filter-btn filter-btn--apply" id="filter-apply">Aplicar Filtros</button>
+    </div>
+  </aside>
+
+  <!-- =========================================================
+       WRAPPED MODAL
+       ========================================================= -->
+  <div class="wrapped-modal" id="wrapped-modal" role="dialog" aria-modal="true" aria-label="Wrapped ESG">
+    <button class="wrapped-modal__close" id="wrapped-close" aria-label="Fechar Wrapped">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+
+    <div class="wrapped-inner">
+
+      <div class="wrapped-badge">
+        <span class="material-symbols-outlined wrapped-badge__icon">auto_awesome</span>
+        TagGreen Wrapped 2025
+      </div>
+
+      <div class="wrapped-hero">
+        <span class="wrapped-hero__label">CO₂e evitado no ano</span>
+        <span class="wrapped-hero__number" id="wrapped-co2e">16.49</span>
+        <span class="wrapped-hero__unit">toneladas de CO₂ equivalente</span>
+      </div>
+
+      <div class="wrapped-divider"></div>
+
+      <div class="wrapped-cards">
+        <div class="wrapped-card">
+          <span class="wrapped-card__icon">🌳</span>
+          <span class="wrapped-card__value" id="wrapped-arvores">757</span>
+          <span class="wrapped-card__label">árvores absorvendo CO₂ por 1 ano</span>
+        </div>
+        <div class="wrapped-card">
+          <span class="wrapped-card__icon">⛽</span>
+          <span class="wrapped-card__value" id="wrapped-gasolina">7.453</span>
+          <span class="wrapped-card__label">litros de gasolina não queimada</span>
+        </div>
+        <div class="wrapped-card">
+          <span class="wrapped-card__icon">🗂️</span>
+          <span class="wrapped-card__value" id="wrapped-papel">2.558</span>
+          <span class="wrapped-card__label">kg de papel de ticket evitados</span>
+        </div>
+        <div class="wrapped-card">
+          <span class="wrapped-card__icon">⏱️</span>
+          <span class="wrapped-card__value" id="wrapped-fila">17.935</span>
+          <span class="wrapped-card__label">horas de fila economizadas</span>
+        </div>
+      </div>
+
+      <div class="wrapped-ranking">
+        <span class="wrapped-ranking__pos" id="wrapped-rank">#4</span>
+        <div class="wrapped-ranking__text">
+          <strong>Ranking Nacional ESG</strong>
+          <span id="wrapped-rank-grupo">Top 5 entre empresas Taggy</span>
+        </div>
+      </div>
+
+      <button class="wrapped-footer-btn" id="wrapped-export-btn">
+        Exportar este relatório
+      </button>
+
+    </div>
+  </div>
+
+  <!-- =========================================================
+       TOAST DE EXPORTAÇÃO
+       ========================================================= -->
+  <div class="export-toast" id="export-toast">
+    <span class="material-symbols-outlined">check_circle</span>
+    <span id="export-toast-msg">Relatório exportado com sucesso!</span>
+  </div>
+
   <script src="{% static 'js/home.js' %}"></script>
   <script src="{% static 'js/empresas_relatorios.js' %}"></script>
+
 </body>
 </html>

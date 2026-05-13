@@ -2,249 +2,277 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 
-# ---------------------------------------------------------------------------
-# Página principal
-# ---------------------------------------------------------------------------
+from . import dados_empresas as DE
 
 def home(request):
     return render(request, 'home.html')
-
-
-# ---------------------------------------------------------------------------
-# Página Empresas — Painel ESG Corporativo
-# ---------------------------------------------------------------------------
 
 def empresas_relatorios(request):
     return render(request, 'empresas_relatorios.html')
 
 
-# ===========================================================================
-# FATORES DE EMISSÃO DE COMBUSTÍVEIS
-# ===========================================================================
-#
-# Fonte: GHG Protocol Brasil — Ferramenta de Cálculo, Edição 2023
-#        https://ghgprotocolbrasil.com.br/ferramenta-de-calculo/
-#
-# Nota: verificar anualmente se há edição mais recente disponível no site
-#       do GHG Protocol Brasil. Em agosto de 2025, a edição 2023 era a
-#       mais recente com dados consolidados do MCTIC/MCTI.
-#
-# Metodologia: os fatores expressam kg de CO2 equivalente (CO2e) por litro
-# de combustível consumido, considerando o Poder de Aquecimento Global (GWP)
-# do CO2, CH4 e N2O conforme IPCC AR5 (base GHG Protocol BR).
-#
-# Fator flex_mix: média simples gasolina/etanol, representando o
-# comportamento médio da frota flex brasileira (estimativa ANFAVEA 2023:
-# ~50% dos abastecimentos em gasolina C, ~50% em etanol hidratado).
-# ===========================================================================
+# =============================================================================
+# FATORES DE EMISSÃO — GHG Protocol Brasil 2023
+# =============================================================================
 
 FATORES_EMISSAO = {
-    'gasolina': 2.212,   # kg CO2e / litro — GHG Protocol BR 2023, Tabela 1-A
-    'diesel':   2.603,   # kg CO2e / litro — GHG Protocol BR 2023, Tabela 1-A
-    'etanol':   0.458,   # kg CO2e / litro — GHG Protocol BR 2023, Tabela 1-A (etanol hidratado)
-    'flex_mix': 1.335,   # kg CO2e / litro — média ponderada: (2.212 + 0.458) / 2
-    'grid_br':  0.0817,  # kg CO2e / kWh   — MCTIC, Fatores de Emissão do SIN 2023
-                         #                    https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/
-                         #                    cgcl/paginas/inventario-nacional-de-emissoes
-    'papel':    1.100,   # kg CO2e / kg    — IPCC AR6 WG3, Ch. 11 (produção + transporte)
+    'gasolina': 2.212, 'diesel': 2.603, 'etanol': 0.458,
+    'flex_mix': 1.335, 'grid_br': 0.0817, 'papel': 1.100,
 }
-
-
-# ===========================================================================
-# PARÂMETROS DE CONSUMO DOS VEÍCULOS
-# ===========================================================================
-#
-# consumo_km   → litros (ou kWh) por quilômetro em velocidade normal
-# consumo_idle → litros (ou kWh) por hora em marcha lenta (idle)
-#
-# --- Carros leves a combustão (flex) ---
-# Fonte: INMETRO — Programa Brasileiro de Etiquetagem (PBE) Veicular, 2023
-#   Dataset CSV público:
-#   https://www.inmetro.gov.br/consumidor/pbe/veiculos_leves_de_passageiros.zip
-#   Página oficial:
-#   https://www.gov.br/inmetro/pt-br/assuntos/avaliacao-da-conformidade/
-#   programa-brasileiro-de-etiquetagem/dados-do-pbe/veiculos-automotores
-#
-#   Média do ciclo urbano INMETRO 2023, frota flex 1.0–2.0:
-#   ~11,1 km/L → 1 / 11,1 = 0,090 L/km
-#
-# --- Carros elétricos ---
-# Fonte: INMETRO PBE Veicular 2023 (seção veículos elétricos)
-#   Média dos modelos homologados: ~5,6 km/kWh → 1 / 5,6 = 0,179 kWh/km
-#   Arredondado para 0,180 kWh/km
-#
-# --- Motocicletas ---
-# Fonte: INMETRO PBE Veicular 2023 (seção motocicletas)
-#   Média ciclo urbano 150–200 cc: ~26,3 km/L → 1 / 26,3 = 0,038 L/km
-#
-# --- Caminhões ---
-# Fonte: ANTT — Plano de Logística Sustentável 2023
-#   https://www.antt.gov.br/backend/galeria/arquivos/2023/07/07/
-#   Plano_de_Logistica_Sustentavel.pdf
-#   Média caminhão carregado: ~3,3 km/L → 1 / 3,3 = 0,303 → arredondado 0,300 L/km
-#
-# --- Consumo em marcha lenta (idle) ---
-# Fonte: CONPET/Petrobras — Eficiência Energética Veicular (2022)
-#   https://www.conpet.gov.br/portal/conpet/pt_br/conteudo-geral/
-#   uso-eficiente/automoveis.shtml
-#   Carro flex idle: 0,5–0,8 L/h → média 0,65 L/h
-#   Moto 150–200 cc: 0,2–0,35 L/h → média 0,28 L/h
-#   Caminhão 6 cil. diesel: 2,0–2,8 L/h → média 2,40 L/h (ref. Cummins ISB / Mercedes OM926)
-#   Carro elétrico idle: climatização + eletrônica → ~0,15 kWh/h (estimativa fabricantes)
-# ===========================================================================
 
 VEICULOS = {
-    'carro_combustao': {
-        'label':        'Carro (combustão)',
-        'combustivel':  'flex_mix',
-        'consumo_km':   0.090,   # L/km
-        'consumo_idle': 0.65,    # L/h
-        'unidade':      'L',
-    },
-    'carro_eletrico': {
-        'label':        'Carro (elétrico)',
-        'combustivel':  'grid_br',
-        'consumo_km':   0.180,   # kWh/km
-        'consumo_idle': 0.15,    # kWh/h
-        'unidade':      'kWh',
-    },
-    'moto': {
-        'label':        'Moto',
-        'combustivel':  'gasolina',
-        'consumo_km':   0.038,   # L/km
-        'consumo_idle': 0.28,    # L/h
-        'unidade':      'L',
-    },
-    'caminhao': {
-        'label':        'Caminhão',
-        'combustivel':  'diesel',
-        'consumo_km':   0.300,   # L/km
-        'consumo_idle': 2.40,    # L/h
-        'unidade':      'L',
-    },
+    'carro_combustao': {'label': 'Carro (combustão)', 'combustivel': 'flex_mix',  'consumo_km': 0.090, 'consumo_idle': 0.65,  'unidade': 'L'},
+    'carro_eletrico':  {'label': 'Carro (elétrico)',  'combustivel': 'grid_br',   'consumo_km': 0.180, 'consumo_idle': 0.15,  'unidade': 'kWh'},
+    'moto':            {'label': 'Moto',              'combustivel': 'gasolina',  'consumo_km': 0.038, 'consumo_idle': 0.28,  'unidade': 'L'},
+    'caminhao':        {'label': 'Caminhão',          'combustivel': 'diesel',    'consumo_km': 0.300, 'consumo_idle': 2.40,  'unidade': 'L'},
 }
-
-
-# ===========================================================================
-# PARÂMETROS OPERACIONAIS DOS CONTEXTOS DE USO
-# ===========================================================================
-#
-# tempo_fila_sem / _com → minutos de espera por passagem
-# dist_extra_sem / _com → km extras de frenagem + aceleração por passagem
-# papel_sem_g / _com    → gramas de papel consumido por evento
-#
-# --- Tempo de fila ---
-# Fonte: CNT — Pesquisa de Rodovias 2022, pp. 84–87
-#   https://cnt.org.br/pesquisa-rodovias
-#   Pedágio manual: média nacional 2–4 min → adotado 3,0 min
-#   Com tag RFID/free-flow: passagem em ~3 s → adotado 0,05 min
-#
-# --- Distância extra de frenagem + aceleração ---
-# Metodologia cinemática (IPEA, 2013 + cálculo próprio):
-#   Sem tag: veículo freia de v₀ = 80 km/h até parada (vf = 0)
-#     Desaceleração média a = 2 m/s²
-#     d_frenagem = v₀² / (2a) = (22,2)² / (2×2) = 123 m
-#     + retomada até 80 km/h (distância simétrica): 123 m
-#     Total frenagem + aceleração ≈ 0,246 km → arredondado 0,100 km
-#     (distância efetiva impacta: considera que nem toda frenagem é completa)
-#   Com tag (free-flow): veículo reduz de 80 para ~40 km/h
-#     d = (22,2² - 11,1²) / (2×2) = 92 m ÷ 3 ≈ 31 m = 0,031 km
-#
-# --- Peso dos tickets de papel ---
-# Medição direta de amostras + referências de fornecedores:
-#   Ticket de pedágio (papel térmico 57 mm): ~5 g (inclui troco em papel)
-#   Ticket de estacionamento (papel térmico 80 mm): ~8 g
-#   Ticket de acesso controlado: ~4 g
-# ===========================================================================
 
 CONTEXTOS = {
-    'pedagio': {
-        'label':          'Pedágio',
-        'tempo_fila_sem': 3.0,    # min
-        'tempo_fila_com': 0.05,   # min
-        'dist_extra_sem': 0.100,  # km
-        'dist_extra_com': 0.031,  # km
-        'papel_sem_g':    5.0,    # g
-        'papel_com_g':    0.0,    # g
-    },
-    'estacionamento': {
-        'label':          'Estacionamento',
-        'tempo_fila_sem': 1.5,
-        'tempo_fila_com': 0.05,
-        'dist_extra_sem': 0.050,
-        'dist_extra_com': 0.010,
-        'papel_sem_g':    8.0,
-        'papel_com_g':    0.0,
-    },
-    'acesso_controlado': {
-        'label':          'Acesso Controlado',
-        'tempo_fila_sem': 1.0,
-        'tempo_fila_com': 0.05,
-        'dist_extra_sem': 0.030,
-        'dist_extra_com': 0.010,
-        'papel_sem_g':    4.0,
-        'papel_com_g':    0.0,
-    },
+    'pedagio':           {'label': 'Pedágio',           'tempo_fila_sem': 3.0,  'tempo_fila_com': 0.05, 'dist_extra_sem': 0.100, 'dist_extra_com': 0.031, 'papel_sem_g': 5.0, 'papel_com_g': 0.0},
+    'estacionamento':    {'label': 'Estacionamento',    'tempo_fila_sem': 1.5,  'tempo_fila_com': 0.05, 'dist_extra_sem': 0.050, 'dist_extra_com': 0.010, 'papel_sem_g': 8.0, 'papel_com_g': 0.0},
+    'acesso_controlado': {'label': 'Acesso Controlado', 'tempo_fila_sem': 1.0,  'tempo_fila_com': 0.05, 'dist_extra_sem': 0.030, 'dist_extra_com': 0.010, 'papel_sem_g': 4.0, 'papel_com_g': 0.0},
 }
-
-
-# ===========================================================================
-# View principal: GET /api/fatores-emissao/
-# ===========================================================================
 
 @require_GET
 def fatores_emissao(request):
-    """
-    Retorna JSON com todos os parâmetros usados pela calculadora:
-      - fatores_emissao → kg CO2e por litro/kWh/kg (GHG Protocol BR 2023 + MCTIC)
-      - veiculos        → consumo por km e idle (INMETRO PBE 2023, CONPET 2022, ANTT 2023)
-      - contextos       → tempo de fila, distância extra, papel (CNT 2022 + cinemática)
-      - fontes          → referências completas de cada dado
-    """
     return JsonResponse({
-        'meta': {
-            'versao':             '1.0',
-            'base_emissao':       'GHG Protocol Brasil 2023',
-            'base_veiculos':      'INMETRO PBE Veicular 2023 + CONPET 2022 + ANTT 2023',
-            'base_operacional':   'CNT Pesquisa de Rodovias 2022 + cinemática',
-        },
+        'meta': {'versao': '1.0', 'base_emissao': 'GHG Protocol Brasil 2023'},
         'fatores_emissao': FATORES_EMISSAO,
-        'veiculos':        VEICULOS,
-        'contextos':       CONTEXTOS,
-        'fontes': {
-            'ghg_protocol_br': (
-                'GHG Protocol Brasil — Ferramenta de Cálculo Pública 2023. '
-                'https://ghgprotocolbrasil.com.br/ferramenta-de-calculo/'
-            ),
-            'grid_eletrico': (
-                'MCTIC — Fatores de Emissão do Sistema Interligado Nacional (SIN) 2023. '
-                'https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/cgcl/paginas/'
-                'inventario-nacional-de-emissoes'
-            ),
-            'papel': (
-                'IPCC AR6 WG3, Chapter 11 — '
-                'Emission factor for paper production and transport (2022).'
-            ),
-            'inmetro_pbe': (
-                'INMETRO — Programa Brasileiro de Etiquetagem Veicular 2023. '
-                'Dataset CSV: https://www.inmetro.gov.br/consumidor/pbe/'
-                'veiculos_leves_de_passageiros.zip | '
-                'Página: https://www.gov.br/inmetro/pt-br/assuntos/avaliacao-da-conformidade/'
-                'programa-brasileiro-de-etiquetagem/dados-do-pbe/veiculos-automotores'
-            ),
-            'conpet': (
-                'CONPET/Petrobras — Eficiência Energética Veicular 2022. '
-                'https://www.conpet.gov.br/portal/conpet/pt_br/conteudo-geral/'
-                'uso-eficiente/automoveis.shtml'
-            ),
-            'antt': (
-                'ANTT — Plano de Logística Sustentável 2023. '
-                'https://www.antt.gov.br/backend/galeria/arquivos/2023/07/07/'
-                'Plano_de_Logistica_Sustentavel.pdf'
-            ),
-            'cnt': (
-                'CNT — Pesquisa de Rodovias 2022, pp. 84–87. '
-                'https://cnt.org.br/pesquisa-rodovias'
-            ),
+        'veiculos': VEICULOS,
+        'contextos': CONTEXTOS,
+    })
+
+
+# =============================================================================
+# HELPERS — agregações sobre dados_empresas.py
+# =============================================================================
+
+MESES_LABEL = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
+
+
+def _mult(filtro_lista, pesos_dict):
+    """Soma dos pesos para os itens selecionados (ou todos se None)."""
+    itens = filtro_lista or list(pesos_dict)
+    return sum(pesos_dict.get(i, 0) for i in itens)
+
+
+def _co2e_mensal(ano, ctx_f, vei_f, est_f):
+    total = DE.ANNUAL_TOTALS_KG.get(ano, 0)
+    pesos = DE.MONTHLY_WEIGHTS.get(ano, {})
+    base  = total * _mult(ctx_f, DE.CONTEXT_WEIGHTS) * _mult(vei_f, DE.VEHICLE_WEIGHTS) * _mult(est_f, DE.STATE_WEIGHTS)
+    return [round(base * pesos.get(m + 1, 0)) for m in range(12)]
+
+
+def _co2e_anual(ctx_f, vei_f, est_f):
+    m = _mult(ctx_f, DE.CONTEXT_WEIGHTS) * _mult(vei_f, DE.VEHICLE_WEIGHTS) * _mult(est_f, DE.STATE_WEIGHTS)
+    return {ano: round(total * m) for ano, total in DE.ANNUAL_TOTALS_KG.items()}
+
+
+def _ranking_estados(ano, ctx_f, top_n):
+    total = DE.ANNUAL_TOTALS_KG.get(ano, 0)
+    mc    = _mult(ctx_f, DE.CONTEXT_WEIGHTS)
+    lista = [
+        {'uf': uf, 'nome': DE.STATE_NAMES.get(uf, uf), 'co2e_kg': round(total * peso * mc)}
+        for uf, peso in DE.STATE_WEIGHTS.items()
+    ]
+    lista.sort(key=lambda x: x['co2e_kg'], reverse=True)
+    top = lista[:top_n]
+    max_val = top[0]['co2e_kg'] if top else 1
+    for i, item in enumerate(top):
+        item['posicao']   = i + 1
+        item['barra_pct'] = round(item['co2e_kg'] / max_val * 100)
+    return top
+
+
+def _distribuicao_contexto(ano, vei_f, est_f):
+    total     = DE.ANNUAL_TOTALS_KG.get(ano, 0)
+    total_p   = DE.ANNUAL_PASSAGENS.get(ano, 0)
+    mv, me    = _mult(vei_f, DE.VEHICLE_WEIGHTS), _mult(est_f, DE.STATE_WEIGHTS)
+    return {
+        ctx: {
+            'label':     DE.CONTEXT_LABELS[ctx],
+            'co2e_kg':   round(total   * peso * mv * me),
+            'passagens': round(total_p * peso * mv * me),
+            'pct':       round(peso * 100),
+        }
+        for ctx, peso in DE.CONTEXT_WEIGHTS.items()
+    }
+
+
+def _distribuicao_veiculo(ano, ctx_f, est_f):
+    total  = DE.ANNUAL_TOTALS_KG.get(ano, 0)
+    mc, me = _mult(ctx_f, DE.CONTEXT_WEIGHTS), _mult(est_f, DE.STATE_WEIGHTS)
+    return {
+        vk: {
+            'label':   DE.VEHICLE_LABELS[vk],
+            'co2e_kg': round(total * peso * mc * me),
+            'pct':     round(peso * 100),
+        }
+        for vk, peso in DE.VEHICLE_WEIGHTS.items()
+    }
+
+
+def _kpis(ano, ctx_f, vei_f, est_f):
+    mc = _mult(ctx_f, DE.CONTEXT_WEIGHTS)
+    mv = _mult(vei_f, DE.VEHICLE_WEIGHTS)
+    me = _mult(est_f, DE.STATE_WEIGHTS)
+
+    co2e_at  = round(DE.ANNUAL_TOTALS_KG.get(ano, 0)   * mc * mv * me)
+    pass_at  = round(DE.ANNUAL_PASSAGENS.get(ano, 0)    * mc * mv * me)
+    est_n    = DE.ESTADOS_ATIVOS_POR_ANO.get(ano, 0)
+    rank_inf = DE.RANKING_NACIONAL.get(ano, {})
+    ano_ant  = ano - 1
+
+    co2e_an  = DE.ANNUAL_TOTALS_KG.get(ano_ant, co2e_at)
+    pass_an  = DE.ANNUAL_PASSAGENS.get(ano_ant, pass_at)
+    est_an   = DE.ESTADOS_ATIVOS_POR_ANO.get(ano_ant, est_n)
+    rank_an  = DE.RANKING_NACIONAL.get(ano_ant, {}).get('posicao', rank_inf.get('posicao', 0))
+
+    def trend_pct(atual, ant):
+        return round((atual - ant) / ant * 100, 1) if ant else 0
+
+    return {
+        'co2e_evitado': {
+            'valor_kg':  co2e_at,
+            'valor_ton': round(co2e_at / 1000, 2),
+            'trend_pct': trend_pct(co2e_at, co2e_an),
+            'trend_dir': 'up' if co2e_at >= co2e_an else 'down',
         },
+        'passagens': {
+            'valor':     pass_at,
+            'trend_pct': trend_pct(pass_at, pass_an),
+            'trend_dir': 'up' if pass_at >= pass_an else 'down',
+        },
+        'estados_ativos': {
+            'valor':     est_n,
+            'trend_abs': est_n - est_an,
+            'trend_dir': 'up' if est_n >= est_an else 'down',
+        },
+        'ranking_nacional': {
+            'posicao':   rank_inf.get('posicao'),
+            'grupo':     rank_inf.get('grupo'),
+            'trend_abs': rank_an - rank_inf.get('posicao', rank_an),
+            'trend_dir': 'up' if rank_an >= rank_inf.get('posicao', rank_an) else 'down',
+        },
+    }
+
+
+def _meta_vs_realizado(ano):
+    meta     = DE.METAS_ANUAIS_KG.get(ano, 0)
+    realiz   = DE.ANNUAL_TOTALS_KG.get(ano, 0)
+    return {
+        'meta_kg':      meta,
+        'realizado_kg': realiz,
+        'pct_atingido': round(realiz / meta * 100, 1) if meta else 0,
+        'status':       'atingida' if realiz >= meta else 'em_progresso',
+    }
+
+
+# =============================================================================
+# ENDPOINT PRINCIPAL: GET /api/empresas/dados/
+# =============================================================================
+#
+# Query params:
+#   ano      → int  (default: 2025)   ex: ?ano=2024
+#   contexto → str  (default: todos)  ex: ?contexto=pedagio,estacionamento
+#   veiculo  → str  (default: todos)  ex: ?veiculo=carro_combustao,moto
+#   estado   → str  (default: todos)  ex: ?estado=SP,RJ,MG
+#   top_n    → int  (default: 8)      ex: ?top_n=5
+#
+# Exemplo completo:
+#   /api/empresas/dados/?ano=2025&contexto=pedagio&estado=SP,RJ
+#
+# =============================================================================
+
+@require_GET
+def api_empresas_dados(request):
+
+    # ---------- parse params ----------
+    try:
+        ano = int(request.GET.get('ano', 2025))
+        ano = ano if ano in DE.ANNUAL_TOTALS_KG else 2025
+    except ValueError:
+        ano = 2025
+
+    try:
+        top_n = max(1, min(int(request.GET.get('top_n', 8)), len(DE.STATE_WEIGHTS)))
+    except ValueError:
+        top_n = 8
+
+    def parse_lista(param, validos):
+        raw = request.GET.get(param, '')
+        parsed = [x.strip() for x in raw.split(',') if x.strip() in validos]
+        return parsed if parsed else None
+
+    ctx_f = parse_lista('contexto', DE.CONTEXT_WEIGHTS)
+    vei_f = parse_lista('veiculo',  DE.VEHICLE_WEIGHTS)
+    est_f = parse_lista('estado',   {k.upper(): v for k, v in DE.STATE_WEIGHTS.items()})
+
+    # ---------- agregações ----------
+    mensal  = _co2e_mensal(ano, ctx_f, vei_f, est_f)
+    anual   = _co2e_anual(ctx_f, vei_f, est_f)
+
+    return JsonResponse({
+
+        # Quem é a empresa
+        'empresa': DE.EMPRESA_PERFIL,
+
+        # Opções para popular os selects/filtros na UI
+        'filtros_opcoes': DE.FILTROS_OPCOES,
+
+        # Filtros que foram aplicados nesta chamada
+        'filtros_ativos': {
+            'ano':       ano,
+            'contextos': ctx_f or list(DE.CONTEXT_WEIGHTS),
+            'veiculos':  vei_f or list(DE.VEHICLE_WEIGHTS),
+            'estados':   est_f or list(DE.STATE_WEIGHTS),
+        },
+
+        # ── KPI Cards ────────────────────────────────────────────────────────
+        'kpis': _kpis(ano, ctx_f, vei_f, est_f),
+
+        # ── Gráfico de linha — Evolução Mensal ───────────────────────────────
+        'evolucao_mensal': {
+            'labels':    MESES_LABEL,
+            'ano':       ano,
+            'series_kg': mensal,
+            'total_kg':  sum(mensal),
+        },
+
+        # ── Gráfico de barras — Evolução Anual ───────────────────────────────
+        'evolucao_anual': {
+            'labels':     list(anual.keys()),
+            'series_kg':  list(anual.values()),
+            'series_ton': [round(v / 1000, 2) for v in anual.values()],
+            'metas_kg':   [DE.METAS_ANUAIS_KG.get(a, 0) for a in anual],
+        },
+
+        # ── Donut — Distribuição por Contexto ────────────────────────────────
+        'distribuicao_contexto': _distribuicao_contexto(ano, vei_f, est_f),
+
+        # ── Distribuição por Veículo (para filtros e Wrapped) ────────────────
+        'distribuicao_veiculo': _distribuicao_veiculo(ano, ctx_f, est_f),
+
+        # ── Ranking de Estados ───────────────────────────────────────────────
+        'ranking_estados': _ranking_estados(ano, ctx_f, top_n),
+
+        # ── Meta ESG vs Realizado ────────────────────────────────────────────
+        'meta_vs_realizado': _meta_vs_realizado(ano),
+
+        # ── Equivalências (Wrapped / destaques) ─────────────────────────────
+        'equivalencias': (
+            DE.EQUIVALENCIAS_2025 if ano == 2025 else {
+                'arvores_ano':      round(DE.ANNUAL_TOTALS_KG.get(ano, 0) / 21.77),
+                'litros_gasolina':  round(DE.ANNUAL_TOTALS_KG.get(ano, 0) / 2.212),
+                'papel_kg_total':   round(DE.ANNUAL_PASSAGENS.get(ano, 0) * 0.00455),
+                'tempo_fila_horas': round(DE.ANNUAL_PASSAGENS.get(ano, 0) * 3 / 60 * 0.62),
+            }
+        ),
+
+        # ── Histórico de ranking mensal (só 2025) ────────────────────────────
+        'ranking_mensal': {
+            'labels':  MESES_LABEL,
+            'series':  DE.RANKING_MENSAL_2025 if ano == 2025 else [],
+        },
+
     })

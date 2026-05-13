@@ -27,16 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# ---------------------------------------------------------------------------
-# Climatiq API — configuração
-# ---------------------------------------------------------------------------
-# Defina a variável de ambiente CLIMATIQ_API_KEY com sua chave.
-# Crie uma conta gratuita em: https://www.climatiq.io/
-# Documentação: https://www.climatiq.io/docs
-CLIMATIQ_API_KEY = '11TET9Y7QX3JNCBHGWK7B4D1J8'
-CLIMATIQ_SEARCH_URL = 'https://api.climatiq.io/data/v1/search'
-CLIMATIQ_ESTIMATE_URL = 'https://api.climatiq.io/data/v1/estimate'
-
 # Application definition
 
 INSTALLED_APPS = [
