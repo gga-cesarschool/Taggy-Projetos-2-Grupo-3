@@ -720,3 +720,301 @@ div.info    { color: $color-text-dark; background: #0aa2e9; }
   .footer { padding: 4rem 1.6rem 0; }
   .footer__bottom { flex-direction: column; align-items: center; gap: 1.2rem; text-align: center; }
 }
+
+// =============================================
+// METODOLOGIA
+// =============================================
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba($color-white, 0.92);
+  backdrop-filter: blur(18px);
+  border-bottom: 0.1rem solid rgba($color-border, 0.9);
+  box-shadow: 0 0.2rem 1.2rem rgba(15, 23, 42, 0.05);
+
+  &__inner {
+    max-width: 120rem;
+    margin: 0 auto;
+    padding: 1.6rem 3.2rem;
+    @include display-flex($justify-content: space-between, $gap: 2.4rem);
+  }
+}
+
+.site-brand {
+  @include display-flex($gap: 0);
+  img { display: block; width: auto; height: 4rem; }
+}
+
+.site-nav {
+  @include display-flex($gap: 0.8rem);
+  flex-wrap: wrap;
+
+  &__link {
+    @include padding(0.9rem, 1.4rem, 0.9rem, 1.4rem);
+    @include border-radius(9999px);
+    color: $color-text-body;
+    font-size: 1.4rem;
+    font-weight: $fw-medium;
+    @include transition(all, 0.18s, ease-in-out);
+
+    &:hover {
+      color: $color-primary-dark;
+      background: rgba($color-primary-light, 0.08);
+    }
+
+    &--active {
+      color: $color-primary-dark;
+      background: rgba($color-primary-light, 0.16);
+      border: 0.1rem solid rgba($color-primary-dark, 0.28);
+      box-shadow: 0 0.6rem 1.6rem rgba($color-primary, 0.08);
+    }
+  }
+}
+
+.site-footer {
+  padding: 2rem 3.2rem 3.2rem;
+  background: linear-gradient(180deg, #f8fcf8 0%, #eff7ef 100%);
+  border-top: 0.1rem solid rgba($color-border, 0.75);
+
+  &__inner {
+    max-width: 120rem;
+    margin: 0 auto;
+    @include display-flex($justify-content: space-between, $gap: 1.6rem);
+    flex-wrap: wrap;
+  }
+
+  &__text {
+    color: $color-text-muted;
+    font-size: 1.3rem;
+  }
+}
+
+.methodology-page {
+  background:
+    radial-gradient(circle at top, rgba($color-primary-light, 0.08), transparent 32%),
+    linear-gradient(180deg, #ffffff 0%, #f6faf6 100%);
+  color: $color-text-dark;
+}
+
+.methodology {
+  padding: 4.8rem 3.2rem 8rem;
+}
+
+.methodology-hero {
+  max-width: 78rem;
+  margin: 0 auto 3.2rem;
+  text-align: center;
+
+  &__inner {
+    @include display-flex($flex-direction: column, $gap: 1.4rem);
+  }
+
+  &__eyebrow {
+    @include display-flex($gap: 0.7rem);
+    @include padding(0.8rem, 1.4rem, 0.8rem, 1.4rem);
+    @include border-radius(9999px);
+    background: rgba($color-primary-light, 0.12);
+    color: $color-primary-dark;
+    font-size: 1.3rem;
+    font-weight: $fw-semibold;
+    .material-symbols-outlined { font-size: 1.8rem; color: $color-primary-light; }
+  }
+
+  &__title {
+    font-family: $font-primary;
+    font-size: 4.2rem;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    font-weight: $fw-extrabold;
+    color: $color-text-dark;
+  }
+
+  &__subtitle {
+    max-width: 62rem;
+    margin: 0 auto;
+    font-size: 1.7rem;
+    line-height: 1.7;
+    color: $color-text-muted;
+  }
+}
+
+.comparison-section {
+  max-width: 118rem;
+  margin: 0 auto;
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem;
+}
+
+.comparison-card {
+  @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1.6rem);
+  @include padding(2.4rem, 2.4rem, 2.4rem, 2.4rem);
+  @include border-radius(2rem);
+  background: rgba($color-white, 0.9);
+  border: 0.1rem solid $color-border;
+  box-shadow: 0 1.6rem 4rem rgba(15, 23, 42, 0.08);
+  min-height: 100%;
+
+  &__head {
+    @include display-flex($justify-content: flex-start, $gap: 1.2rem);
+    width: 100%;
+  }
+
+  &__icon {
+    @include display-flex($gap: 0);
+    width: 4.8rem;
+    height: 4.8rem;
+    @include border-radius(1.4rem);
+    flex-shrink: 0;
+
+    .material-symbols-outlined { font-size: 2.2rem; }
+
+    &--danger {
+      background: rgba($color-danger, 0.12);
+      color: $color-danger;
+    }
+
+    &--success {
+      background: rgba($color-primary-light, 0.14);
+      color: $color-primary;
+    }
+  }
+
+  &__kicker {
+    font-size: 1.1rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: $color-text-muted;
+    font-weight: $fw-semibold;
+    margin-bottom: 0.2rem;
+  }
+
+  &__title {
+    font-family: $font-primary;
+    font-size: 2.4rem;
+    line-height: 1.15;
+    font-weight: $fw-bold;
+    color: $color-text-dark;
+  }
+
+  &__description {
+    font-size: 1.5rem;
+    line-height: 1.75;
+    color: $color-text-body;
+  }
+
+  &--danger {
+    background:
+      linear-gradient(180deg, rgba($color-danger, 0.04), rgba($color-white, 0.96)),
+      $color-white;
+  }
+
+  &--success {
+    background:
+      linear-gradient(180deg, rgba($color-primary-light, 0.05), rgba($color-white, 0.96)),
+      $color-white;
+  }
+}
+
+.comparison-list {
+  width: 100%;
+  @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1rem);
+
+  li {
+    position: relative;
+    width: 100%;
+    @include padding(1.1rem, 1.4rem, 1.1rem, 4rem);
+    @include border-radius(1.2rem);
+    font-size: 1.4rem;
+    line-height: 1.5;
+    font-weight: $fw-medium;
+  }
+
+  &--danger li {
+    background: rgba($color-danger, 0.06);
+    color: darken($color-danger, 10%);
+    &::before {
+      content: '';
+      position: absolute;
+      left: 1.6rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0.8rem;
+      height: 0.8rem;
+      border-radius: 9999px;
+      background: $color-danger;
+    }
+  }
+
+  &--success li {
+    background: rgba($color-primary-light, 0.08);
+    color: $color-primary-dark;
+    &::before {
+      content: '';
+      position: absolute;
+      left: 1.6rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0.8rem;
+      height: 0.8rem;
+      border-radius: 9999px;
+      background: $color-primary-light;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .site-header__inner,
+  .methodology,
+  .site-footer {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .comparison-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .methodology-hero__title {
+    font-size: 3.4rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .site-header__inner {
+    padding-top: 1.2rem;
+    padding-bottom: 1.2rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .site-nav {
+    gap: 0.6rem;
+
+    &__link {
+      font-size: 1.3rem;
+      @include padding(0.8rem, 1.1rem, 0.8rem, 1.1rem);
+    }
+  }
+
+  .methodology {
+    padding-top: 3.2rem;
+    padding-bottom: 5.6rem;
+  }
+
+  .methodology-hero__title {
+    font-size: 2.9rem;
+  }
+
+  .methodology-hero__subtitle {
+    font-size: 1.5rem;
+  }
+
+  .comparison-card {
+    @include padding(2rem, 1.6rem, 2rem, 1.6rem);
+  }
+}

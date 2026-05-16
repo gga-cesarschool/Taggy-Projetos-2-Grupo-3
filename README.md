@@ -1,5 +1,10 @@
 # <img src="./images/logo-sem-fundo.png" width="400" style="vertical-align: middle;">
 
+## Como rodar localmente
+
+1. Instale as dependências Python com `pip install -r requirements.txt`.
+2. Inicie o projeto com `npm run dev` ou, diretamente, `python manage.py runserver`.
+
 ---
 
 ## 📌 Sobre o TagGreen

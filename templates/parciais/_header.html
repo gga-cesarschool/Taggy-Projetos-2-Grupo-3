@@ -1,1 +1,17 @@
+{% load static %}
+<header class="site-header">
+  <div class="site-header__inner">
+    <a href="{% url 'home' %}" class="site-brand" aria-label="TagGreen">
+      <img src="{% static 'images/logo-sem-fundo.png' %}" alt="TagGreen">
+    </a>
 
+    <nav class="site-nav" aria-label="Menu principal">
+      <a href="{% url 'home' %}" class="site-nav__link{% if active_page == 'home' %} site-nav__link--active{% endif %}">Home</a>
+      <a href="#" class="site-nav__link">Calculadora</a>
+      <a href="#" class="site-nav__link">Meu Impacto</a>
+      <a href="{% url 'metodologia' %}" class="site-nav__link{% if active_page == 'metodologia' %} site-nav__link--active{% endif %}">Metodologia</a>
+      <a href="#" class="site-nav__link">FAQ</a>
+      <a href="#" class="site-nav__link">Empresas</a>
+    </nav>
+  </div>
+</header>

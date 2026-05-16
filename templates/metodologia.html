@@ -1,0 +1,76 @@
+{% load static %}
+{% load sass_tags %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  {% include 'parciais/_head.html' %}
+  <link rel="stylesheet" href="{% sass_src 'scss/home.scss' %}">
+  <title>Metodologia | TagGreen</title>
+</head>
+<body class="methodology-page">
+  {% include 'parciais/_header.html' %}
+
+  <main class="methodology">
+    <section class="methodology-hero">
+      <div class="methodology-hero__inner">
+        <span class="methodology-hero__eyebrow">
+          <span class="material-symbols-outlined">speed</span>
+          Metodologia
+        </span>
+        <h1 class="methodology-hero__title">Entenda como calculamos as emissões evitadas</h1>
+        <p class="methodology-hero__subtitle">
+          Comparamos o fluxo tradicional com o fluxo automático para deixar explícito onde o impacto ambiental é reduzido.
+        </p>
+      </div>
+    </section>
+
+    <section class="comparison-section">
+      <div class="comparison-grid">
+        <article class="comparison-card comparison-card--danger">
+          <div class="comparison-card__head">
+            <span class="comparison-card__icon comparison-card__icon--danger">
+              <span class="material-symbols-outlined">directions_car</span>
+            </span>
+            <div>
+              <p class="comparison-card__kicker">Cenário</p>
+              <h2 class="comparison-card__title">SEM Taggy</h2>
+            </div>
+          </div>
+          <p class="comparison-card__description">
+            O motorista entra na fila, aguarda parado com motor ligado e executa etapas manuais até concluir a passagem.
+          </p>
+          <ul class="comparison-list comparison-list--danger">
+            <li>Fila de 3 a 5 minutos</li>
+            <li>Motor em marcha lenta</li>
+            <li>Acelerações e frenagens</li>
+            <li>Impressão de ticket de papel</li>
+          </ul>
+        </article>
+
+        <article class="comparison-card comparison-card--success">
+          <div class="comparison-card__head">
+            <span class="comparison-card__icon comparison-card__icon--success">
+              <span class="material-symbols-outlined">speed</span>
+            </span>
+            <div>
+              <p class="comparison-card__kicker">Cenário</p>
+              <h2 class="comparison-card__title">COM Taggy</h2>
+            </div>
+          </div>
+          <p class="comparison-card__description">
+            O motorista passa pela cancela automática sem parar, sem fila e sem papel, mantendo o fluxo contínuo e eficiente.
+          </p>
+          <ul class="comparison-list comparison-list--success">
+            <li>Passagem automática</li>
+            <li>Sem parada</li>
+            <li>Fluxo contínuo</li>
+            <li>Comprovante digital</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  {% include 'parciais/_footer.html' %}
+</body>
+</html>
