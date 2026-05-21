@@ -1,0 +1,157 @@
+{% extends 'core/base.html' %}
+{% block title %}{% if mode == 'register' %}Criar Conta{% else %}Entrar{% endif %}{% endblock %}
+
+{% block content %}
+<section class="tg-section py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-5">
+        <div class="text-center mb-4">
+          <span class="tg-logo-icon" style="font-size:2.5rem">🌿</span>
+          <h2 class="mt-2">{% if mode == 'register' %}Criar conta no TagGreen{% else %}Bem-vindo de volta{% endif %}</h2>
+          <p class="text-muted">{% if mode == 'register' %}Comece a acompanhar seu impacto ambiental{% else %}Entre para ver seu impacto{% endif %}</p>
+        </div>
+
+        <!-- Mode toggle -->
+        <div class="tg-mode-toggle mb-4">
+          <a href="?mode=login" class="tg-toggle-btn {% if mode != 'register' %}active{% endif %}">Entrar</a>
+          <a href="?mode=register" class="tg-toggle-btn {% if mode == 'register' %}active{% endif %}">Cadastrar</a>
+        </div>
+
+        {% if mode == 'login' %}
+        <!-- Login Form -->
+        <div class="tg-card p-4">
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="login">
+            <div class="mb-3">
+              <label class="form-label">E-mail ou usuário</label>
+              {{ login_form.username }}
+              {% if login_form.username.errors %}
+              <div class="invalid-feedback d-block">{{ login_form.username.errors.0 }}</div>
+              {% endif %}
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Senha</label>
+              {{ login_form.password }}
+              {% if login_form.password.errors %}
+              <div class="invalid-feedback d-block">{{ login_form.password.errors.0 }}</div>
+              {% endif %}
+            </div>
+            {% if login_form.non_field_errors %}
+            <div class="alert alert-danger">{{ login_form.non_field_errors.0 }}</div>
+            {% endif %}
+            <div class="d-grid">
+              <button type="submit" class="btn tg-btn-primary btn-lg">Entrar</button>
+            </div>
+          </form>
+          <p class="text-center mt-3 text-muted small">
+            Não tem conta? <a href="?mode=register" class="tg-link">Cadastre-se grátis</a>
+          </p>
+        </div>
+
+        {% else %}
+        <!-- Account type selector -->
+        <div class="tg-account-type-grid mb-4">
+          <a href="?mode=register&type=pessoa"
+             class="tg-account-type-card {% if account_type != 'empresa' %}active{% endif %}">
+            <span class="tg-at-icon">👤</span>
+            <strong>Pessoa Física</strong>
+            <p class="small mb-0 text-muted">Conta pessoal com dashboard individual</p>
+          </a>
+          <a href="?mode=register&type=empresa"
+             class="tg-account-type-card {% if account_type == 'empresa' %}active{% endif %}">
+            <span class="tg-at-icon">🏢</span>
+            <strong>Empresa</strong>
+            <p class="small mb-0 text-muted">Área B2B com relatórios ESG de frota</p>
+          </a>
+        </div>
+
+        {% if account_type == 'empresa' %}
+        <!-- Empresa Form -->
+        <div class="tg-card p-4">
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="register_empresa">
+            <div class="mb-3">
+              <label class="form-label">{{ register_form_empresa.company_name.label }}</label>
+              {{ register_form_empresa.company_name }}
+              {% if register_form_empresa.company_name.errors %}<div class="invalid-feedback d-block">{{ register_form_empresa.company_name.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="mb-3">
+              <label class="form-label">{{ register_form_empresa.cnpj.label }}</label>
+              {{ register_form_empresa.cnpj }}
+            </div>
+            <div class="mb-3">
+              <label class="form-label">{{ register_form_empresa.state.label }}</label>
+              {{ register_form_empresa.state }}
+            </div>
+            <div class="mb-3">
+              <label class="form-label">{{ register_form_empresa.email.label }}</label>
+              {{ register_form_empresa.email }}
+              {% if register_form_empresa.email.errors %}<div class="invalid-feedback d-block">{{ register_form_empresa.email.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="mb-3">
+              <label class="form-label">{{ register_form_empresa.password1.label }}</label>
+              {{ register_form_empresa.password1 }}
+            </div>
+            <div class="mb-3">
+              <label class="form-label">{{ register_form_empresa.password2.label }}</label>
+              {{ register_form_empresa.password2 }}
+              {% if register_form_empresa.password2.errors %}<div class="invalid-feedback d-block">{{ register_form_empresa.password2.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn tg-btn-primary btn-lg">Cadastrar empresa</button>
+            </div>
+          </form>
+        </div>
+        {% else %}
+        <!-- Pessoa Form -->
+        <div class="tg-card p-4">
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="register_pessoa">
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label class="form-label">{{ register_form_pessoa.first_name.label }}</label>
+                {{ register_form_pessoa.first_name }}
+              </div>
+              <div class="col-6">
+                <label class="form-label">{{ register_form_pessoa.last_name.label }}</label>
+                {{ register_form_pessoa.last_name }}
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">{{ register_form_pessoa.email.label }}</label>
+              {{ register_form_pessoa.email }}
+              {% if register_form_pessoa.email.errors %}<div class="invalid-feedback d-block">{{ register_form_pessoa.email.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="mb-3">
+              <label class="form-label">{{ register_form_pessoa.cpf.label }}</label>
+              {{ register_form_pessoa.cpf }}
+            </div>
+            <div class="mb-3">
+              <label class="form-label">{{ register_form_pessoa.password1.label }}</label>
+              {{ register_form_pessoa.password1 }}
+            </div>
+            <div class="mb-3">
+              <label class="form-label">{{ register_form_pessoa.password2.label }}</label>
+              {{ register_form_pessoa.password2 }}
+              {% if register_form_pessoa.password2.errors %}<div class="invalid-feedback d-block">{{ register_form_pessoa.password2.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn tg-btn-primary btn-lg">Criar conta grátis</button>
+            </div>
+          </form>
+        </div>
+        {% endif %}
+
+        <p class="text-center mt-3 text-muted small">
+          Já tem conta? <a href="?mode=login" class="tg-link">Entrar</a>
+        </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

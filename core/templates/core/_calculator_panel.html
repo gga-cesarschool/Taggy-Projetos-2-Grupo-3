@@ -1,0 +1,113 @@
+<div class="tg-calc-panel" id="calcPanel">
+  <form method="post" action="{% if calc_page %}{% url 'calculadora' %}{% else %}{% url 'home' %}#calculadora{% endif %}" id="calcForm">
+    {% csrf_token %}
+    <input type="hidden" name="vehicle_type" id="vehicle_type_input" value="{{ vehicle_type|default:'combustao' }}">
+    <input type="hidden" name="context_type" id="context_type_input" value="{{ context_type|default:'pedagio' }}">
+
+    <div class="row g-4">
+      <!-- Left panel: inputs -->
+      <div class="col-lg-5">
+        <h5 class="tg-calc-label mb-3">Tipo de Veículo</h5>
+        <div class="tg-vehicle-grid mb-4">
+          <button type="button" class="tg-vehicle-btn {% if vehicle_type == 'combustao' or not vehicle_type %}active{% endif %}" data-vehicle="combustao">
+            <span class="tg-v-icon">🚗</span>
+            <span class="tg-v-label">Combustão</span>
+          </button>
+          <button type="button" class="tg-vehicle-btn {% if vehicle_type == 'eletrico' %}active{% endif %}" data-vehicle="eletrico">
+            <span class="tg-v-icon">⚡</span>
+            <span class="tg-v-label">Elétrico</span>
+          </button>
+          <button type="button" class="tg-vehicle-btn {% if vehicle_type == 'moto' %}active{% endif %}" data-vehicle="moto">
+            <span class="tg-v-icon">🏍️</span>
+            <span class="tg-v-label">Moto</span>
+          </button>
+          <button type="button" class="tg-vehicle-btn {% if vehicle_type == 'caminhao' %}active{% endif %}" data-vehicle="caminhao">
+            <span class="tg-v-icon">🚛</span>
+            <span class="tg-v-label">Caminhão</span>
+          </button>
+        </div>
+
+        <h5 class="tg-calc-label mb-3">Tipo de Passagem</h5>
+        <div class="tg-context-grid mb-4">
+          <button type="button" class="tg-context-btn {% if context_type == 'pedagio' or not context_type %}active{% endif %}" data-context="pedagio">
+            <i class="bi bi-sign-yield me-2"></i>Pedágio
+          </button>
+          <button type="button" class="tg-context-btn {% if context_type == 'estacionamento' %}active{% endif %}" data-context="estacionamento">
+            <i class="bi bi-p-square me-2"></i>Estacionamento
+          </button>
+          <button type="button" class="tg-context-btn {% if context_type == 'acesso' %}active{% endif %}" data-context="acesso">
+            <i class="bi bi-door-open me-2"></i>Acesso
+          </button>
+        </div>
+
+        <h5 class="tg-calc-label mb-2">Passagens por mês: <strong id="passagens_display">{{ passagens|default:10 }}</strong></h5>
+        <input type="range" class="tg-range" id="passagens_range" name="passagens"
+               min="1" max="200" value="{{ passagens|default:10 }}"
+               oninput="document.getElementById('passagens_display').textContent=this.value">
+
+        <div class="d-grid mt-4">
+          <button type="submit" class="btn tg-btn-primary btn-lg">
+            <i class="bi bi-calculator me-2"></i>Calcular impacto
+          </button>
+        </div>
+      </div>
+
+      <!-- Right panel: results -->
+      <div class="col-lg-7">
+        {% if result %}
+        <div class="tg-result-panel" id="resultPanel">
+          <div class="tg-result-hero text-center mb-4">
+            <div class="tg-result-co2">{{ result.co2_economizado_kg }} kg</div>
+            <div class="tg-result-label">de CO₂ evitados por mês</div>
+            <div class="tg-result-badge mt-2">-{{ result.reducao_pct }}% de emissão</div>
+          </div>
+          <div class="row g-3">
+            <div class="col-6">
+              <div class="tg-metric-card">
+                <div class="tg-metric-icon">🌳</div>
+                <div class="tg-metric-num">{{ result.arvores_equivalentes }}</div>
+                <div class="tg-metric-label">árvores/mês</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="tg-metric-card">
+                <div class="tg-metric-icon">⛽</div>
+                <div class="tg-metric-num">{{ result.combustivel_economizado }}{{ result.combustivel_unit }}</div>
+                <div class="tg-metric-label">combustível</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="tg-metric-card">
+                <div class="tg-metric-icon">⏱️</div>
+                <div class="tg-metric-num">{{ result.tempo_economizado_min }}min</div>
+                <div class="tg-metric-label">tempo livre</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="tg-metric-card">
+                <div class="tg-metric-icon">📄</div>
+                <div class="tg-metric-num">{{ result.papel_evitado_folhas }}</div>
+                <div class="tg-metric-label">papéis evitados</div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 text-center">
+            {% if user.is_authenticated %}
+            <a href="{% url 'meu_impacto' %}" class="btn tg-btn-primary me-2">Ver meu dashboard</a>
+            {% else %}
+            <a href="{% url 'login' %}?mode=register" class="btn tg-btn-primary me-2">Salvar no dashboard</a>
+            {% endif %}
+            <a href="{% url 'metodologia' %}" class="btn tg-btn-outline">Ver metodologia</a>
+          </div>
+        </div>
+        {% else %}
+        <div class="tg-result-placeholder text-center py-5">
+          <div class="tg-placeholder-icon">🌿</div>
+          <h5 class="mt-3 text-muted">Configure os parâmetros e clique em calcular</h5>
+          <p class="text-muted small">O resultado mostrará seu impacto ambiental estimado por mês.</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </form>
+</div>

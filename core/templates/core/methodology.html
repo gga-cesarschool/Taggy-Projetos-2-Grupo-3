@@ -1,0 +1,78 @@
+{% extends 'core/base.html' %}
+{% block title %}Metodologia{% endblock %}
+
+{% block content %}
+<section class="tg-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <span class="tg-badge mb-3">Transparência Científica</span>
+        <h1 class="tg-section-title">Metodologia TagGreen v1.0</h1>
+        <p class="tg-section-sub">Entenda como calculamos o impacto ambiental da sua tag de pagamento automático.</p>
+
+        <div class="tg-card p-4 mb-4">
+          <h4>Fontes de dados</h4>
+          <ul>
+            <li>IPCC (Intergovernmental Panel on Climate Change)</li>
+            <li>SEEG Brasil — Sistema de Estimativa de Emissões de Gases de Efeito Estufa</li>
+            <li>ONS — Operador Nacional do Sistema Elétrico (2023)</li>
+            <li>ABNT NBR ISO 14064</li>
+          </ul>
+        </div>
+
+        <div class="tg-card p-4 mb-4">
+          <h4>Fatores de emissão utilizados</h4>
+          <div class="table-responsive">
+            <table class="table tg-table">
+              <thead><tr><th>Parâmetro</th><th>Valor</th><th>Unidade</th></tr></thead>
+              <tbody>
+                <tr><td>Papel (produção)</td><td>1,100</td><td>kg CO₂e/kg</td></tr>
+                <tr><td>Papel por comprovante</td><td>12</td><td>gramas</td></tr>
+                <tr><td>Gasolina</td><td>2,212</td><td>kg CO₂e/L</td></tr>
+                <tr><td>Grid elétrico (SIN 2023)</td><td>0,0817</td><td>kg CO₂e/kWh</td></tr>
+                <tr><td>Absorção por árvore</td><td>21,77</td><td>kg CO₂/árvore/ano</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tg-card p-4 mb-4">
+          <h4>Parâmetros de veículos</h4>
+          <div class="table-responsive">
+            <table class="table tg-table">
+              <thead><tr><th>Veículo</th><th>Consumo km</th><th>Consumo idle</th><th>Fator emissão</th></tr></thead>
+              <tbody>
+                <tr><td>Carro combustão</td><td>0,090 L/km</td><td>0,65 L/h</td><td>1,335 kg CO₂e/L</td></tr>
+                <tr><td>Carro elétrico</td><td>0,180 kWh/km</td><td>0,15 kWh/h</td><td>0,0817 kg CO₂e/kWh</td></tr>
+                <tr><td>Moto</td><td>0,038 L/km</td><td>0,28 L/h</td><td>2,212 kg CO₂e/L</td></tr>
+                <tr><td>Caminhão</td><td>0,300 L/km</td><td>2,40 L/h</td><td>2,603 kg CO₂e/L</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tg-card p-4 mb-4">
+          <h4>Fórmula de cálculo</h4>
+          <div class="tg-formula">
+            <code>E_passagem = E_idle + E_movimento + E_papel</code>
+          </div>
+          <ul class="mt-3">
+            <li><code>E_idle = (tempo / 60) × consumo_idle × fator_emissão</code></li>
+            <li><code>E_movimento = distância × consumo_km × fator_emissão</code></li>
+            <li><code>E_papel = (papel_g / 1000) × FATOR_PAPEL</code></li>
+          </ul>
+          <p class="text-muted small mt-3">
+            A economia é calculada como a diferença entre a emissão sem tag (com tempo de espera, distância extra e comprovante físico)
+            e a emissão com tag (passagem rápida, sem papel).
+          </p>
+        </div>
+
+        <div class="text-center mt-4">
+          <a href="{% url 'calculadora' %}" class="btn tg-btn-primary me-3">Usar a calculadora</a>
+          <a href="{% url 'faq' %}" class="btn tg-btn-outline">Ver FAQ</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

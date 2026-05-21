@@ -1,0 +1,33 @@
+{% extends 'core/base.html' %}
+{% block title %}{{ action }} Veículo{% endblock %}
+
+{% block content %}
+<section class="tg-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-5">
+        <h1 class="tg-section-title mb-4">{{ action }} Veículo</h1>
+        <div class="tg-card p-4">
+          <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-3">
+              <label class="form-label">{{ field.label }}</label>
+              {{ field }}
+              {% if field.errors %}<div class="invalid-feedback d-block">{{ field.errors.0 }}</div>{% endif %}
+              {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+            </div>
+            {% endfor %}
+            <div class="d-flex gap-3 mt-4">
+              <button type="submit" class="btn tg-btn-primary">
+                <i class="bi bi-check-lg me-2"></i>{{ action }}
+              </button>
+              <a href="{% url 'meu_impacto' %}" class="btn tg-btn-outline">Cancelar</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

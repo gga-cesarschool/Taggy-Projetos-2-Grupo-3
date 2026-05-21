@@ -1,0 +1,46 @@
+{% extends 'core/base.html' %}
+{% block title %}Calculadora{% endblock %}
+
+{% block content %}
+<section class="tg-section">
+  <div class="container">
+    <div class="row justify-content-center mb-5">
+      <div class="col-lg-8 text-center">
+        <span class="tg-badge mb-3">Metodologia TagGreen v1.0</span>
+        <h1 class="tg-section-title">Calculadora de Impacto Ambiental</h1>
+        <p class="tg-section-sub">
+          Baseada em dados científicos do IPCC, SEEG Brasil e ONS 2023.
+          Calcule quantas emissões de CO₂ você evita com o uso da sua tag.
+        </p>
+      </div>
+    </div>
+    {% with calc_page=True %}
+    {% include 'core/_calculator_panel.html' %}
+    {% endwith %}
+
+    <!-- Methodology summary -->
+    <div class="tg-methodology-box mt-5">
+      <h5><i class="bi bi-info-circle me-2"></i>Sobre a metodologia</h5>
+      <div class="row g-3 mt-2">
+        <div class="col-md-4">
+          <strong>Emissão idle</strong>
+          <p class="small text-muted mb-0">Calcula o CO₂ emitido enquanto o motor fica em marcha lenta na fila.</p>
+        </div>
+        <div class="col-md-4">
+          <strong>Emissão em movimento</strong>
+          <p class="small text-muted mb-0">Considera a distância extra percorrida sem a automação de pagamento.</p>
+        </div>
+        <div class="col-md-4">
+          <strong>Emissão de papel</strong>
+          <p class="small text-muted mb-0">12g de papel por comprovante físico, com fator de 1.1 kg CO₂e/kg.</p>
+        </div>
+      </div>
+      <div class="mt-3">
+        <a href="{% url 'metodologia' %}" class="btn tg-btn-outline btn-sm">
+          <i class="bi bi-file-earmark-text me-2"></i>Ver documento completo
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

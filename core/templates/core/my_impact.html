@@ -1,0 +1,221 @@
+{% extends 'core/base.html' %}
+{% block title %}Meu Impacto{% endblock %}
+
+{% block extra_css %}
+<style>
+  .tg-level-bar { height: 10px; border-radius: 5px; background: #e9ecef; overflow: hidden; }
+  .tg-level-fill { height: 100%; background: linear-gradient(90deg, #007934, #61a60e); border-radius: 5px; transition: width 1s ease; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="tg-section">
+  <div class="container">
+    <!-- Header -->
+    <div class="row align-items-center mb-5">
+      <div class="col">
+        <h1 class="tg-section-title mb-1">Meu Impacto</h1>
+        <p class="text-muted">Olá, {{ user.first_name|default:user.username }}! Veja sua contribuição ambiental.</p>
+      </div>
+      <div class="col-auto">
+        <a href="{% url 'wrapped' %}" class="btn tg-btn-primary">
+          <i class="bi bi-stars me-2"></i>Ver Wrapped 2025
+        </a>
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="row g-4 mb-5">
+      <div class="col-6 col-lg-3">
+        <div class="tg-kpi-card">
+          <div class="tg-kpi-icon tg-kpi-green"><i class="bi bi-cloud"></i></div>
+          <div class="tg-kpi-value">{{ total_co2 }} kg</div>
+          <div class="tg-kpi-label">CO₂ evitado (ano)</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="tg-kpi-card">
+          <div class="tg-kpi-icon tg-kpi-blue"><i class="bi bi-arrow-repeat"></i></div>
+          <div class="tg-kpi-value">{{ total_passages }}</div>
+          <div class="tg-kpi-label">Passagens totais</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="tg-kpi-card">
+          <div class="tg-kpi-icon tg-kpi-amber"><i class="bi bi-tree"></i></div>
+          <div class="tg-kpi-value">{{ trees_equivalent }}</div>
+          <div class="tg-kpi-label">Árvores equivalentes</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="tg-kpi-card">
+          <div class="tg-kpi-icon tg-kpi-purple"><i class="bi bi-clock"></i></div>
+          <div class="tg-kpi-value">{{ total_time_saved }}min</div>
+          <div class="tg-kpi-label">Tempo economizado</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+      <!-- Monthly Chart -->
+      <div class="col-lg-8">
+        <div class="tg-card p-4 h-100">
+          <h5 class="mb-4">CO₂ Evitado por Mês (2025)</h5>
+          <canvas id="monthlyChart" height="80"></canvas>
+        </div>
+      </div>
+
+      <!-- Level -->
+      <div class="col-lg-4">
+        <div class="tg-card p-4 h-100">
+          <h5 class="mb-4">Seu nível</h5>
+          <div class="tg-level-badge mb-3">
+            <span class="tg-level-name">{{ level_info.name }}</span>
+          </div>
+          <div class="tg-level-bar mb-2">
+            <div class="tg-level-fill" style="width: {{ level_info.progress }}%"></div>
+          </div>
+          <p class="small text-muted mb-4">
+            {{ level_info.xp }} passagens
+            {% if level_info.next %}· próximo nível: {{ level_info.xp_next }}{% endif %}
+          </p>
+          {% if level_info.next %}
+          <p class="small"><strong>Próximo: {{ level_info.next }}</strong></p>
+          {% else %}
+          <p class="small text-success"><strong>🏆 Nível máximo atingido!</strong></p>
+          {% endif %}
+
+          <hr>
+          <h6 class="mb-3">Conquistas</h6>
+          <div class="d-flex flex-wrap gap-2">
+            <span class="tg-medal" title="Primeiras passagens">🌱</span>
+            <span class="tg-medal" title="10 passagens">🍃</span>
+            <span class="tg-medal" title="50 passagens">🌳</span>
+            <span class="tg-medal tg-medal-locked" title="Bloqueado">🔒</span>
+            <span class="tg-medal tg-medal-locked" title="Bloqueado">🔒</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Annual Chart -->
+    <div class="row g-4 mb-5">
+      <div class="col-12">
+        <div class="tg-card p-4">
+          <h5 class="mb-4">Evolução Anual de CO₂ Evitado</h5>
+          <canvas id="annualChart" height="40"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vehicles -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <div class="tg-card p-4">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="mb-0">Meus Veículos</h5>
+            <a href="{% url 'vehicle_create' %}" class="btn tg-btn-primary btn-sm">
+              <i class="bi bi-plus-lg me-1"></i>Adicionar
+            </a>
+          </div>
+          {% if vehicles %}
+          <div class="row g-3">
+            {% for v in vehicles %}
+            <div class="col-md-6 col-lg-4">
+              <div class="tg-vehicle-card {% if v.is_primary %}tg-vehicle-primary{% endif %}">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <div>
+                    <strong>{{ v.nickname|default:v.name }}</strong>
+                    {% if v.is_primary %}<span class="tg-badge-sm ms-2">Principal</span>{% endif %}
+                  </div>
+                  <div class="dropdown">
+                    <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
+                      <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                      <li><a class="dropdown-item" href="{% url 'vehicle_edit' v.pk %}">Editar</a></li>
+                      <li><a class="dropdown-item text-danger" href="{% url 'vehicle_delete' v.pk %}">Excluir</a></li>
+                    </ul>
+                  </div>
+                </div>
+                <p class="small text-muted mb-2">{{ v.name }} {{ v.year }} · {{ v.get_fuel_display }} · {{ v.plate|default:'Sem placa' }}</p>
+                <div class="row g-2 text-center">
+                  <div class="col-4">
+                    <div class="small text-muted">Passagens</div>
+                    <strong>{{ v.total_passages }}</strong>
+                  </div>
+                  <div class="col-4">
+                    <div class="small text-muted">CO₂</div>
+                    <strong>{{ v.total_co2_saved|floatformat:1 }}kg</strong>
+                  </div>
+                  <div class="col-4">
+                    <div class="small text-muted">Tempo</div>
+                    <strong>{{ v.total_time_saved|floatformat:0 }}min</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="text-center py-4">
+            <p class="text-muted">Nenhum veículo cadastrado.</p>
+            <a href="{% url 'vehicle_create' %}" class="btn tg-btn-outline">Adicionar veículo</a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const monthlyData = {{ monthly_data|safe }};
+const annualData = {{ annual_data|safe }};
+
+new Chart(document.getElementById('monthlyChart'), {
+  type: 'bar',
+  data: {
+    labels: monthlyData.map(d => d.month),
+    datasets: [{
+      label: 'kg CO₂ evitado',
+      data: monthlyData.map(d => d.co2),
+      backgroundColor: 'rgba(0,121,52,0.7)',
+      borderColor: '#007934',
+      borderWidth: 2,
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } } }
+  }
+});
+
+new Chart(document.getElementById('annualChart'), {
+  type: 'line',
+  data: {
+    labels: annualData.map(d => d.year),
+    datasets: [{
+      label: 'kg CO₂ evitado',
+      data: annualData.map(d => d.co2),
+      backgroundColor: 'rgba(97,166,14,0.15)',
+      borderColor: '#61a60e',
+      borderWidth: 3,
+      fill: true,
+      tension: 0.4,
+      pointBackgroundColor: '#007934',
+      pointRadius: 6,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } } }
+  }
+});
+</script>
+{% endblock %}

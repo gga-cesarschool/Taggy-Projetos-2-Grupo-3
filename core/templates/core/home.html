@@ -1,0 +1,243 @@
+{% extends 'core/base.html' %}
+{% block title %}Início{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="tg-hero">
+  <div class="container">
+    <div class="row align-items-center min-vh-75">
+      <div class="col-lg-6">
+        <span class="tg-badge mb-3">Metodologia Científica v1.0</span>
+        <h1 class="tg-hero-title">
+          Sua tag. <br>
+          <span class="tg-text-green">Seu impacto.</span><br>
+          O planeta agradece.
+        </h1>
+        <p class="tg-hero-sub mt-4">
+          Cada passagem sem fila significa menos CO₂ na atmosfera. Calcule, acompanhe
+          e compartilhe o impacto ambiental positivo do uso da sua tag automática.
+        </p>
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a href="{% url 'login' %}?mode=register" class="btn tg-btn-primary btn-lg">
+            <i class="bi bi-person-plus me-2"></i>Criar conta gratuita
+          </a>
+          <a href="{% url 'calculadora' %}" class="btn tg-btn-outline btn-lg">
+            <i class="bi bi-calculator me-2"></i>Ver calculadora
+          </a>
+        </div>
+        <div class="row g-3 mt-4">
+          <div class="col-4">
+            <div class="tg-stat-chip">
+              <span class="tg-stat-number">16,49t</span>
+              <span class="tg-stat-label">CO₂ evitado</span>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="tg-stat-chip">
+              <span class="tg-stat-number">455K</span>
+              <span class="tg-stat-label">Passagens</span>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="tg-stat-chip">
+              <span class="tg-stat-number">757</span>
+              <span class="tg-stat-label">Árvores equiv.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 d-none d-lg-flex justify-content-center">
+        <div class="tg-hero-visual">
+          <div class="tg-planet">
+            <div class="tg-leaf">🌿</div>
+            <div class="tg-co2-badge">-38,5 kg CO₂</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Calculator Section -->
+<section class="tg-section tg-section-light" id="calculadora">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="tg-section-title">Calculadora de Impacto</h2>
+      <p class="tg-section-sub">Descubra quanto CO₂ você evita a cada mês</p>
+    </div>
+    {% include 'core/_calculator_panel.html' %}
+  </div>
+</section>
+
+<!-- Benefits -->
+<section class="tg-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="tg-section-title">Por que usar a tag faz diferença?</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="tg-card tg-card-benefit h-100">
+          <div class="tg-benefit-icon">⏱️</div>
+          <h5>Menos Fila</h5>
+          <p class="text-muted small">Elimina o tempo de espera na cabine, reduzindo emissões de marcha lenta.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="tg-card tg-card-benefit h-100">
+          <div class="tg-benefit-icon">🚗</div>
+          <h5>Menos Marcha Lenta</h5>
+          <p class="text-muted small">Com passagem rápida, o motor fica menos tempo funcionando sem movimento.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="tg-card tg-card-benefit h-100">
+          <div class="tg-benefit-icon">📄</div>
+          <h5>Menos Papel</h5>
+          <p class="text-muted small">Elimina comprovantes físicos, reduzindo o consumo de papel e emissões de produção.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="tg-card tg-card-benefit h-100">
+          <div class="tg-benefit-icon">📊</div>
+          <h5>Rastreabilidade</h5>
+          <p class="text-muted small">Acompanhe seu impacto em tempo real e compartilhe suas conquistas verdes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Equivalences -->
+<section class="tg-section tg-section-dark">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="tg-section-title text-white">O que 38,5 kg de CO₂ evitado significa?</h2>
+      <p class="text-white-50">Equivalências para um usuário médio em 2025</p>
+    </div>
+    <div class="row g-4 justify-content-center">
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="tg-equiv-card text-center">
+          <div class="tg-equiv-icon">🌳</div>
+          <div class="tg-equiv-num">1,8</div>
+          <div class="tg-equiv-label">árvores por ano</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="tg-equiv-card text-center">
+          <div class="tg-equiv-icon">⛽</div>
+          <div class="tg-equiv-num">29L</div>
+          <div class="tg-equiv-label">de combustível</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="tg-equiv-card text-center">
+          <div class="tg-equiv-icon">⏰</div>
+          <div class="tg-equiv-num">6,4h</div>
+          <div class="tg-equiv-label">de tempo livre</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="tg-equiv-card text-center">
+          <div class="tg-equiv-icon">📄</div>
+          <div class="tg-equiv-num">1.524</div>
+          <div class="tg-equiv-label">papéis evitados</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="tg-equiv-card text-center">
+          <div class="tg-equiv-icon">🛣️</div>
+          <div class="tg-equiv-num">320km</div>
+          <div class="tg-equiv-label">menos rodados</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="tg-section">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="tg-cta-card tg-cta-personal">
+          <h4>Conta Pessoal</h4>
+          <p>Acompanhe seu impacto individual, gerencie seus veículos e conquiste medals verdes.</p>
+          <ul class="list-unstyled small mb-4">
+            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Dashboard personalizado</li>
+            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Wrapped anual</li>
+            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Histórico completo</li>
+          </ul>
+          <a href="{% url 'login' %}?mode=register&type=pessoa" class="btn tg-btn-primary">Criar conta grátis</a>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="tg-cta-card tg-cta-corporate">
+          <h4>Área Corporativa B2B</h4>
+          <p>Relatórios ESG consolidados para toda sua frota, com análise por estado e ranking.</p>
+          <ul class="list-unstyled small mb-4">
+            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Dashboard de frota</li>
+            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Relatórios ESG</li>
+            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Análise por estado</li>
+          </ul>
+          <a href="{% url 'login' %}?mode=register&type=empresa" class="btn tg-btn-outline">Falar com consultor</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Preview -->
+<section class="tg-section tg-section-light">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="tg-section-title">Perguntas Frequentes</h2>
+    </div>
+    <div class="accordion tg-accordion" id="faqHome">
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#faq1">
+            O que é o TagGreen?
+          </button>
+        </h2>
+        <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqHome">
+          <div class="accordion-body">O TagGreen é uma plataforma que calcula e exibe o impacto ambiental positivo gerado pelo uso de tags de automação de pagamentos em pedágios, estacionamentos e controles de acesso.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#faq2">
+            Como funciona o cálculo de CO₂?
+          </button>
+        </h2>
+        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqHome">
+          <div class="accordion-body">O cálculo é baseado na Metodologia TagGreen v1.0, que considera tempo de idle do motor, distância extra percorrida e papel evitado em cada passagem. Os fatores de emissão são do IPCC e ONS 2023.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#faq3">
+            É gratuito?
+          </button>
+        </h2>
+        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqHome">
+          <div class="accordion-body">Sim! O TagGreen Dashboard é completamente gratuito para usuários individuais. Para empresas, consulte nossos planos B2B.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#faq4">
+            Os dados são precisos?
+          </button>
+        </h2>
+        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqHome">
+          <div class="accordion-body">Os dados são baseados em metodologia científica validada, utilizando fatores de emissão oficiais do IPCC, SEEG Brasil e ONS 2023.</div>
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <a href="{% url 'faq' %}" class="btn tg-btn-outline">Ver todas as perguntas</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

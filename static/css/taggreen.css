@@ -1,0 +1,271 @@
+/* ============================================================
+   TagGreen — Custom Stylesheet
+   ============================================================ */
+
+:root {
+  --tg-green:       #007934;
+  --tg-green-light: #61a60e;
+  --tg-green-pale:  #eef3f0;
+  --tg-dark:        #12284c;
+  --tg-dark2:       #1e3a5f;
+  --tg-blue:        #4a90e2;
+  --tg-bg:          #f8fafb;
+  --tg-radius:      12px;
+  --tg-shadow:      0 4px 20px rgba(0,0,0,.08);
+  --tg-shadow-lg:   0 8px 40px rgba(0,0,0,.12);
+}
+
+* { box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #fff; color: #1a1a2e; }
+
+/* ---- Navbar ---- */
+.tg-navbar {
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,0,0,.06);
+  padding: 0.75rem 0;
+}
+.tg-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+.tg-logo-icon { font-size: 1.5rem; }
+.tg-logo-text { font-size: 1.2rem; color: var(--tg-dark); letter-spacing: -0.5px; }
+.tg-logo-text strong { color: var(--tg-green); }
+
+.nav-link { color: #555 !important; font-weight: 500; padding: 0.5rem 0.75rem !important; border-radius: 8px; transition: all 0.2s; }
+.nav-link:hover, .nav-link.active { color: var(--tg-green) !important; background: var(--tg-green-pale); }
+
+.tg-avatar {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--tg-green); color: white; font-size: 0.75rem; font-weight: 700;
+}
+
+/* ---- Buttons ---- */
+.tg-btn-primary {
+  background: var(--tg-green); color: white; border: none;
+  border-radius: 8px; padding: 0.5rem 1.25rem; font-weight: 600;
+  transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center;
+}
+.tg-btn-primary:hover { background: #005c28; color: white; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,121,52,.3); }
+
+.tg-btn-outline {
+  background: transparent; color: var(--tg-green); border: 2px solid var(--tg-green);
+  border-radius: 8px; padding: 0.5rem 1.25rem; font-weight: 600;
+  transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center;
+}
+.tg-btn-outline:hover { background: var(--tg-green); color: white; transform: translateY(-1px); }
+
+/* ---- Badge ---- */
+.tg-badge {
+  display: inline-block; background: var(--tg-green-pale); color: var(--tg-green);
+  border: 1px solid rgba(0,121,52,.2); border-radius: 20px;
+  padding: 4px 14px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.3px;
+}
+.tg-badge-sm {
+  display: inline-block; background: var(--tg-green); color: white;
+  border-radius: 10px; padding: 2px 8px; font-size: 0.7rem; font-weight: 600;
+}
+
+/* ---- Hero ---- */
+.tg-hero {
+  background: linear-gradient(135deg, #f0f7f3 0%, #e8f4eb 50%, #f5f9ff 100%);
+  padding: 5rem 0 4rem;
+}
+.tg-hero-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.15; color: var(--tg-dark); }
+.tg-text-green { color: var(--tg-green); }
+.tg-hero-sub { font-size: 1.05rem; color: #666; max-width: 520px; line-height: 1.6; }
+
+.tg-stat-chip {
+  background: white; border-radius: var(--tg-radius); padding: 0.75rem 0.5rem;
+  text-align: center; box-shadow: var(--tg-shadow); border: 1px solid rgba(0,0,0,.05);
+}
+.tg-stat-number { display: block; font-size: 1.2rem; font-weight: 800; color: var(--tg-green); }
+.tg-stat-label { display: block; font-size: 0.7rem; color: #888; margin-top: 2px; }
+
+.tg-hero-visual { position: relative; width: 320px; height: 320px; }
+.tg-planet {
+  width: 280px; height: 280px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #2d8a4e, #12284c);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; box-shadow: 0 20px 60px rgba(0,121,52,.3);
+  animation: float 4s ease-in-out infinite;
+}
+.tg-leaf { font-size: 5rem; }
+.tg-co2-badge {
+  position: absolute; top: -20px; right: -30px;
+  background: white; color: var(--tg-green); border-radius: 20px;
+  padding: 6px 14px; font-size: 0.85rem; font-weight: 700;
+  box-shadow: var(--tg-shadow); border: 2px solid var(--tg-green-pale);
+}
+@keyframes float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-12px) } }
+
+.min-vh-75 { min-height: 75vh; }
+
+/* ---- Sections ---- */
+.tg-section { padding: 4rem 0; }
+.tg-section-light { background: var(--tg-bg); }
+.tg-section-dark { background: var(--tg-dark); }
+.tg-section-title { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; color: var(--tg-dark); line-height: 1.2; }
+.tg-section-sub { font-size: 1.05rem; color: #777; }
+
+/* ---- Cards ---- */
+.tg-card {
+  background: white; border-radius: var(--tg-radius);
+  box-shadow: var(--tg-shadow); border: 1px solid rgba(0,0,0,.05);
+  transition: box-shadow 0.2s;
+}
+.tg-card:hover { box-shadow: var(--tg-shadow-lg); }
+
+.tg-card-benefit { padding: 2rem 1.5rem; }
+.tg-benefit-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+
+/* ---- Equivalences ---- */
+.tg-equiv-card {
+  background: rgba(255,255,255,.08); border-radius: var(--tg-radius);
+  padding: 1.5rem 1rem; border: 1px solid rgba(255,255,255,.1);
+  color: white;
+}
+.tg-equiv-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+.tg-equiv-num { font-size: 1.8rem; font-weight: 800; color: #61a60e; }
+.tg-equiv-label { font-size: 0.8rem; color: rgba(255,255,255,.6); margin-top: 4px; }
+
+/* ---- CTA Cards ---- */
+.tg-cta-card {
+  border-radius: 16px; padding: 2rem; height: 100%;
+}
+.tg-cta-personal { background: linear-gradient(135deg, #eef3f0, #d4edda); border: 1px solid rgba(0,121,52,.15); }
+.tg-cta-corporate { background: linear-gradient(135deg, #e8f0fb, #cfe2ff); border: 1px solid rgba(74,144,226,.2); }
+
+/* ---- Calculator Panel ---- */
+.tg-calc-panel { background: white; border-radius: 16px; box-shadow: var(--tg-shadow-lg); padding: 2rem; border: 1px solid rgba(0,0,0,.06); }
+.tg-calc-label { font-weight: 700; color: var(--tg-dark); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.tg-vehicle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tg-vehicle-btn {
+  background: white; border: 2px solid #e9ecef; border-radius: 12px;
+  padding: 1rem 0.75rem; display: flex; flex-direction: column; align-items: center;
+  gap: 6px; cursor: pointer; transition: all 0.2s; font-size: 0.85rem; font-weight: 600;
+}
+.tg-vehicle-btn:hover { border-color: var(--tg-green); background: var(--tg-green-pale); }
+.tg-vehicle-btn.active { border-color: var(--tg-green); background: var(--tg-green-pale); color: var(--tg-green); }
+.tg-v-icon { font-size: 1.5rem; }
+.tg-v-label { font-size: 0.78rem; }
+
+.tg-context-grid { display: flex; flex-direction: column; gap: 8px; }
+.tg-context-btn {
+  background: white; border: 2px solid #e9ecef; border-radius: 10px;
+  padding: 0.65rem 1rem; text-align: left; cursor: pointer;
+  transition: all 0.2s; font-weight: 500;
+}
+.tg-context-btn:hover { border-color: var(--tg-green); background: var(--tg-green-pale); }
+.tg-context-btn.active { border-color: var(--tg-green); background: var(--tg-green-pale); color: var(--tg-green); }
+
+.tg-range {
+  -webkit-appearance: none; width: 100%; height: 6px;
+  border-radius: 3px; background: #e9ecef; outline: none;
+}
+.tg-range::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--tg-green); cursor: pointer; box-shadow: 0 2px 6px rgba(0,121,52,.4);
+}
+
+.tg-result-panel { background: var(--tg-green-pale); border-radius: 16px; padding: 1.5rem; border: 1px solid rgba(0,121,52,.15); }
+.tg-result-hero {}
+.tg-result-co2 { font-size: 3rem; font-weight: 900; color: var(--tg-green); line-height: 1; }
+.tg-result-label { color: #555; font-size: 0.95rem; margin-top: 4px; }
+.tg-result-badge { display: inline-block; background: var(--tg-green); color: white; border-radius: 20px; padding: 4px 14px; font-size: 0.85rem; font-weight: 700; }
+
+.tg-metric-card {
+  background: white; border-radius: 12px; padding: 1rem; text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.tg-metric-icon { font-size: 1.5rem; margin-bottom: 4px; }
+.tg-metric-num { font-size: 1.2rem; font-weight: 800; color: var(--tg-dark); }
+.tg-metric-label { font-size: 0.72rem; color: #888; margin-top: 2px; }
+
+.tg-result-placeholder { background: #f8f9fa; border-radius: 16px; border: 2px dashed #dee2e6; }
+.tg-placeholder-icon { font-size: 4rem; }
+
+/* ---- Auth ---- */
+.tg-mode-toggle {
+  display: flex; background: #f1f3f5; border-radius: 10px; padding: 4px; gap: 4px;
+}
+.tg-toggle-btn {
+  flex: 1; text-align: center; padding: 0.6rem; border-radius: 8px;
+  font-weight: 600; font-size: 0.9rem; color: #666; text-decoration: none; transition: all 0.2s;
+}
+.tg-toggle-btn.active { background: white; color: var(--tg-green); box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+
+.tg-account-type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.tg-account-type-card {
+  border: 2px solid #dee2e6; border-radius: 12px; padding: 1.5rem 1rem;
+  text-align: center; text-decoration: none; color: inherit; transition: all 0.2s; display: block;
+}
+.tg-account-type-card:hover { border-color: var(--tg-green); background: var(--tg-green-pale); color: inherit; }
+.tg-account-type-card.active { border-color: var(--tg-green); background: var(--tg-green-pale); }
+.tg-at-icon { display: block; font-size: 2rem; margin-bottom: 0.5rem; }
+
+/* ---- Dashboard KPI ---- */
+.tg-kpi-card {
+  background: white; border-radius: var(--tg-radius); padding: 1.5rem;
+  box-shadow: var(--tg-shadow); border: 1px solid rgba(0,0,0,.05); position: relative;
+}
+.tg-kpi-featured { border-left: 4px solid var(--tg-green); }
+.tg-kpi-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem; font-size: 1.1rem; }
+.tg-kpi-green { background: rgba(0,121,52,.1); color: var(--tg-green); }
+.tg-kpi-blue { background: rgba(74,144,226,.1); color: #4a90e2; }
+.tg-kpi-amber { background: rgba(255,167,38,.1); color: #f57c00; }
+.tg-kpi-purple { background: rgba(156,39,176,.1); color: #7b1fa2; }
+.tg-kpi-value { font-size: 1.8rem; font-weight: 800; color: var(--tg-dark); line-height: 1; }
+.tg-kpi-label { font-size: 0.82rem; color: #888; margin-top: 4px; }
+.tg-kpi-delta { font-size: 0.78rem; font-weight: 600; margin-top: 4px; }
+
+/* ---- Vehicle Cards ---- */
+.tg-vehicle-card {
+  background: white; border-radius: var(--tg-radius); padding: 1.25rem;
+  border: 2px solid #f0f0f0; transition: all 0.2s;
+}
+.tg-vehicle-card:hover { border-color: var(--tg-green); }
+.tg-vehicle-primary { border-color: var(--tg-green); background: var(--tg-green-pale); }
+
+/* ---- Level / Medal ---- */
+.tg-level-badge { display: inline-block; background: var(--tg-dark); color: white; border-radius: 20px; padding: 6px 20px; font-weight: 700; }
+.tg-level-name { font-size: 1.1rem; }
+.tg-medal { font-size: 1.8rem; cursor: pointer; transition: transform 0.2s; }
+.tg-medal:hover { transform: scale(1.2); }
+.tg-medal-locked { filter: grayscale(1); opacity: 0.4; }
+
+/* ---- FAQ ---- */
+.tg-search-group { border-radius: 10px; overflow: hidden; box-shadow: var(--tg-shadow); }
+.tg-accordion .accordion-item { border: 1px solid rgba(0,0,0,.07); border-radius: 10px !important; margin-bottom: 8px; overflow: hidden; }
+.tg-accordion .accordion-button { font-weight: 600; }
+.tg-accordion .accordion-button:not(.collapsed) { background: var(--tg-green-pale); color: var(--tg-green); }
+.tg-faq-cat { background: var(--tg-green-pale); color: var(--tg-green); border-radius: 10px; padding: 2px 8px; font-size: 0.72rem; font-weight: 700; white-space: nowrap; }
+
+/* ---- Methodology ---- */
+.tg-formula { background: #f1f3f5; border-left: 4px solid var(--tg-green); border-radius: 8px; padding: 1rem 1.25rem; font-family: monospace; }
+
+/* ---- Table ---- */
+.tg-table thead th { background: #f8f9fa; font-weight: 700; color: var(--tg-dark); border-bottom: 2px solid #dee2e6; font-size: 0.85rem; }
+.tg-table tbody tr:hover { background: rgba(0,121,52,.04); }
+
+/* ---- Footer ---- */
+.tg-footer { background: var(--tg-dark); padding: 3rem 0 2rem; }
+.tg-footer-link { color: rgba(255,255,255,.5); text-decoration: none; font-size: 0.9rem; display: block; margin-bottom: 6px; transition: color 0.2s; }
+.tg-footer-link:hover { color: white; }
+.tg-social-link { color: rgba(255,255,255,.5); font-size: 1.3rem; transition: color 0.2s; text-decoration: none; }
+.tg-social-link:hover { color: var(--tg-green-light); }
+
+/* ---- Misc ---- */
+.tg-link { color: var(--tg-green); text-decoration: none; font-weight: 600; }
+.tg-link:hover { text-decoration: underline; }
+
+.tg-methodology-box { background: var(--tg-green-pale); border-radius: 16px; padding: 2rem; border: 1px solid rgba(0,121,52,.15); }
+
+/* ---- Responsive ---- */
+@media (max-width: 767px) {
+  .tg-hero { padding: 3rem 0 2.5rem; }
+  .tg-section { padding: 2.5rem 0; }
+  .tg-calc-panel { padding: 1.25rem; }
+  .tg-vehicle-grid { grid-template-columns: 1fr 1fr; }
+  .tg-result-co2 { font-size: 2.2rem; }
+}

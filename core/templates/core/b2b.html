@@ -1,0 +1,203 @@
+{% extends 'core/base.html' %}
+{% block title %}Área Corporativa{% endblock %}
+
+{% block content %}
+<section class="tg-section">
+  <div class="container">
+    <div class="row align-items-center mb-5">
+      <div class="col">
+        <span class="tg-badge mb-2">Área B2B</span>
+        <h1 class="tg-section-title mb-1">Dashboard Corporativo ESG</h1>
+        <p class="text-muted">Visão consolidada do impacto ambiental da sua frota</p>
+      </div>
+      <div class="col-auto">
+        <button class="btn tg-btn-outline me-2">
+          <i class="bi bi-download me-2"></i>Exportar PDF
+        </button>
+        <button class="btn tg-btn-primary">
+          <i class="bi bi-file-earmark-bar-graph me-2"></i>Relatório ESG
+        </button>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="row g-4 mb-5">
+      <div class="col-6 col-lg-3">
+        <div class="tg-kpi-card tg-kpi-featured">
+          <div class="tg-kpi-icon tg-kpi-green"><i class="bi bi-cloud"></i></div>
+          <div class="tg-kpi-value">{{ kpis.co2_total }}t</div>
+          <div class="tg-kpi-label">CO₂ evitado (ton)</div>
+          <div class="tg-kpi-delta text-success">+12% vs 2024</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="tg-kpi-card">
+          <div class="tg-kpi-icon tg-kpi-blue"><i class="bi bi-arrow-repeat"></i></div>
+          <div class="tg-kpi-value">{{ kpis.passagens|floatformat:0 }}</div>
+          <div class="tg-kpi-label">Total passagens</div>
+          <div class="tg-kpi-delta text-success">+18%</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="tg-kpi-card">
+          <div class="tg-kpi-icon tg-kpi-amber"><i class="bi bi-geo-alt"></i></div>
+          <div class="tg-kpi-value">{{ kpis.estados }}</div>
+          <div class="tg-kpi-label">Estados ativos</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="tg-kpi-card">
+          <div class="tg-kpi-icon tg-kpi-purple"><i class="bi bi-trophy"></i></div>
+          <div class="tg-kpi-value">#{{ kpis.ranking }}</div>
+          <div class="tg-kpi-label">Ranking nacional</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts row 1 -->
+    <div class="row g-4 mb-4">
+      <div class="col-lg-8">
+        <div class="tg-card p-4 h-100">
+          <h5 class="mb-4">Evolução Mensal de CO₂ Evitado (2025)</h5>
+          <canvas id="monthlyChart" height="90"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="tg-card p-4 h-100">
+          <h5 class="mb-4">Distribuição por Contexto</h5>
+          <canvas id="contextChart"></canvas>
+          <div class="mt-3">
+            {% for c in states_list|slice:":3" %}
+            {% endfor %}
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span style="width:12px;height:12px;background:#007934;border-radius:3px;display:inline-block"></span>
+              <span class="small">Pedágio 62%</span>
+            </div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span style="width:12px;height:12px;background:#61a60e;border-radius:3px;display:inline-block"></span>
+              <span class="small">Estacionamento 28%</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <span style="width:12px;height:12px;background:#a8d96e;border-radius:3px;display:inline-block"></span>
+              <span class="small">Acesso 10%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts row 2 -->
+    <div class="row g-4 mb-4">
+      <div class="col-lg-6">
+        <div class="tg-card p-4 h-100">
+          <h5 class="mb-4">Ranking por Estado</h5>
+          <canvas id="stateChart" height="120"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="tg-card p-4 h-100">
+          <h5 class="mb-4">Evolução Anual (ton CO₂)</h5>
+          <canvas id="annualChart" height="120"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- States Table -->
+    <div class="tg-card p-4">
+      <h5 class="mb-4">Detalhamento por Estado</h5>
+      <div class="table-responsive">
+        <table class="table tg-table">
+          <thead>
+            <tr>
+              <th>Estado</th>
+              <th class="text-end">CO₂ Evitado (ton)</th>
+              <th class="text-end">Passagens</th>
+              <th>Participação</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in states_list %}
+            <tr>
+              <td><strong>{{ s.state }}</strong></td>
+              <td class="text-end">{{ s.co2 }}</td>
+              <td class="text-end">{{ s.passages|floatformat:0 }}</td>
+              <td>
+                <div class="progress" style="height:6px">
+                  <div class="progress-bar bg-success" style="width:{{ s.passages|floatformat:0 }}px;max-width:100%"></div>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const monthly = {{ monthly_data|safe }};
+const states = {{ states_data|safe }};
+const annual = {{ annual_data|safe }};
+
+new Chart(document.getElementById('monthlyChart'), {
+  type: 'line',
+  data: {
+    labels: monthly.map(d => d.month),
+    datasets: [{
+      label: 'ton CO₂',
+      data: monthly.map(d => d.co2),
+      backgroundColor: 'rgba(0,121,52,0.15)',
+      borderColor: '#007934',
+      borderWidth: 3,
+      fill: true,
+      tension: 0.4,
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+
+new Chart(document.getElementById('contextChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Pedágio', 'Estacionamento', 'Acesso'],
+    datasets: [{ data: [62, 28, 10], backgroundColor: ['#007934','#61a60e','#a8d96e'], borderWidth: 0 }]
+  },
+  options: { responsive: true, plugins: { legend: { display: false } } }
+});
+
+new Chart(document.getElementById('stateChart'), {
+  type: 'bar',
+  data: {
+    labels: states.map(d => d.state),
+    datasets: [{
+      label: 'ton CO₂',
+      data: states.map(d => d.co2),
+      backgroundColor: 'rgba(0,121,52,0.7)',
+      borderColor: '#007934',
+      borderWidth: 1,
+      borderRadius: 4,
+    }]
+  },
+  options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
+});
+
+new Chart(document.getElementById('annualChart'), {
+  type: 'bar',
+  data: {
+    labels: annual.map(d => d.year),
+    datasets: [{
+      label: 'ton CO₂',
+      data: annual.map(d => d.co2),
+      backgroundColor: 'rgba(97,166,14,0.7)',
+      borderColor: '#61a60e',
+      borderWidth: 2,
+      borderRadius: 6,
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'core/base.html' %}
+{% block title %}Excluir Veículo{% endblock %}
+
+{% block content %}
+<section class="tg-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-5 text-center">
+        <div style="font-size:3rem" class="mb-3">⚠️</div>
+        <h2>Excluir veículo?</h2>
+        <p class="text-muted">Tem certeza que deseja excluir <strong>{{ vehicle.name }}</strong> ({{ vehicle.plate|default:"sem placa" }})?</p>
+        <form method="post" class="d-flex gap-3 justify-content-center mt-4">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Excluir</button>
+          <a href="{% url 'meu_impacto' %}" class="btn tg-btn-outline">Cancelar</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
