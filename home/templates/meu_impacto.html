@@ -1,0 +1,317 @@
+{% load static %}
+{% load sass_tags %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TagGreen — Meu Impacto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="{% sass_src 'scss/meu_impacto.scss' %}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="{% url 'home' %}" class="logo">
+        <img src="{% static 'images/logo-sem-fundo.png' %}" alt="TagGreen" />
+      </a>
+      <nav class="nav" id="main-nav" aria-label="Menu principal">
+        <ul class="nav__list">
+          <li><a href="{% url 'home' %}" class="nav__link">Home</a></li>
+          <li><a href="#" class="nav__link">Calculadora</a></li>
+          <li><a href="{% url 'meu_impacto' %}" class="nav__link nav__link--active">Meu Impacto</a></li>
+          <li><a href="#" class="nav__link">Metodologia</a></li>
+          <li><a href="#" class="nav__link">FAQ</a></li>
+          <li><a href="{% url 'empresas_relatorios' %}" class="nav__link nav__link--pill">Empresas</a></li>
+        </ul>
+      </nav>
+      <button class="hamburger" id="hamburger-btn" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== CONTEÚDO PRINCIPAL ===== -->
+  <main class="impacto">
+    <div class="impacto__inner">
+
+      <!-- Saudação + botão Wrapped -->
+      <div class="impacto__greeting">
+        <div>
+          <h1 class="impacto__hello" id="greeting-title">Olá, João! 👋</h1>
+          <p class="impacto__hello-sub">Veja o impacto das suas escolhas sustentáveis</p>
+        </div>
+        <button class="btn btn--primary" id="btn-wrapped">
+          <span class="material-symbols-outlined">auto_awesome</span>
+          Meu Wrapped
+        </button>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="kpi-grid">
+
+        <div class="kpi-card">
+          <div class="kpi-card__top">
+            <span class="kpi-card__icon kpi-card__icon--green">
+              <span class="material-symbols-outlined">eco</span>
+            </span>
+            <span class="kpi-card__trend kpi-card__trend--up">
+              <span class="material-symbols-outlined">trending_up</span>+12%
+            </span>
+          </div>
+          <strong class="kpi-card__value" id="kpi-co2e-mes">27.6 kg</strong>
+          <span class="kpi-card__label">CO2e Evitado (Mês)</span>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-card__top">
+            <span class="kpi-card__icon kpi-card__icon--blue">
+              <span class="material-symbols-outlined">bolt</span>
+            </span>
+            <span class="kpi-card__trend kpi-card__trend--up">
+              <span class="material-symbols-outlined">trending_up</span>+8
+            </span>
+          </div>
+          <strong class="kpi-card__value" id="kpi-passagens">42</strong>
+          <span class="kpi-card__label">Passagens no Mês</span>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-card__top">
+            <span class="kpi-card__icon kpi-card__icon--teal">
+              <span class="material-symbols-outlined">forest</span>
+            </span>
+            <span class="kpi-card__trend kpi-card__trend--badge">2025</span>
+          </div>
+          <strong class="kpi-card__value" id="kpi-total">268 kg</strong>
+          <span class="kpi-card__label">Total Acumulado</span>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-card__top">
+            <span class="kpi-card__icon kpi-card__icon--gold">
+              <span class="material-symbols-outlined">schedule</span>
+            </span>
+            <span class="kpi-card__trend kpi-card__trend--badge">este mês</span>
+          </div>
+          <strong class="kpi-card__value" id="kpi-tempo">105 min</strong>
+          <span class="kpi-card__label">Tempo Economizado</span>
+        </div>
+
+      </div>
+
+      <!-- Linha 1: Gráfico de Barras + Nível -->
+      <div class="content-row">
+
+        <div class="chart-card">
+          <div class="chart-card__header">
+            <h3 class="chart-card__title">Emissões Evitadas por Mês</h3>
+            <p class="chart-card__desc">kg CO2e evitados mensalmente</p>
+          </div>
+          <div class="chart-card__body chart-card__body--canvas">
+            <canvas id="monthlyChart"></canvas>
+          </div>
+        </div>
+
+        <div class="side-card nivel-card">
+          <h3 class="side-card__title">Seu Nível</h3>
+
+          <div class="nivel-circle">
+            <span class="material-symbols-outlined nivel-circle__icon">eco</span>
+            <span class="nivel-circle__badge">
+              <span class="material-symbols-outlined">emoji_events</span>
+            </span>
+          </div>
+
+          <p class="nivel-card__nome" id="nivel-nome">Intermediário</p>
+          <p class="nivel-card__sub" id="nivel-sub">134 pontos para o próximo nível</p>
+
+          <div class="nivel-bar-wrap">
+            <div class="nivel-bar" id="nivel-bar" style="width: 87%"></div>
+          </div>
+
+          <div class="nivel-labels">
+            <span>Iniciante</span>
+            <span>Avançado</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Linha 2: Evolução Anual + Meus Veículos -->
+      <div class="content-row">
+
+        <div class="chart-card">
+          <div class="chart-card__header">
+            <h3 class="chart-card__title">Evolução Anual</h3>
+            <p class="chart-card__desc">Histórico de CO2e evitado por ano</p>
+          </div>
+          <div class="chart-card__body chart-card__body--canvas">
+            <canvas id="annualChart"></canvas>
+          </div>
+        </div>
+
+        <div class="side-card veiculos-card">
+          <h3 class="side-card__title">Meus Veículos</h3>
+
+          <ul class="veiculo-list" id="veiculo-list">
+            <li class="veiculo-item">
+              <span class="veiculo-item__icon">
+                <span class="material-symbols-outlined">directions_car</span>
+              </span>
+              <div class="veiculo-item__info">
+                <strong>Honda Civic 2022</strong>
+                <span>Combustão</span>
+              </div>
+              <span class="material-symbols-outlined veiculo-item__arrow">arrow_forward</span>
+            </li>
+            <li class="veiculo-item">
+              <span class="veiculo-item__icon">
+                <span class="material-symbols-outlined">two_wheeler</span>
+              </span>
+              <div class="veiculo-item__info">
+                <strong>Yamaha MT-03</strong>
+                <span>Moto</span>
+              </div>
+              <span class="material-symbols-outlined veiculo-item__arrow">arrow_forward</span>
+            </li>
+          </ul>
+
+          <button class="add-veiculo-btn">
+            <span class="material-symbols-outlined">add</span>
+            Adicionar veículo
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Medalhas & Conquistas -->
+      <section class="medals-section">
+        <h2 class="medals-section__title">Medalhas &amp; Conquistas</h2>
+        <div class="medals-grid" id="medals-grid">
+
+          <div class="medal-card medal-card--earned">
+            <div class="medal-card__icon">
+              <span class="material-symbols-outlined">bolt</span>
+            </div>
+            <span class="medal-card__label">Primeira Passagem</span>
+          </div>
+
+          <div class="medal-card medal-card--earned">
+            <div class="medal-card__icon">
+              <span class="material-symbols-outlined">emoji_events</span>
+            </div>
+            <span class="medal-card__label">100 Passagens</span>
+          </div>
+
+          <div class="medal-card medal-card--earned">
+            <div class="medal-card__icon">
+              <span class="material-symbols-outlined">eco</span>
+            </div>
+            <span class="medal-card__label">Eco Warrior</span>
+          </div>
+
+          <div class="medal-card medal-card--locked">
+            <div class="medal-card__icon">
+              <span class="material-symbols-outlined">lock</span>
+            </div>
+            <span class="medal-card__label">500 Passagens</span>
+          </div>
+
+          <div class="medal-card medal-card--locked">
+            <div class="medal-card__icon">
+              <span class="material-symbols-outlined">lock</span>
+            </div>
+            <span class="medal-card__label">1 Tonelada Evitada</span>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ===== WRAPPED MODAL ===== -->
+  <div class="wrapped-modal" id="wrapped-modal" role="dialog" aria-modal="true">
+    <button class="wrapped-modal__close" id="wrapped-close" aria-label="Fechar">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+    <div class="wrapped-inner">
+      <div class="wrapped-badge">
+        <span class="material-symbols-outlined">auto_awesome</span>
+        Meu Wrapped 2025
+      </div>
+      <p class="wrapped-greeting">Incrível, João! 🎉</p>
+      <span class="wrapped-hero__label">Você evitou em 2025</span>
+      <span class="wrapped-hero__number" id="w-total">268</span>
+      <span class="wrapped-hero__unit">kg de CO₂ equivalente</span>
+      <div class="wrapped-divider"></div>
+      <div class="wrapped-cards">
+        <div class="wrapped-card">
+          <span class="wrapped-card__icon">🚦</span>
+          <span class="wrapped-card__value" id="w-passagens">384</span>
+          <span class="wrapped-card__label">passagens no total</span>
+        </div>
+        <div class="wrapped-card">
+          <span class="wrapped-card__icon">⏱️</span>
+          <span class="wrapped-card__value" id="w-tempo">19,2 h</span>
+          <span class="wrapped-card__label">de fila economizadas</span>
+        </div>
+        <div class="wrapped-card">
+          <span class="wrapped-card__icon">🌳</span>
+          <span class="wrapped-card__value" id="w-arvores">12</span>
+          <span class="wrapped-card__label">árvores equivalentes</span>
+        </div>
+        <div class="wrapped-card">
+          <span class="wrapped-card__icon">🏅</span>
+          <span class="wrapped-card__value" id="w-nivel">Intermediário</span>
+          <span class="wrapped-card__label">seu nível atual</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="wrapped-overlay" id="wrapped-overlay"></div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <a href="{% url 'home' %}" class="logo logo--light">
+          <img src="{% static 'images/logo-sem-fundo.png' %}" alt="TagGreen" />
+        </a>
+        <p class="footer__tagline">Menos fila, menos marcha lenta, menos emissao.</p>
+      </div>
+      <div class="footer__col">
+        <h5 class="footer__col-title">PLATAFORMA</h5>
+        <ul class="footer__links">
+          <li><a href="#">Calculadora</a></li>
+          <li><a href="#">Meu Impacto</a></li>
+          <li><a href="#">Metodologia</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h5 class="footer__col-title">CONTATO</h5>
+        <ul class="footer__links footer__links--contact">
+          <li>
+            <span class="material-symbols-outlined">mail</span>
+            <a href="mailto:contato@taggy.com.br">contato@taggy.com.br</a>
+          </li>
+          <li>
+            <span class="material-symbols-outlined">location_on</span>
+            <span>São Paulo, Brasil</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 2026 Taggy. Todos os direitos reservados.</span>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/meu_impacto.js' %}"></script>
+</body>
+</html>
