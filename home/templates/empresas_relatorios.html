@@ -23,9 +23,9 @@
         <ul class="nav__list">
           <li><a href="{% url 'home' %}" class="nav__link">Home</a></li>
           <li><a href="#" class="nav__link">Calculadora</a></li>
-          <li><a href="#" class="nav__link">Meu Impacto</a></li>
-          <li><a href="#" class="nav__link">Metodologia</a></li>
-          <li><a href="#" class="nav__link">FAQ</a></li>
+          <li><a href="{% url 'meu_impacto' %}" class="nav__link">Meu Impacto</a></li>
+          <li><a href="{% url 'metodologia' %}" class="nav__link">Metodologia</a></li>
+          <li><a href="{% url 'faq' %}" class="nav__link">FAQ</a></li>
           <li><a href="{% url 'empresas_relatorios' %}" class="nav__link nav__link--active nav__link--pill">Empresas</a></li>
         </ul>
       </nav>
@@ -222,9 +222,9 @@
         <h5 class="footer__col-title">PLATAFORMA</h5>
         <ul class="footer__links">
           <li><a href="#">Calculadora</a></li>
-          <li><a href="#">Meu Impacto</a></li>
-          <li><a href="#">Metodologia</a></li>
-          <li><a href="#">FAQ</a></li>
+          <li><a href="{% url 'meu_impacto' %}">Meu Impacto</a></li>
+          <li><a href="{% url 'metodologia' %}">Metodologia</a></li>
+          <li><a href="{% url 'faq' %}">FAQ</a></li>
         </ul>
       </div>
       <div class="footer__col">

@@ -15,6 +15,12 @@ def home(request):
 def meu_impacto(request):
     return render(request, 'meu_impacto.html')
 
+def metodologia(request):
+    return render(request, 'metodologia.html')
+
+def faq(request):
+    return render(request, 'faq.html')
+
 def empresas_relatorios(request):
     return render(request, 'empresas_relatorios.html')
 
@@ -74,10 +80,7 @@ def _co2e_anual(ctx_f, vei_f, est_f):
 def _ranking_estados(ano, ctx_f, top_n):
     total = DE.ANNUAL_TOTALS_KG.get(ano, 0)
     mc    = _mult(ctx_f, DE.CONTEXT_WEIGHTS)
-    lista = [
-        {'uf': uf, 'nome': DE.STATE_NAMES.get(uf, uf), 'co2e_kg': round(total * peso * mc)}
-        for uf, peso in DE.STATE_WEIGHTS.items()
-    ]
+    lista = [{'uf': uf, 'nome': DE.STATE_NAMES.get(uf, uf), 'co2e_kg': round(total * peso * mc)} for uf, peso in DE.STATE_WEIGHTS.items()]
     lista.sort(key=lambda x: x['co2e_kg'], reverse=True)
     top = lista[:top_n]
     max_val = top[0]['co2e_kg'] if top else 1
@@ -90,72 +93,38 @@ def _distribuicao_contexto(ano, vei_f, est_f):
     total   = DE.ANNUAL_TOTALS_KG.get(ano, 0)
     total_p = DE.ANNUAL_PASSAGENS.get(ano, 0)
     mv, me  = _mult(vei_f, DE.VEHICLE_WEIGHTS), _mult(est_f, DE.STATE_WEIGHTS)
-    return {
-        ctx: {
-            'label':     DE.CONTEXT_LABELS[ctx],
-            'co2e_kg':   round(total   * peso * mv * me),
-            'passagens': round(total_p * peso * mv * me),
-            'pct':       round(peso * 100),
-        }
-        for ctx, peso in DE.CONTEXT_WEIGHTS.items()
-    }
+    return {ctx: {'label': DE.CONTEXT_LABELS[ctx], 'co2e_kg': round(total * peso * mv * me), 'passagens': round(total_p * peso * mv * me), 'pct': round(peso * 100)} for ctx, peso in DE.CONTEXT_WEIGHTS.items()}
 
 def _distribuicao_veiculo(ano, ctx_f, est_f):
     total  = DE.ANNUAL_TOTALS_KG.get(ano, 0)
     mc, me = _mult(ctx_f, DE.CONTEXT_WEIGHTS), _mult(est_f, DE.STATE_WEIGHTS)
-    return {
-        vk: {
-            'label':   DE.VEHICLE_LABELS[vk],
-            'co2e_kg': round(total * peso * mc * me),
-            'pct':     round(peso * 100),
-        }
-        for vk, peso in DE.VEHICLE_WEIGHTS.items()
-    }
+    return {vk: {'label': DE.VEHICLE_LABELS[vk], 'co2e_kg': round(total * peso * mc * me), 'pct': round(peso * 100)} for vk, peso in DE.VEHICLE_WEIGHTS.items()}
 
 def _kpis(ano, ctx_f, vei_f, est_f):
     mc = _mult(ctx_f, DE.CONTEXT_WEIGHTS)
     mv = _mult(vei_f, DE.VEHICLE_WEIGHTS)
     me = _mult(est_f, DE.STATE_WEIGHTS)
-    co2e_at  = round(DE.ANNUAL_TOTALS_KG.get(ano, 0) * mc * mv * me)
-    pass_at  = round(DE.ANNUAL_PASSAGENS.get(ano, 0)  * mc * mv * me)
-    est_n    = DE.ESTADOS_ATIVOS_POR_ANO.get(ano, 0)
+    co2e_at = round(DE.ANNUAL_TOTALS_KG.get(ano, 0) * mc * mv * me)
+    pass_at = round(DE.ANNUAL_PASSAGENS.get(ano, 0)  * mc * mv * me)
+    est_n   = DE.ESTADOS_ATIVOS_POR_ANO.get(ano, 0)
     rank_inf = DE.RANKING_NACIONAL.get(ano, {})
     ano_ant  = ano - 1
-    co2e_an  = DE.ANNUAL_TOTALS_KG.get(ano_ant, co2e_at)
-    pass_an  = DE.ANNUAL_PASSAGENS.get(ano_ant, pass_at)
-    est_an   = DE.ESTADOS_ATIVOS_POR_ANO.get(ano_ant, est_n)
-    rank_an  = DE.RANKING_NACIONAL.get(ano_ant, {}).get('posicao', rank_inf.get('posicao', 0))
-    def trend_pct(atual, ant):
-        return round((atual - ant) / ant * 100, 1) if ant else 0
+    co2e_an = DE.ANNUAL_TOTALS_KG.get(ano_ant, co2e_at)
+    pass_an = DE.ANNUAL_PASSAGENS.get(ano_ant, pass_at)
+    est_an  = DE.ESTADOS_ATIVOS_POR_ANO.get(ano_ant, est_n)
+    rank_an = DE.RANKING_NACIONAL.get(ano_ant, {}).get('posicao', rank_inf.get('posicao', 0))
+    def trend_pct(atual, ant): return round((atual - ant) / ant * 100, 1) if ant else 0
     return {
-        'co2e_evitado': {
-            'valor_kg': co2e_at, 'valor_ton': round(co2e_at / 1000, 2),
-            'trend_pct': trend_pct(co2e_at, co2e_an),
-            'trend_dir': 'up' if co2e_at >= co2e_an else 'down',
-        },
-        'passagens': {
-            'valor': pass_at, 'trend_pct': trend_pct(pass_at, pass_an),
-            'trend_dir': 'up' if pass_at >= pass_an else 'down',
-        },
-        'estados_ativos': {
-            'valor': est_n, 'trend_abs': est_n - est_an,
-            'trend_dir': 'up' if est_n >= est_an else 'down',
-        },
-        'ranking_nacional': {
-            'posicao': rank_inf.get('posicao'), 'grupo': rank_inf.get('grupo'),
-            'trend_abs': rank_an - rank_inf.get('posicao', rank_an),
-            'trend_dir': 'up' if rank_an >= rank_inf.get('posicao', rank_an) else 'down',
-        },
+        'co2e_evitado':   {'valor_kg': co2e_at, 'valor_ton': round(co2e_at / 1000, 2), 'trend_pct': trend_pct(co2e_at, co2e_an), 'trend_dir': 'up' if co2e_at >= co2e_an else 'down'},
+        'passagens':      {'valor': pass_at, 'trend_pct': trend_pct(pass_at, pass_an), 'trend_dir': 'up' if pass_at >= pass_an else 'down'},
+        'estados_ativos': {'valor': est_n, 'trend_abs': est_n - est_an, 'trend_dir': 'up' if est_n >= est_an else 'down'},
+        'ranking_nacional':{'posicao': rank_inf.get('posicao'), 'grupo': rank_inf.get('grupo'), 'trend_abs': rank_an - rank_inf.get('posicao', rank_an), 'trend_dir': 'up' if rank_an >= rank_inf.get('posicao', rank_an) else 'down'},
     }
 
 def _meta_vs_realizado(ano):
     meta   = DE.METAS_ANUAIS_KG.get(ano, 0)
     realiz = DE.ANNUAL_TOTALS_KG.get(ano, 0)
-    return {
-        'meta_kg': meta, 'realizado_kg': realiz,
-        'pct_atingido': round(realiz / meta * 100, 1) if meta else 0,
-        'status': 'atingida' if realiz >= meta else 'em_progresso',
-    }
+    return {'meta_kg': meta, 'realizado_kg': realiz, 'pct_atingido': round(realiz / meta * 100, 1) if meta else 0, 'status': 'atingida' if realiz >= meta else 'em_progresso'}
 
 
 # =============================================================================

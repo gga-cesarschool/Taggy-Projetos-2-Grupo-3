@@ -1,0 +1,512 @@
+// =============================================
+// TagGreen — FAQ
+// base: html { font-size: 62.5% } → 1rem = 10px
+// =============================================
+@import 'global';
+@import 'variables';
+@import 'utils';
+
+// =============================================
+// MATERIAL SYMBOLS
+// =============================================
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 2rem;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+// =============================================
+// HEADER — idêntico ao home.scss
+// =============================================
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  height: 6.8rem;
+  background-color: $color-white;
+  border-bottom: 0.1rem solid $color-border;
+  box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.08);
+
+  &__inner {
+    @include display-flex($justify-content: space-between, $gap: 0);
+    max-width: 120rem;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 3.2rem;
+  }
+}
+
+.logo {
+  @include display-flex($gap: 0);
+  img { height: 3.6rem; width: auto; display: block; }
+}
+
+.nav {
+  &__list { @include display-flex($gap: 0.4rem); }
+  &__link {
+    @include display-flex($gap: 0);
+    @include padding(0.8rem, 1.6rem, 0.8rem, 1.6rem);
+    @include border-radius(9999px);
+    @include transition(all, 0.15s, ease-in-out);
+    font-family: $font-primary;
+    font-size: 1.4rem;
+    font-weight: $fw-medium;
+    color: $color-text-body;
+
+    &:hover {
+      color: $color-primary;
+      background-color: rgba($color-primary-light, 0.08);
+    }
+
+    &--active {
+      background-color: $color-primary;
+      color: $color-white;
+      font-weight: $fw-semibold;
+      &:hover { background-color: $color-primary-dark; }
+    }
+  }
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.8rem;
+
+  span {
+    display: block;
+    width: 2.2rem;
+    height: 0.2rem;
+    background-color: $color-text-dark;
+    @include border-radius(9999px);
+    @include transition(transform, 0.25s, ease-in-out);
+  }
+
+  &.is-open {
+    span:nth-child(1) { transform: translateY(0.7rem) rotate(45deg); }
+    span:nth-child(2) { opacity: 0; }
+    span:nth-child(3) { transform: translateY(-0.7rem) rotate(-45deg); }
+  }
+}
+
+@media (max-width: 768px) {
+  .hamburger { display: flex; }
+  .nav {
+    display: none;
+    position: absolute;
+    top: 6.8rem;
+    left: 0; right: 0;
+    background-color: $color-white;
+    border-bottom: 0.1rem solid $color-border;
+    padding: 1.6rem 3.2rem;
+    box-shadow: 0 0.4rem 1.6rem rgba(0, 0, 0, 0.1);
+    &.is-open { display: block; }
+    &__list { @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 0.4rem); }
+    &__link { width: 100%; }
+  }
+}
+
+// =============================================
+// LAYOUT PRINCIPAL
+// =============================================
+.faq {
+  background-color: $color-bg;
+  min-height: calc(100vh - 6.8rem);
+  padding: 4rem 3.2rem 8rem;
+
+  &__inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .faq { padding: 3.2rem 1.6rem 5rem; }
+}
+
+// =============================================
+// HERO
+// =============================================
+.faq__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.2rem;
+  padding-bottom: 0.8rem;
+}
+
+.faq__title {
+  font-family: $font-primary;
+  font-size: 3.2rem;
+  font-weight: $fw-extrabold;
+  color: $color-text-dark;
+  margin: 0;
+}
+
+.faq__subtitle {
+  font-size: 1.5rem;
+  color: $color-text-muted;
+  margin: 0;
+}
+
+// =============================================
+// BUSCA
+// =============================================
+.faq-search-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 52rem;
+  margin-top: 0.8rem;
+
+  &__icon {
+    position: absolute;
+    left: 1.4rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.8rem;
+    color: $color-text-muted;
+    pointer-events: none;
+  }
+}
+
+.faq-search {
+  width: 100%;
+  height: 4.8rem;
+  @include padding(0, 1.8rem, 0, 4.4rem);
+  @include border-radius(1.2rem);
+  border: 0.15rem solid $color-border;
+  background-color: $color-white;
+  font-family: $font-primary;
+  font-size: 1.4rem;
+  color: $color-text-dark;
+  @include transition(border-color, 0.15s, ease-in-out);
+  outline: none;
+  appearance: none;
+
+  &::placeholder { color: $color-text-muted; }
+
+  &:focus {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 0.3rem rgba($color-primary, 0.12);
+  }
+}
+
+// =============================================
+// FILTROS DE CATEGORIA
+// =============================================
+.faq-filters {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.faq-filter {
+  @include display-flex($gap: 0.6rem);
+  @include padding(0.8rem, 1.6rem, 0.8rem, 1.4rem);
+  @include border-radius(9999px);
+  border: 0.15rem solid $color-border;
+  background-color: $color-white;
+  font-family: $font-primary;
+  font-size: 1.35rem;
+  font-weight: $fw-medium;
+  color: $color-text-body;
+  cursor: pointer;
+  @include transition(all, 0.15s, ease-in-out);
+
+  .material-symbols-outlined { font-size: 1.6rem; }
+
+  &:hover {
+    border-color: $color-primary;
+    color: $color-primary;
+    background-color: rgba($color-primary, 0.04);
+  }
+
+  &--active {
+    background-color: $color-primary;
+    border-color: $color-primary;
+    color: $color-white;
+    font-weight: $fw-semibold;
+
+    &:hover {
+      background-color: $color-primary-dark;
+      border-color: $color-primary-dark;
+      color: $color-white;
+    }
+  }
+}
+
+// =============================================
+// CONTADOR DE RESULTADOS
+// =============================================
+.faq-count {
+  font-size: 1.3rem;
+  color: $color-text-muted;
+  margin: 0;
+  min-height: 1.8rem;
+}
+
+// =============================================
+// LISTA DE FAQ — acordeão
+// =============================================
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background-color: $color-white;
+  @include border-radius(1.6rem);
+  border: 0.1rem solid $color-border;
+  overflow: hidden;
+}
+
+// =============================================
+// ITEM DO FAQ
+// =============================================
+.faq-item {
+  border-bottom: 0.1rem solid $color-border;
+  @include transition(background, 0.1s, ease);
+
+  &:last-child { border-bottom: none; }
+
+  &--hidden { display: none; }
+
+  &__btn {
+    @include display-flex($justify-content: space-between, $align-items: center, $gap: 1.6rem);
+    width: 100%;
+    @include padding(2rem, 2.4rem, 2rem, 2.4rem);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: $font-primary;
+    font-size: 1.5rem;
+    font-weight: $fw-medium;
+    color: $color-text-dark;
+    @include transition(color, 0.15s, ease-in-out);
+
+    &:hover { color: $color-primary; }
+  }
+
+  &__icon {
+    font-size: 2rem;
+    color: $color-text-muted;
+    flex-shrink: 0;
+    @include transition(transform, 0.25s, ease-in-out);
+  }
+
+  // Estado aberto
+  &--open {
+    background-color: rgba($color-primary, 0.02);
+
+    .faq-item__btn { color: $color-primary; font-weight: $fw-semibold; }
+    .faq-item__icon { transform: rotate(180deg); color: $color-primary; }
+  }
+
+  &__answer {
+    @include padding(0, 2.4rem, 2rem, 2.4rem);
+    font-size: 1.4rem;
+    color: $color-text-body;
+    line-height: 1.7;
+
+    p { margin: 0 0 1rem; &:last-child { margin: 0; } }
+
+    ul {
+      padding-left: 0;
+      margin: 0.8rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      list-style: none;
+
+      li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.8rem;
+        font-size: 1.4rem;
+        line-height: 1.6;
+
+        &::before {
+          content: '';
+          display: block;
+          width: 0.6rem;
+          height: 0.6rem;
+          @include border-radius(9999px);
+          background-color: $color-primary;
+          flex-shrink: 0;
+          margin-top: 0.6rem;
+        }
+      }
+    }
+
+    a {
+      color: $color-primary;
+      font-weight: $fw-medium;
+      text-decoration: underline;
+      text-underline-offset: 0.2rem;
+      @include transition(color, 0.15s, ease-in-out);
+      &:hover { color: $color-primary-dark; }
+    }
+
+    strong { font-weight: $fw-semibold; color: $color-text-dark; }
+  }
+}
+
+// Bloco de fórmula dentro de respostas
+.faq-formula {
+  display: block;
+  @include padding(1rem, 1.4rem, 1rem, 1.4rem);
+  @include border-radius(0.8rem);
+  background-color: $color-bg;
+  border: 0.1rem solid $color-border;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.3rem;
+  color: $color-primary-dark;
+  margin: 0.8rem 0;
+  font-weight: $fw-semibold;
+}
+
+// =============================================
+// SEM RESULTADO
+// =============================================
+.faq-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  @include padding(5.6rem, 2.4rem, 5.6rem, 2.4rem);
+  text-align: center;
+
+  &__icon {
+    font-size: 4.8rem;
+    color: $color-border;
+  }
+
+  p {
+    font-size: 1.5rem;
+    color: $color-text-muted;
+    margin: 0;
+  }
+
+  &__reset {
+    @include padding(0.9rem, 2rem, 0.9rem, 2rem);
+    @include border-radius(9999px);
+    border: 0.15rem solid $color-border;
+    background: none;
+    font-family: $font-primary;
+    font-size: 1.4rem;
+    font-weight: $fw-medium;
+    color: $color-text-body;
+    cursor: pointer;
+    @include transition(all, 0.15s, ease-in-out);
+
+    &:hover { border-color: $color-primary; color: $color-primary; }
+  }
+}
+
+// =============================================
+// FOOTER — idêntico ao home.scss
+// =============================================
+.footer {
+  background-color: $color-card-dark;
+  padding: 5rem 3.2rem 0;
+
+  &__inner {
+    @include display-flex($justify-content: space-between, $align-items: flex-start, $gap: 4rem);
+    max-width: 120rem;
+    margin: 0 auto;
+    padding-bottom: 4rem;
+    border-bottom: 0.1rem solid $color-card-border;
+    flex-wrap: wrap;
+  }
+
+  &__brand {
+    @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1.6rem);
+    max-width: 26rem;
+    flex-shrink: 0;
+  }
+
+  &__tagline {
+    font-size: 1.4rem;
+    color: rgba($color-white, 0.55);
+    line-height: 1.7;
+  }
+
+  &__col {
+    @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1.6rem);
+    min-width: 14rem;
+  }
+
+  &__col-title {
+    font-size: 1.1rem;
+    font-weight: $fw-semibold;
+    letter-spacing: 0.1em;
+    color: rgba($color-white, 0.4);
+  }
+
+  &__links {
+    @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1.2rem);
+    list-style: none;
+    padding: 0; margin: 0;
+
+    li a, li span {
+      font-size: 1.4rem;
+      color: rgba($color-white, 0.7);
+      @include transition(color, 0.15s, ease-in-out);
+      &:hover { color: $color-white; }
+    }
+
+    &--contact li {
+      @include display-flex($justify-content: flex-start, $gap: 0.8rem);
+      .material-symbols-outlined { font-size: 1.6rem; color: rgba($color-white, 0.4); flex-shrink: 0; }
+    }
+  }
+
+  &__bottom {
+    @include display-flex($justify-content: space-between, $gap: 0);
+    max-width: 120rem;
+    margin: 0 auto;
+    padding: 2.4rem 0;
+    font-size: 1.3rem;
+    color: rgba($color-white, 0.35);
+  }
+
+  &__bottom-links {
+    @include display-flex($gap: 2.4rem);
+    a {
+      font-size: 1.3rem;
+      color: rgba($color-white, 0.35);
+      @include transition(color, 0.15s, ease-in-out);
+      &:hover { color: rgba($color-white, 0.7); }
+    }
+  }
+}
+
+.logo--light img { filter: brightness(0) invert(1); }
+
+@media (max-width: 900px) {
+  .footer__inner { flex-wrap: wrap; gap: 3.2rem; }
+  .footer__brand { max-width: 100%; }
+}
+
+@media (max-width: 560px) {
+  .footer { padding: 4rem 1.6rem 0; }
+  .footer__bottom { flex-direction: column; align-items: center; gap: 1.2rem; text-align: center; }
+}

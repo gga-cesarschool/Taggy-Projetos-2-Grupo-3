@@ -1,0 +1,1012 @@
+// =============================================
+// TagGreen — Metodologia
+// base: html { font-size: 62.5% } → 1rem = 10px
+// =============================================
+@import 'global';
+@import 'variables';
+@import 'utils';
+
+// =============================================
+// MATERIAL SYMBOLS
+// =============================================
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 2rem;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+// =============================================
+// HEADER
+// =============================================
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  height: 6.8rem;
+  background-color: $color-white;
+  border-bottom: 0.1rem solid $color-border;
+  box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.08);
+
+  &__inner {
+    @include display-flex($justify-content: space-between, $gap: 0);
+    max-width: 120rem;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 3.2rem;
+  }
+}
+
+.logo {
+  @include display-flex($gap: 0);
+  img { height: 3.6rem; width: auto; display: block; }
+}
+
+.nav {
+  &__list { @include display-flex($gap: 0.4rem); }
+  &__link {
+    @include display-flex($gap: 0);
+    @include padding(0.8rem, 1.6rem, 0.8rem, 1.6rem);
+    @include border-radius(9999px);
+    @include transition(all, 0.15s, ease-in-out);
+    font-family: $font-primary;
+    font-size: 1.4rem;
+    font-weight: $fw-medium;
+    color: $color-text-body;
+
+    &:hover {
+      color: $color-primary;
+      background-color: rgba($color-primary-light, 0.08);
+    }
+
+    &--active {
+      background-color: $color-primary !important;
+      color: $color-white !important;
+      font-weight: $fw-semibold;
+      &:hover { background-color: $color-primary-dark !important; }
+    }
+
+    &--pill {
+      background-color: $color-primary;
+      color: $color-white;
+      font-weight: $fw-semibold;
+      &:hover { background-color: $color-primary-dark; }
+    }
+
+    &--pill-outline {
+      border: 0.15rem solid $color-border;
+      color: $color-text-body;
+      &:hover { border-color: $color-primary; color: $color-primary; }
+    }
+  }
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.8rem;
+
+  span {
+    display: block;
+    width: 2.2rem;
+    height: 0.2rem;
+    background-color: $color-text-dark;
+    @include border-radius(9999px);
+    @include transition(transform, 0.25s, ease-in-out);
+  }
+
+  &.is-open {
+    span:nth-child(1) { transform: translateY(0.7rem) rotate(45deg); }
+    span:nth-child(2) { opacity: 0; }
+    span:nth-child(3) { transform: translateY(-0.7rem) rotate(-45deg); }
+  }
+}
+
+@media (max-width: 768px) {
+  .hamburger { display: flex; }
+  .nav {
+    display: none;
+    position: absolute;
+    top: 6.8rem;
+    left: 0; right: 0;
+    background-color: $color-white;
+    border-bottom: 0.1rem solid $color-border;
+    padding: 1.6rem 3.2rem;
+    box-shadow: 0 0.4rem 1.6rem rgba(0, 0, 0, 0.1);
+    &.is-open { display: block; }
+    &__list { @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 0.4rem); }
+    &__link { width: 100%; }
+  }
+}
+
+// =============================================
+// LAYOUT PRINCIPAL
+// =============================================
+.metodo {
+  background-color: $color-bg;
+  min-height: calc(100vh - 6.8rem);
+  padding: 4rem 3.2rem 8rem;
+
+  &__inner {
+    max-width: 76rem;     // página de conteúdo mais estreita (leitura)
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2.4rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .metodo { padding: 2.4rem 1.6rem 5rem; }
+}
+
+// =============================================
+// HERO
+// =============================================
+.metodo__hero {
+  text-align: center;
+  padding: 2.4rem 0 0.8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.version-badge {
+  @include padding(0.5rem, 1.4rem, 0.5rem, 1.4rem);
+  @include border-radius(9999px);
+  background-color: rgba($color-primary, 0.08);
+  border: 0.1rem solid rgba($color-primary, 0.2);
+  font-size: 1.2rem;
+  font-weight: $fw-semibold;
+  color: $color-primary-dark;
+  letter-spacing: 0.04em;
+}
+
+.metodo__title {
+  font-family: $font-primary;
+  font-size: 3.6rem;
+  font-weight: $fw-extrabold;
+  color: $color-text-dark;
+  margin: 0;
+}
+
+.metodo__subtitle {
+  font-size: 1.5rem;
+  color: $color-text-muted;
+  line-height: 1.6;
+  max-width: 52rem;
+  margin: 0;
+}
+
+// =============================================
+// DARK CARD — Conceito
+// =============================================
+.dark-card {
+  background-color: $color-card-dark-3;  // #1C3044
+  @include border-radius(1.6rem);
+  @include padding(2.8rem, 3.2rem, 2.8rem, 3.2rem);
+  border: 0.1rem solid $color-card-border;
+
+  &__title {
+    font-family: $font-primary;
+    font-size: 1.8rem;
+    font-weight: $fw-bold;
+    color: $color-white;
+    margin: 0 0 1.2rem;
+  }
+
+  &__text {
+    font-size: 1.4rem;
+    color: rgba($color-white, 0.72);
+    line-height: 1.7;
+    margin: 0 0 2rem;
+  }
+}
+
+// =============================================
+// FORMULA BLOCK — código dentro do dark card
+// =============================================
+.formula-block {
+  background-color: $color-card-dark;   // #0D1B2A
+  @include border-radius(1rem);
+  @include padding(1.8rem, 2rem, 1.8rem, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: 0.1rem solid rgba($color-accent, 0.15);
+  overflow-x: auto;
+}
+
+.formula-line {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.35rem;
+  color: rgba($color-accent, 0.85);
+  white-space: nowrap;
+
+  &--highlight {
+    color: $color-accent;
+    font-weight: $fw-bold;
+  }
+
+  &--dim {
+    color: rgba($color-accent, 0.55);
+    font-size: 1.25rem;
+  }
+}
+
+// =============================================
+// CENÁRIOS — grid 2 colunas
+// =============================================
+.scenario-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.6rem;
+}
+
+@media (max-width: 640px) {
+  .scenario-grid { grid-template-columns: 1fr; }
+}
+
+.scenario-card {
+  @include border-radius(1.4rem);
+  @include padding(2.4rem, 2.4rem, 2.4rem, 2.4rem);
+  border: 0.1rem solid $color-border;
+  background-color: $color-white;
+
+  &__icon {
+    @include display-flex($justify-content: flex-start, $gap: 0);
+    width: 4rem;
+    height: 4rem;
+    @include border-radius(1rem);
+    margin-bottom: 1.6rem;
+    flex-shrink: 0;
+
+    .material-symbols-outlined { font-size: 2.2rem; }
+
+    &--red   { background-color: rgba(#EF4444, 0.1); color: #EF4444; }
+    &--green { background-color: rgba($color-primary, 0.1); color: $color-primary; }
+  }
+
+  &__title {
+    font-family: $font-primary;
+    font-size: 1.7rem;
+    font-weight: $fw-bold;
+    color: $color-text-dark;
+    margin: 0 0 1rem;
+  }
+
+  &__desc {
+    font-size: 1.35rem;
+    color: $color-text-body;
+    line-height: 1.65;
+    margin: 0 0 1.6rem;
+  }
+
+  &--sem { border-color: rgba(#EF4444, 0.2); }
+  &--com { border-color: rgba($color-primary, 0.2); background-color: rgba($color-primary, 0.02); }
+}
+
+// =============================================
+// BULLET LIST — dentro dos cards de cenário
+// =============================================
+.bullet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  list-style: none;
+  padding: 0; margin: 0;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    font-size: 1.35rem;
+    color: $color-text-body;
+    line-height: 1.5;
+
+    &::before {
+      content: '';
+      display: block;
+      width: 0.7rem;
+      height: 0.7rem;
+      @include border-radius(9999px);
+      flex-shrink: 0;
+      margin-top: 0.5rem;
+    }
+  }
+
+  &--red   li::before { background-color: #EF4444; }
+  &--green li::before { background-color: $color-primary; }
+}
+
+// =============================================
+// SECTION CARD — card branco genérico
+// =============================================
+.section-card {
+  background-color: $color-white;
+  border: 0.1rem solid $color-border;
+  @include border-radius(1.6rem);
+  @include padding(2.8rem, 3.2rem, 2.8rem, 3.2rem);
+
+  &__title {
+    font-family: $font-primary;
+    font-size: 1.8rem;
+    font-weight: $fw-bold;
+    color: $color-text-dark;
+    margin: 0 0 0.4rem;
+  }
+
+  &__sub {
+    font-size: 1.35rem;
+    color: $color-text-muted;
+    margin: 0 0 2rem;
+  }
+
+  &__fonte {
+    font-size: 1.25rem;
+    color: $color-text-muted;
+    margin: 0 0 2rem;
+    font-style: italic;
+  }
+}
+
+@media (max-width: 600px) {
+  .section-card { @include padding(2rem, 1.8rem, 2rem, 1.8rem); }
+}
+
+// =============================================
+// FLUXO DE CÁLCULO
+// =============================================
+.flow-steps {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.flow-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2rem;
+  flex: 1;
+  min-width: 16rem;
+
+  &__num {
+    @include display-flex($gap: 0);
+    flex-shrink: 0;
+    width: 3.2rem;
+    height: 3.2rem;
+    @include border-radius(9999px);
+    font-family: $font-primary;
+    font-size: 1.5rem;
+    font-weight: $fw-bold;
+    color: $color-white;
+
+    &--red   { background-color: #EF4444; }
+    &--green { background-color: $color-primary; }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+
+    strong {
+      font-size: 1.4rem;
+      font-weight: $fw-semibold;
+      color: $color-text-dark;
+    }
+
+    span {
+      font-size: 1.25rem;
+      color: $color-text-muted;
+      line-height: 1.5;
+    }
+  }
+}
+
+.flow-arrow {
+  font-size: 2rem;
+  color: $color-border;
+  margin-top: 0.6rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .flow-steps { flex-direction: column; }
+  .flow-arrow { transform: rotate(90deg); }
+}
+
+// =============================================
+// EXEMPLO DE CÁLCULO
+// =============================================
+.exemplo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.6rem;
+  margin-bottom: 1.6rem;
+}
+
+@media (max-width: 640px) {
+  .exemplo-grid { grid-template-columns: 1fr; }
+}
+
+.calc-box {
+  @include border-radius(1.2rem);
+  overflow: hidden;
+  border: 0.1rem solid $color-border;
+  font-size: 1.35rem;
+
+  &__header {
+    @include padding(1rem, 1.6rem, 1rem, 1.6rem);
+    font-family: $font-primary;
+    font-size: 1.15rem;
+    font-weight: $fw-bold;
+    letter-spacing: 0.06em;
+  }
+
+  &__body {
+    @include padding(1.4rem, 1.6rem, 1.4rem, 1.6rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background-color: $color-bg;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.3rem;
+    color: $color-text-body;
+    line-height: 1.6;
+
+    strong { font-weight: $fw-bold; }
+  }
+
+  &__footer {
+    @include padding(1.2rem, 1.6rem, 1.2rem, 1.6rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.3rem;
+    color: $color-text-body;
+
+    strong { font-weight: $fw-bold; }
+  }
+
+  &--sem {
+    .calc-box__header {
+      background-color: rgba(#EF4444, 0.08);
+      color: #b91c1c;
+    }
+    .calc-box__footer { border-top: 0.1rem solid rgba(#EF4444, 0.15); }
+  }
+
+  &--com {
+    .calc-box__header {
+      background-color: rgba($color-primary, 0.08);
+      color: $color-primary-dark;
+    }
+    .calc-box__footer { border-top: 0.1rem solid rgba($color-primary, 0.15); }
+  }
+}
+
+.emissao-result {
+  @include border-radius(1.2rem);
+  @include padding(1.8rem, 2.4rem, 1.8rem, 2.4rem);
+  background: linear-gradient(135deg, rgba($color-primary, 0.08) 0%, rgba($color-accent, 0.12) 100%);
+  border: 0.1rem solid rgba($color-primary, 0.2);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  strong {
+    font-family: $font-primary;
+    font-size: 1.6rem;
+    font-weight: $fw-bold;
+    color: $color-primary-dark;
+  }
+
+  span {
+    font-size: 1.3rem;
+    color: $color-text-muted;
+  }
+}
+
+// =============================================
+// VARIÁVEIS OPERACIONAIS — tabela
+// =============================================
+.vars-table-wrap {
+  overflow-x: auto;
+  margin-top: 0.8rem;
+}
+
+.vars-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1.35rem;
+
+  thead tr {
+    border-bottom: 0.2rem solid $color-border;
+  }
+
+  th {
+    @include padding(1rem, 1.6rem, 1rem, 1.6rem);
+    font-size: 1.1rem;
+    font-weight: $fw-bold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $color-text-muted;
+    text-align: left;
+    white-space: nowrap;
+
+    &.th-sem { color: #b91c1c; }
+    &.th-com { color: $color-primary-dark; }
+  }
+
+  tbody tr {
+    border-bottom: 0.1rem solid $color-border;
+    @include transition(background, 0.12s, ease);
+    &:hover { background-color: $color-bg; }
+    &:last-child { border-bottom: none; }
+  }
+
+  td {
+    @include padding(1.2rem, 1.6rem, 1.2rem, 1.6rem);
+    color: $color-text-body;
+    vertical-align: middle;
+
+    &:first-child {
+      @include display-flex($justify-content: flex-start, $gap: 1rem);
+      color: $color-text-dark;
+      font-weight: $fw-medium;
+    }
+  }
+}
+
+.vars-icon {
+  font-size: 1.8rem;
+  color: $color-text-muted;
+  flex-shrink: 0;
+}
+
+// Badges de valor na tabela de variáveis
+.var-badge {
+  display: inline-block;
+  @include padding(0.4rem, 1rem, 0.4rem, 1rem);
+  @include border-radius(9999px);
+  font-size: 1.25rem;
+  font-weight: $fw-semibold;
+  white-space: nowrap;
+
+  &--red    { background-color: rgba(#EF4444, 0.1); color: #b91c1c; }
+  &--orange { background-color: rgba(#F59E0B, 0.12); color: #92400e; }
+  &--green  { background-color: rgba($color-primary, 0.1); color: $color-primary-dark; }
+}
+
+// =============================================
+// ANÁLISE DE SENSIBILIDADE
+// =============================================
+.sensibilidade-card {
+  &__head {
+    @include display-flex($justify-content: space-between, $align-items: center, $gap: 1.2rem);
+    margin-bottom: 0.4rem;
+    flex-wrap: wrap;
+  }
+}
+
+.ilustrativo-badge {
+  @include display-flex($gap: 0.5rem);
+  @include padding(0.4rem, 1.2rem, 0.4rem, 1.2rem);
+  @include border-radius(9999px);
+  background-color: rgba(#F59E0B, 0.1);
+  border: 0.1rem solid rgba(#F59E0B, 0.3);
+  color: #92400e;
+  font-size: 1.2rem;
+  font-weight: $fw-semibold;
+  flex-shrink: 0;
+
+  .material-symbols-outlined { font-size: 1.5rem; }
+}
+
+.sens-body {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 3.2rem;
+  margin-top: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 640px) {
+  .sens-body { grid-template-columns: 1fr; gap: 2rem; }
+}
+
+.sens-slider-label {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: $fw-semibold;
+  color: $color-text-dark;
+  margin-bottom: 1.2rem;
+}
+
+.sens-slider-wrap {
+  @include display-flex($justify-content: space-between, $gap: 1rem);
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.sens-slider-min,
+.sens-slider-max {
+  font-size: 1.2rem;
+  color: $color-text-muted;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sens-slider {
+  flex: 1;
+  height: 0.5rem;
+  @include border-radius(9999px);
+  appearance: none;
+  -webkit-appearance: none;
+  background: linear-gradient(to right, $color-primary 0%, $color-primary 10%, $color-border 10%);
+  cursor: pointer;
+  outline: none;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 1.8rem;
+    height: 1.8rem;
+    @include border-radius(9999px);
+    background: $color-primary;
+    border: 0.3rem solid $color-white;
+    box-shadow: 0 0 0 0.2rem rgba($color-primary, 0.25);
+    cursor: pointer;
+    @include transition(box-shadow, 0.15s, ease);
+  }
+
+  &::-moz-range-thumb {
+    width: 1.8rem;
+    height: 1.8rem;
+    @include border-radius(9999px);
+    background: $color-primary;
+    border: 0.3rem solid $color-white;
+    cursor: pointer;
+  }
+
+  &:hover::-webkit-slider-thumb {
+    box-shadow: 0 0 0 0.4rem rgba($color-primary, 0.2);
+  }
+}
+
+.sens-formula {
+  @include padding(1.2rem, 1.4rem, 1.2rem, 1.4rem);
+  @include border-radius(0.8rem);
+  background-color: $color-bg;
+  border: 0.1rem solid $color-border;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.25rem;
+  color: $color-text-body;
+  line-height: 1.5;
+  margin-bottom: 0.8rem;
+}
+
+.sens-fonte {
+  font-size: 1.2rem;
+  color: $color-text-muted;
+  font-style: italic;
+}
+
+.sens-result-col {
+  background-color: $color-bg;
+  @include border-radius(1.2rem);
+  @include padding(2.4rem, 2rem, 2.4rem, 2rem);
+  text-align: center;
+  border: 0.1rem solid $color-border;
+}
+
+.sens-result-label {
+  font-size: 1.3rem;
+  color: $color-text-muted;
+  margin: 0 0 0.8rem;
+}
+
+.sens-result-val {
+  @include display-flex($justify-content: center, $gap: 0.4rem);
+  align-items: baseline;
+  margin-bottom: 0.4rem;
+
+  span {
+    font-family: $font-primary;
+    font-size: 4.8rem;
+    font-weight: $fw-extrabold;
+    color: $color-primary;
+    line-height: 1;
+  }
+
+  small {
+    font-size: 2.2rem;
+    font-weight: $fw-bold;
+    color: $color-primary-dark;
+  }
+}
+
+.sens-result-unit {
+  font-size: 1.3rem;
+  color: $color-text-muted;
+  margin: 0 0 1.2rem;
+}
+
+.sens-ref {
+  font-size: 1.15rem;
+  color: $color-text-muted;
+  font-style: italic;
+  margin: 0;
+  padding-top: 1.2rem;
+  border-top: 0.1rem solid $color-border;
+}
+
+// =============================================
+// TABELA DE PREMISSAS
+// =============================================
+.premissas-head {
+  @include display-flex($justify-content: space-between, $align-items: flex-start, $gap: 1.6rem);
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.admin-badge {
+  @include display-flex($gap: 0.5rem);
+  @include padding(0.5rem, 1.2rem, 0.5rem, 1.2rem);
+  @include border-radius(9999px);
+  background-color: rgba($color-blue, 0.08);
+  border: 0.1rem solid rgba($color-blue, 0.2);
+  font-size: 1.2rem;
+  font-weight: $fw-semibold;
+  color: $color-blue;
+  flex-shrink: 0;
+  white-space: nowrap;
+
+  .material-symbols-outlined { font-size: 1.5rem; }
+}
+
+.premissas-table-wrap { overflow-x: auto; }
+
+.premissas-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1.35rem;
+
+  thead tr { border-bottom: 0.2rem solid $color-border; }
+
+  th {
+    @include padding(1rem, 1.6rem, 1rem, 1.6rem);
+    font-size: 1.1rem;
+    font-weight: $fw-bold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $color-text-muted;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 0.1rem solid $color-border;
+    @include transition(background, 0.12s, ease);
+    &:hover { background-color: $color-bg; }
+    &:last-child { border-bottom: none; }
+    &:nth-child(even) { background-color: rgba($color-bg, 0.6); }
+    &:nth-child(even):hover { background-color: $color-bg; }
+  }
+
+  td {
+    @include padding(1.1rem, 1.6rem, 1.1rem, 1.6rem);
+    color: $color-text-body;
+    vertical-align: middle;
+
+    &:first-child {
+      color: $color-text-dark;
+      font-weight: $fw-medium;
+    }
+
+    &:last-child {
+      font-size: 1.2rem;
+      color: $color-text-muted;
+    }
+  }
+}
+
+// Valores coloridos na tabela de premissas
+.pval {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.3rem;
+  font-weight: $fw-bold;
+  color: $color-text-dark;
+  white-space: nowrap;
+
+  &--red    { color: #b91c1c; }
+  &--orange { color: #92400e; }
+  &--green  { color: $color-primary-dark; }
+  &--blue   { color: $color-blue; }
+}
+
+// =============================================
+// LIMITAÇÕES E PREMISSAS
+// =============================================
+.limitacoes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  list-style: none;
+  padding: 0; margin: 2rem 0 0;
+  counter-reset: limitacao;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.6rem;
+    counter-increment: limitacao;
+
+    &::before {
+      content: counter(limitacao);
+      @include display-flex($gap: 0);
+      flex-shrink: 0;
+      width: 2.8rem;
+      height: 2.8rem;
+      @include border-radius(9999px);
+      background-color: rgba($color-primary, 0.1);
+      color: $color-primary-dark;
+      font-family: $font-primary;
+      font-size: 1.3rem;
+      font-weight: $fw-bold;
+    }
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    flex: 1;
+
+    // redefine para permitir o flex correto com ::before
+    display: grid;
+    grid-template-columns: 2.8rem 1fr;
+    gap: 0 1.6rem;
+
+    &::before {
+      grid-row: 1 / 3;
+      align-self: start;
+      margin-top: 0.1rem;
+    }
+
+    strong {
+      font-size: 1.4rem;
+      font-weight: $fw-semibold;
+      color: $color-text-dark;
+      line-height: 1.4;
+    }
+
+    span {
+      font-size: 1.35rem;
+      color: $color-text-body;
+      line-height: 1.6;
+    }
+  }
+}
+
+// =============================================
+// AVISO BOX
+// =============================================
+.aviso-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.4rem;
+  @include border-radius(1.2rem);
+  @include padding(2rem, 2.4rem, 2rem, 2.4rem);
+  background-color: rgba(#F59E0B, 0.08);
+  border: 0.1rem solid rgba(#F59E0B, 0.3);
+
+  &__icon {
+    font-size: 2.2rem;
+    color: #D97706;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  strong {
+    display: block;
+    font-family: $font-primary;
+    font-size: 1.4rem;
+    font-weight: $fw-semibold;
+    color: #92400e;
+    margin-bottom: 0.6rem;
+  }
+
+  p {
+    font-size: 1.35rem;
+    color: #78350f;
+    line-height: 1.65;
+    margin: 0;
+  }
+}
+
+// =============================================
+// FOOTER
+// =============================================
+.footer {
+  background-color: $color-card-dark;
+  padding: 5rem 3.2rem 0;
+
+  &__inner {
+    @include display-flex($justify-content: space-between, $align-items: flex-start, $gap: 4rem);
+    max-width: 120rem;
+    margin: 0 auto;
+    padding-bottom: 4rem;
+    border-bottom: 0.1rem solid $color-card-border;
+    flex-wrap: wrap;
+  }
+
+  &__brand {
+    @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1.4rem);
+    max-width: 26rem;
+    flex-shrink: 0;
+  }
+
+  &__tagline {
+    font-size: 1.4rem;
+    color: rgba($color-white, 0.5);
+    line-height: 1.6;
+  }
+
+  &__col {
+    @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1.4rem);
+  }
+
+  &__col-title {
+    font-size: 1.1rem;
+    font-weight: $fw-semibold;
+    letter-spacing: 0.1em;
+    color: rgba($color-white, 0.4);
+  }
+
+  &__links {
+    @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1rem);
+    list-style: none; padding: 0; margin: 0;
+
+    li a, li span {
+      font-size: 1.4rem;
+      color: rgba($color-white, 0.65);
+      @include transition(color, 0.15s, ease-in-out);
+      &:hover { color: $color-white; }
+    }
+
+    &--contact li {
+      @include display-flex($justify-content: flex-start, $gap: 0.8rem);
+      .material-symbols-outlined { font-size: 1.6rem; color: rgba($color-white, 0.35); flex-shrink: 0; }
+    }
+  }
+
+  &__bottom {
+    @include display-flex($justify-content: center, $gap: 0);
+    max-width: 120rem;
+    margin: 0 auto;
+    padding: 2rem 0;
+    font-size: 1.3rem;
+    color: rgba($color-white, 0.3);
+  }
+}
+
+.logo--light img { filter: brightness(0) invert(1); }

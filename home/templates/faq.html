@@ -1,0 +1,502 @@
+{% load static %}
+{% load sass_tags %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TagGreen — FAQ</title>
+  <link rel="stylesheet" href="{% sass_src 'scss/faq.scss' %}">
+</head>
+<body>
+
+  <!-- ===== HEADER — idêntico ao home.html ===== -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="{% url 'home' %}" class="logo">
+        <img src="{% static 'images/logo-sem-fundo.png' %}" alt="TagGreen" />
+      </a>
+      <nav class="nav" id="main-nav" aria-label="Menu principal">
+        <ul class="nav__list">
+          <li><a href="{% url 'home' %}"               class="nav__link">Home</a></li>
+          <li><a href="#"                               class="nav__link">Calculadora</a></li>
+          <li><a href="{% url 'meu_impacto' %}"         class="nav__link">Meu Impacto</a></li>
+          <li><a href="{% url 'metodologia' %}"         class="nav__link">Metodologia</a></li>
+          <li><a href="{% url 'faq' %}"                 class="nav__link nav__link--active">FAQ</a></li>
+          <li><a href="{% url 'empresas_relatorios' %}" class="nav__link">Empresas</a></li>
+        </ul>
+      </nav>
+      <button class="hamburger" id="hamburger-btn" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== FAQ ===== -->
+  <main class="faq">
+    <div class="faq__inner">
+
+      <!-- Hero -->
+      <div class="faq__hero">
+        <h1 class="faq__title">Perguntas Frequentes</h1>
+        <p class="faq__subtitle">Encontre respostas para suas dúvidas sobre a Taggy</p>
+
+        <!-- Busca -->
+        <div class="faq-search-wrap">
+          <span class="material-symbols-outlined faq-search-wrap__icon">search</span>
+          <input
+            type="search"
+            id="faq-search"
+            class="faq-search"
+            placeholder="Buscar perguntas..."
+            autocomplete="off"
+            aria-label="Buscar perguntas"
+          />
+        </div>
+      </div>
+
+      <!-- Filtros de categoria -->
+      <div class="faq-filters" role="tablist" aria-label="Categorias">
+
+        <button class="faq-filter faq-filter--active" data-cat="todos" role="tab" aria-selected="true">
+          <span class="material-symbols-outlined">eco</span>
+          Todos
+        </button>
+
+        <button class="faq-filter" data-cat="uso_tag" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined">shield</span>
+          Uso da Tag
+        </button>
+
+        <button class="faq-filter" data-cat="impacto" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined">forest</span>
+          Impacto Ambiental
+        </button>
+
+        <button class="faq-filter" data-cat="calculadora" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined">calculate</span>
+          Calculadora
+        </button>
+
+        <button class="faq-filter" data-cat="empresas" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined">insert_chart</span>
+          Empresas
+        </button>
+
+        <button class="faq-filter" data-cat="plataforma" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined">auto_awesome</span>
+          Plataforma
+        </button>
+
+      </div>
+
+      <!-- Contador de resultados -->
+      <p class="faq-count" id="faq-count" aria-live="polite"></p>
+
+      <!-- Acordeão de perguntas -->
+      <div class="faq-list" id="faq-list">
+
+        <!-- ═══ USO DA TAG ═══════════════════════════════════════════ -->
+
+        <div class="faq-item" data-cat="uso_tag">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Como funciona a tag Taggy?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>A Taggy usa tecnologia RFID fixada no para-brisa. Ao passar por pedágios, estacionamentos ou acessos controlados, a tag é lida automaticamente em menos de 3 segundos — sem parar, sem dinheiro, sem papel. O valor é debitado diretamente na conta ou cartão vinculado ao seu banco ou fintech parceira.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="uso_tag">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>A tag funciona em qualquer pedágio?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>Sim. A Taggy é aceita em 100% das rodovias pedagiadas do Brasil, incluindo sistemas tradicionais (cabines com atendentes) e Free Flow (cobrança eletrônica sem cabine). Não há necessidade de troca ou reconfiguração ao viajar entre estados.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="uso_tag">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Posso usar a mesma tag em mais de um veículo?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>Cada tag é vinculada a um veículo específico. Se você tem mais de um carro, moto ou caminhão, é necessária uma tag para cada um. Isso também garante que o cálculo de impacto ambiental seja preciso, já que emissões variam por tipo de veículo.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="uso_tag">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Minha tag funciona em estacionamentos e shoppings?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>Sim. A Taggy funciona em mais de 1.000 estacionamentos credenciados em todo o Brasil, incluindo shoppings, aeroportos e edifícios comerciais. Você entra e sai sem pegar ticket de papel — o débito é automático. A lista de locais está disponível no aplicativo da Taggy.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="uso_tag">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Como instalo a tag no para-brisa?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>A instalação é simples e não precisa de técnico: (1) limpe a área interna do para-brisa onde irá colar; (2) remova a película protetora da tag; (3) cole na posição recomendada, geralmente no canto superior esquerdo ou ao lado do espelho retrovisor. A tag não tem bateria e não interfere na visibilidade.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="uso_tag">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>A tag tem prazo de validade?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>A tag Taggy não tem prazo de validade definido e pode durar vários anos em uso normal. Em caso de troca de veículo, a tag deve ser substituída — ela é vinculada à placa e não é transferível entre veículos.</p>
+          </div>
+        </div>
+
+        <!-- ═══ IMPACTO AMBIENTAL ════════════════════════════════════ -->
+
+        <div class="faq-item" data-cat="impacto">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Como a Taggy reduz emissões de CO₂?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>Ao eliminar as filas, a Taggy reduz três fontes de emissão por passagem:</p>
+            <ul>
+              <li><strong>Motor em marcha lenta:</strong> a espera média de 3 min em pedágio consome ~0,033 L de gasolina em idle (CONPET 2022), emitindo ~0,044 kg de CO₂e.</li>
+              <li><strong>Frenagem + aceleração:</strong> frear de 80 km/h até parar e retomar percorre ~0,1 km extra, emitindo ~0,012 kg de CO₂e adicional.</li>
+              <li><strong>Papel do ticket:</strong> cada ticket térmico pesa ~5 g, com fator de 1,1 kg CO₂e/kg (IPCC AR6), contribuindo ~0,0055 kg por passagem.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="impacto">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Meu impacto é real ou estimado?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>É baseado em estimativas científicas com dados públicos e auditáveis. Utilizamos fatores de emissão do <strong>GHG Protocol Brasil 2023</strong> (referência nacional oficial), dados de consumo do <strong>INMETRO PBE Veicular 2023</strong> e tempos médios de fila da pesquisa <strong>CNT 2022</strong>. Os valores representam a média da frota brasileira — não são medições individuais do seu veículo. Veja todos os detalhes na página <a href="{% url 'metodologia' %}">Metodologia</a>.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="impacto">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Qual a metodologia usada nos cálculos?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>A fórmula base é:</p>
+            <div class="faq-formula">E_passagem = E_idle + E_movimento + E_papel</div>
+            <p>Calculamos a emissão no cenário sem Taggy (fila completa, papel, frenagem total) e com Taggy (free-flow, sem papel, desaceleração parcial). A diferença multiplicada pelo número de passagens é o impacto evitado no período. Veja a página <a href="{% url 'metodologia' %}">Metodologia</a> para todos os detalhes, fontes e limitações.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="impacto">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Como é calculado o tempo de fila economizado?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>Com base na média de <strong>3 minutos por passagem</strong> em pedágios manuais (CNT — Pesquisa de Rodovias 2022, pp. 84–87) versus <strong>~3 segundos</strong> (0,05 min) com Taggy em free-flow. O tempo economizado por passagem é de ~2,95 minutos, multiplicado pelo total de passagens no período.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="impacto">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Posso compartilhar meus resultados de impacto?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>Sim. Na seção <a href="{% url 'meu_impacto' %}">Meu Impacto</a>, acesse o <strong>Meu Wrapped</strong> para ver um resumo visual animado do seu impacto anual — com CO₂e evitado, passagens, árvores equivalentes e horas de fila economizadas. Para empresas, o <strong>Wrapped Corporativo</strong> está disponível no Painel ESG.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="impacto">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>O que são as medalhas de conquistas?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>São reconhecimentos por marcos de uso da plataforma: <strong>Primeira Passagem</strong> (ao registrar a 1ª passagem), <strong>100 Passagens</strong>, <strong>Eco Warrior</strong> (ao atingir impacto expressivo de CO₂e evitado), <strong>500 Passagens</strong> e <strong>1 Tonelada Evitada</strong>. As medalhas aparecem no seu perfil em <a href="{% url 'meu_impacto' %}">Meu Impacto</a>.</p>
+          </div>
+        </div>
+
+        <!-- ═══ CALCULADORA ══════════════════════════════════════════ -->
+
+        <div class="faq-item" data-cat="calculadora">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Como funciona a calculadora?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>Você seleciona: (1) o <strong>tipo de veículo</strong> (carro flex, elétrico, moto ou caminhão); (2) o <strong>contexto</strong> (pedágio, estacionamento ou acesso controlado); (3) a <strong>frequência mensal</strong> (quantas vezes usa) e o número de passagens por uso. A calculadora exibe o CO₂e evitado com Taggy vs. sem Taggy, já com as equivalências em litros de gasolina e árvores.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="calculadora">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Quais variáveis são consideradas no cálculo?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>Três componentes de emissão por passagem:</p>
+            <ul>
+              <li><strong>E_idle:</strong> (tempo_fila_min ÷ 60) × consumo_idle (L/h) × fator emissão (kg CO₂e/L)</li>
+              <li><strong>E_movimento:</strong> distância_extra_km × consumo_km (L/km) × fator emissão</li>
+              <li><strong>E_papel:</strong> peso_ticket_g ÷ 1.000 × 1,100 kg CO₂e/kg (IPCC AR6)</li>
+            </ul>
+            <p>Fontes: INMETRO PBE 2023 (consumo), CONPET 2022 (marcha lenta), GHG Protocol BR 2023 (fatores de emissão), CNT 2022 (tempo de fila).</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="calculadora">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>O resultado é exato ou aproximado?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>É uma <strong>estimativa calibrada com dados científicos públicos</strong>. Os valores reais variam conforme o modelo exato do veículo, condições de tráfego, região e estilo de condução. A metodologia adota valores conservadores (médias nacionais) para garantir credibilidade e auditabilidade. Consulte a seção "Limitações" na página <a href="{% url 'metodologia' %}">Metodologia</a>.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="calculadora">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Por que o resultado varia por tipo de veículo?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>Cada veículo tem consumo e fator de emissão diferentes. Exemplos (INMETRO PBE 2023 + CONPET 2022):</p>
+            <ul>
+              <li><strong>Carro flex:</strong> idle 0,65 L/h · consumo 0,090 L/km · fator 1,335 kg CO₂e/L</li>
+              <li><strong>Moto:</strong> idle 0,28 L/h · consumo 0,038 L/km · gasolina 2,212 kg CO₂e/L</li>
+              <li><strong>Caminhão:</strong> idle 2,40 L/h · consumo 0,300 L/km · diesel 2,603 kg CO₂e/L</li>
+              <li><strong>Carro elétrico:</strong> idle 0,15 kWh/h · consumo 0,180 kWh/km · grid BR 0,0817 kg CO₂e/kWh</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="calculadora">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Qual a fonte dos fatores de emissão usados?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>Todos os fatores vêm de fontes públicas e oficiais:</p>
+            <ul>
+              <li><strong>Combustíveis:</strong> GHG Protocol Brasil 2023 — gasolina: 2,212 / diesel: 2,603 / etanol: 0,458 kg CO₂e/L</li>
+              <li><strong>Grid elétrico:</strong> MCTIC — Fatores SIN 2023: 0,0817 kg CO₂e/kWh</li>
+              <li><strong>Papel:</strong> IPCC AR6 WG3, Cap. 11: 1,100 kg CO₂e/kg</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="calculadora">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Como interpretar o equivalente em árvores?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>Usamos a referência do IPCC (Good Practice Guidance): uma árvore absorve em média <strong>21,77 kg de CO₂ por ano</strong> (média global de espécies comuns). Se você evitou 43 kg de CO₂e, isso equivale ao CO₂ absorvido por ~2 árvores em 1 ano. É uma equivalência ilustrativa — não significa que árvores foram plantadas.</p>
+          </div>
+        </div>
+
+        <!-- ═══ EMPRESAS ═════════════════════════════════════════════ -->
+
+        <div class="faq-item" data-cat="empresas">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Como minha empresa pode usar a TagGreen?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>Qualquer empresa com frota que utiliza Taggy pode acessar o <a href="{% url 'empresas_relatorios' %}">Painel ESG Corporativo</a>. Lá você visualiza o CO₂e evitado total da frota, ranking por estado, evolução mensal e anual, e pode exportar relatórios para uso em inventários de GEE e relatórios de sustentabilidade (GRI, SASB, CDP).</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="empresas">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>O que é o Painel ESG Corporativo?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>É um dashboard com os principais KPIs de sustentabilidade da sua frota: CO₂e evitado total, passagens no período, estados com operação ativa, ranking nacional entre empresas Taggy, evolução mensal (gráfico de linha), evolução anual (barras) e distribuição por tipo de contexto (pedágio, estacionamento, acesso controlado).</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="empresas">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Como exportar o relatório da empresa?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>No Painel ESG, clique no botão <strong>"Exportar Relatório"</strong>. Um arquivo CSV compatível com Excel será gerado automaticamente com todos os dados do período filtrado: KPIs, evolução mensal, ranking por estado, distribuição por contexto e meta vs. realizado. O arquivo inclui BOM UTF-8 para acentuação correta.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="empresas">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>O que é o Wrapped Corporativo?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>É um resumo visual animado do impacto anual da frota, acessível pelo botão <strong>"Wrapped"</strong> no Painel ESG. Mostra CO₂e evitado total, passagens, horas de fila economizadas, papel evitado, árvores equivalentes e o ranking nacional da empresa. Pode ser exportado como relatório CSV.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="empresas">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Como funcionam os filtros do painel?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>Clique em <strong>"Filtros"</strong> no painel para abrir o painel de filtros. Você pode combinar: <strong>ano</strong> (2022–2025), <strong>contexto</strong> (pedágio, estacionamento, acesso), <strong>tipo de veículo</strong> (carro combustão/elétrico, moto, caminhão) e <strong>estado</strong>. Todos os KPIs, gráficos e ranking se atualizam automaticamente.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="empresas">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>A plataforma empresarial é gratuita?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>Sim. O acesso ao Painel ESG Corporativo, relatórios e Wrapped Corporativo é <strong>100% gratuito</strong> para todas as empresas clientes Taggy, sem limite de usuários ou exportações.</p>
+          </div>
+        </div>
+
+        <!-- ═══ PLATAFORMA ═══════════════════════════════════════════ -->
+
+        <div class="faq-item" data-cat="plataforma">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>A plataforma TagGreen é gratuita?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>Sim, <strong>totalmente gratuita</strong>. Todos os recursos — calculadora, Meu Impacto, Meu Wrapped, Metodologia, FAQ e Painel Empresarial — são disponibilizados sem custo para usuários e empresas que utilizam a Taggy.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="plataforma">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Como acesso o "Meu Impacto"?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>Clique em <strong>"Meu Impacto"</strong> no menu de navegação. Você verá seu painel pessoal com: CO₂e evitado no mês, passagens, tempo economizado, gráficos de evolução mensal e anual, seu nível gamificado, veículos cadastrados e medalhas conquistadas.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="plataforma">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>O que é o Meu Wrapped?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>É um resumo visual personalizado do seu impacto anual: CO₂e evitado, total de passagens, horas de fila economizadas, árvores equivalentes e seu nível atual. Acesse pelo botão <strong>"Meu Wrapped"</strong> na página <a href="{% url 'meu_impacto' %}">Meu Impacto</a>.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="plataforma">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Como funciona o sistema de níveis e medalhas?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>Conforme você acumula passagens e impacto ambiental, você sobe de nível: <strong>Iniciante → Intermediário → Avançado → Expert</strong>. Cada nível requer mais pontos de uso. Em paralelo, você desbloqueia medalhas por marcos específicos (Primeira Passagem, 100 Passagens, Eco Warrior, etc.). Tudo visível em Meu Impacto.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="plataforma">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Posso usar a plataforma no celular?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>Sim. A TagGreen foi desenvolvida com design responsivo e funciona em qualquer navegador mobile (Chrome, Safari, Firefox). Todos os recursos — calculadora, painel de impacto, relatórios — estão otimizados para telas pequenas.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" data-cat="plataforma">
+          <button class="faq-item__btn" aria-expanded="false">
+            <span>Onde encontro a metodologia dos cálculos?</span>
+            <span class="material-symbols-outlined faq-item__icon">expand_more</span>
+          </button>
+          <div class="faq-item__answer" hidden>
+            <p>Na página <a href="{% url 'metodologia' %}">Metodologia</a> do menu principal. Lá você encontra: fórmula completa com todos os componentes, fontes de cada dado (GHG Protocol BR, INMETRO, CONPET, ANTT, CNT), análise de sensibilidade interativa, tabela completa de premissas com 21 variáveis e as limitações do modelo.</p>
+          </div>
+        </div>
+
+      </div><!-- /.faq-list -->
+
+      <!-- Mensagem de sem resultado -->
+      <div class="faq-empty" id="faq-empty" hidden>
+        <span class="material-symbols-outlined faq-empty__icon">search</span>
+        <p>Nenhuma pergunta encontrada para "<span id="faq-empty-term"></span>".</p>
+        <button class="faq-empty__reset" id="faq-empty-reset">Limpar busca</button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ===== FOOTER — idêntico ao home.html ===== -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <a href="{% url 'home' %}" class="logo logo--light">
+          <img src="{% static 'images/logo-sem-fundo.png' %}" alt="TagGreen" />
+        </a>
+        <p class="footer__tagline">
+          Menos fila, menos marcha lenta, menos emissão. Mobilidade inteligente e sustentável.
+        </p>
+      </div>
+      <div class="footer__col">
+        <h5 class="footer__col-title">PLATAFORMA</h5>
+        <ul class="footer__links">
+          <li><a href="#">Calculadora</a></li>
+          <li><a href="{% url 'meu_impacto' %}">Meu Impacto</a></li>
+          <li><a href="{% url 'metodologia' %}">Metodologia</a></li>
+          <li><a href="{% url 'faq' %}">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h5 class="footer__col-title">EMPRESAS</h5>
+        <ul class="footer__links">
+          <li><a href="#">Área B2B</a></li>
+          <li><a href="#">Wrapped Corporativo</a></li>
+          <li><a href="#">Relatórios ESG</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h5 class="footer__col-title">CONTATO</h5>
+        <ul class="footer__links footer__links--contact">
+          <li>
+            <span class="material-symbols-outlined">mail</span>
+            <a href="mailto:contato@taggy.com.br">contato@taggy.com.br</a>
+          </li>
+          <li>
+            <span class="material-symbols-outlined">phone</span>
+            <a href="tel:08001234567">0800 123 4567</a>
+          </li>
+          <li>
+            <span class="material-symbols-outlined">location_on</span>
+            <span>São Paulo, Brasil</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 2026 Taggy. Todos os direitos reservados.</span>
+      <div class="footer__bottom-links">
+        <a href="#">Termos de Uso</a>
+        <a href="#">Privacidade</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/faq.js' %}"></script>
+</body>
+</html>

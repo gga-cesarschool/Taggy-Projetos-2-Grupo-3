@@ -1,0 +1,530 @@
+{% load static %}
+{% load sass_tags %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TagGreen — Metodologia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="{% sass_src 'scss/metodologia.scss' %}">
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="{% url 'home' %}" class="logo">
+        <img src="{% static 'images/logo-sem-fundo.png' %}" alt="TagGreen" />
+      </a>
+      <nav class="nav" id="main-nav" aria-label="Menu principal">
+        <ul class="nav__list">
+          <li><a href="{% url 'home' %}" class="nav__link nav__link--active">Home</a></li>
+          <li><a href="#" class="nav__link">Calculadora</a></li>
+          <li><a href="{% url 'meu_impacto' %}" class="nav__link">Meu Impacto</a></li>
+          <li><a href="{% url 'metodologia' %}" class="nav__link">Metodologia</a></li>
+          <li><a href="{% url 'faq' %}" class="nav__link">FAQ</a></li>
+          <li><a href="{% url 'empresas_relatorios' %}" class="nav__link">Empresas</a></li>
+        </ul>
+      </nav>
+      <button class="hamburger" id="hamburger-btn" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== CONTEÚDO PRINCIPAL ===== -->
+  <main class="metodo">
+    <div class="metodo__inner">
+
+      <!-- ── 1. HERO ───────────────────────────────────────────────── -->
+      <div class="metodo__hero">
+        <span class="version-badge">TagGreen v1.0 · Maio 2025</span>
+        <h1 class="metodo__title">Metodologia</h1>
+        <p class="metodo__subtitle">
+          Como calculamos as emissões evitadas. Base: GHG Protocol Brasil
+          2023 – INMETRO PBE 2023 – CNT 2022.
+        </p>
+      </div>
+
+      <!-- ── 2. CONCEITO (dark card) ───────────────────────────────── -->
+      <div class="dark-card">
+        <h2 class="dark-card__title">Conceito de Emissão Evitada</h2>
+        <p class="dark-card__text">
+          A calculadora não mede emissões absolutas do veículo ao longo de um trajeto,
+          mas sim o incremento causado especificamente pelo ato de parar, aguardar e
+          sair de filas em pedágios, estacionamentos e acessos controlados.
+        </p>
+        <div class="formula-block">
+          <span class="formula-line formula-line--highlight">Emissão evitada = E(sem Taggy) &minus; E(com Taggy)</span>
+          <span class="formula-line">E_passagem = E_idle + E_movimento + E_papel</span>
+          <span class="formula-line formula-line--dim">E_idle &nbsp;&nbsp;&nbsp;&nbsp;= (tempo_fila_min / 60) &times; consumo_idle &times; fator_emissão</span>
+          <span class="formula-line formula-line--dim">E_movimento = dist_extra_km &times; consumo_km &times; fator_emissão</span>
+          <span class="formula-line formula-line--dim">E_papel &nbsp;&nbsp;&nbsp;= (peso_papel_g / 1000) &times; 1,100 kg CO₂e/kg</span>
+        </div>
+      </div>
+
+      <!-- ── 3. CENÁRIOS ────────────────────────────────────────────── -->
+      <div class="scenario-grid">
+
+        <div class="scenario-card scenario-card--sem">
+          <span class="scenario-card__icon scenario-card__icon--red">
+            <span class="material-symbols-outlined">directions_car</span>
+          </span>
+          <h3 class="scenario-card__title">Cenário SEM Taggy</h3>
+          <p class="scenario-card__desc">
+            O motorista entra na fila, aguarda com motor ligado (3,0 min em
+            pedágio, segundo CNT 2022), recebe ticket de papel térmico, freia
+            e acelera até o guichê.
+          </p>
+          <ul class="bullet-list bullet-list--red">
+            <li>Fila média de 3,0 min (pedágio)</li>
+            <li>Motor em marcha lenta — 0,65 L/h (flex)</li>
+            <li>Frenagem completa + aceleração (0,100 km)</li>
+            <li>Ticket térmico 57 mm — 5 g de papel</li>
+          </ul>
+        </div>
+
+        <div class="scenario-card scenario-card--com">
+          <span class="scenario-card__icon scenario-card__icon--green">
+            <span class="material-symbols-outlined">directions_car</span>
+          </span>
+          <h3 class="scenario-card__title">Cenário COM Taggy</h3>
+          <p class="scenario-card__desc">
+            Leitura RFID automática em ≈ 3 s (0,05 min). Desaceleração parcial
+            até 40 km/h (0,031 km), sem parada completa, sem papel,
+            comprovante digital.
+          </p>
+          <ul class="bullet-list bullet-list--green">
+            <li>Passagem free-flow em ~3 s</li>
+            <li>Motor sem marcha lenta prolongada</li>
+            <li>Desaceleração parcial (0,031 km)</li>
+            <li>Comprovante exclusivamente digital — 0 g</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- ── 4. FLUXO DE CÁLCULO ────────────────────────────────────── -->
+      <section class="section-card">
+        <h2 class="section-card__title">Fluxo de Cálculo</h2>
+        <div class="flow-steps">
+
+          <div class="flow-step">
+            <div class="flow-step__num flow-step__num--red">1</div>
+            <div class="flow-step__body">
+              <strong>Cenário sem Taggy</strong>
+              <span>E_idle + E_movimento + E_papel<br>(fila completa, papel térmico)</span>
+            </div>
+          </div>
+
+          <span class="material-symbols-outlined flow-arrow">arrow_forward</span>
+
+          <div class="flow-step">
+            <div class="flow-step__num flow-step__num--green">2</div>
+            <div class="flow-step__body">
+              <strong>Cenário com Taggy</strong>
+              <span>E_idle + E_movimento<br>(free-flow, sem papel)</span>
+            </div>
+          </div>
+
+          <span class="material-symbols-outlined flow-arrow">arrow_forward</span>
+
+          <div class="flow-step">
+            <div class="flow-step__num flow-step__num--green">3</div>
+            <div class="flow-step__body">
+              <strong>Emissão Evitada</strong>
+              <span>Passo 1 – Passo 2 &times; total de<br>passagens no período</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ── 5. EXEMPLO DE CÁLCULO ──────────────────────────────────── -->
+      <section class="section-card">
+        <h2 class="section-card__title">Exemplo de Cálculo</h2>
+        <p class="section-card__sub">
+          Carro flex – 20 pedágios/mês &times; 2 passagens por pedágio = 40 passagens totais
+        </p>
+
+        <div class="exemplo-grid">
+
+          <div class="calc-box calc-box--sem">
+            <div class="calc-box__header">SEM TAGGY — POR PASSAGEM</div>
+            <div class="calc-box__body">
+              <p>E_idle &nbsp;= (3,0 &div; 60) &times; 0,65 &times; 1,335 = <strong>0,04339 kg</strong></p>
+              <p>E_mov &nbsp;= 0,100 &times; 0,090 &times; 1,335 &nbsp;= <strong>0,01202 kg</strong></p>
+              <p>E_papel = (5 &div; 1000) &times; 1,100 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <strong>0,00550 kg</strong></p>
+            </div>
+            <div class="calc-box__footer">
+              <p>E_sem = 0,06091 kg CO₂e / passagem</p>
+              <p>Total = 40 &times; 0,06091 = <strong>2,436 kg CO₂e</strong></p>
+            </div>
+          </div>
+
+          <div class="calc-box calc-box--com">
+            <div class="calc-box__header">COM TAGGY — POR PASSAGEM</div>
+            <div class="calc-box__body">
+              <p>E_idle &nbsp;= (0,05 &div; 60) &times; 0,65 &times; 1,335 = <strong>0,000723 kg</strong></p>
+              <p>E_mov &nbsp;= 0,031 &times; 0,090 &times; 1,335 &nbsp;&nbsp;= <strong>0,003726 kg</strong></p>
+              <p>E_papel = 0 &nbsp;(comprovante digital)</p>
+            </div>
+            <div class="calc-box__footer">
+              <p>E_com = 0,004449 kg CO₂e / passagem</p>
+              <p>Total = 40 &times; 0,004449 = <strong>0,178 kg CO₂e</strong></p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="emissao-result">
+          <strong>Emissão evitada = 2,436 &minus; 0,178 = 2,258 kg CO₂e no mês</strong>
+          <span>Equivale a 1,02 L de gasolina não queimada &rarr; 0,10 árvores/ano absorvida</span>
+        </div>
+      </section>
+
+      <!-- ── 6. VARIÁVEIS OPERACIONAIS ──────────────────────────────── -->
+      <section class="section-card">
+        <h2 class="section-card__title">Variáveis Operacionais</h2>
+        <p class="section-card__fonte">
+          Fonte: CNT — Pesquisa de Rodovias 2022 · Cálculo cinemático (IPEA 2013) · Jetpaper 2023
+        </p>
+
+        <div class="vars-table-wrap">
+          <table class="vars-table">
+            <thead>
+              <tr>
+                <th>VARIÁVEL</th>
+                <th class="th-sem">SEM TAGGY</th>
+                <th class="th-com">COM TAGGY</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <span class="material-symbols-outlined vars-icon">schedule</span>
+                  Tempo de fila — Pedágio
+                </td>
+                <td><span class="var-badge var-badge--red">3,0 min</span></td>
+                <td><span class="var-badge var-badge--green">0,05 min (≈ 3 s)</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="material-symbols-outlined vars-icon">schedule</span>
+                  Tempo de fila — Estacionamento
+                </td>
+                <td><span class="var-badge var-badge--red">1,5 min</span></td>
+                <td><span class="var-badge var-badge--green">0,05 min</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="material-symbols-outlined vars-icon">schedule</span>
+                  Tempo de fila — Acesso Controlado
+                </td>
+                <td><span class="var-badge var-badge--red">1,0 min</span></td>
+                <td><span class="var-badge var-badge--green">0,05 min</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="material-symbols-outlined vars-icon">directions_car</span>
+                  Distância extra frenagem/aceleração (pedágio)
+                </td>
+                <td><span class="var-badge var-badge--red">0,100 km</span></td>
+                <td><span class="var-badge var-badge--green">0,031 km</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="material-symbols-outlined vars-icon">description</span>
+                  Ticket de papel — Pedágio (57 mm)
+                </td>
+                <td><span class="var-badge var-badge--orange">5 g / passagem</span></td>
+                <td><span class="var-badge var-badge--green">0 g (digital)</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="material-symbols-outlined vars-icon">description</span>
+                  Ticket de papel — Estacionamento (80 mm)
+                </td>
+                <td><span class="var-badge var-badge--orange">8 g / passagem</span></td>
+                <td><span class="var-badge var-badge--green">0 g (digital)</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="material-symbols-outlined vars-icon">bolt</span>
+                  Motor em marcha lenta na fila
+                </td>
+                <td><span class="var-badge var-badge--red">Sim</span></td>
+                <td><span class="var-badge var-badge--green">Não</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ── 7. ANÁLISE DE SENSIBILIDADE ────────────────────────────── -->
+      <section class="section-card sensibilidade-card">
+        <div class="sensibilidade-card__head">
+          <h2 class="section-card__title">Análise de Sensibilidade</h2>
+          <span class="ilustrativo-badge">
+            <span class="material-symbols-outlined">info</span>
+            Ilustrativo
+          </span>
+        </div>
+        <p class="section-card__sub">Componente E_idle — carro flex por passagem</p>
+
+        <div class="sens-body">
+          <div class="sens-slider-col">
+            <label class="sens-slider-label" id="sens-label">Tempo de fila — 3,0 min</label>
+            <div class="sens-slider-wrap">
+              <span class="sens-slider-min">0 min</span>
+              <input
+                type="range"
+                id="sens-slider"
+                class="sens-slider"
+                min="0" max="30" step="0.5" value="3"
+                aria-label="Tempo de fila em minutos"
+              />
+              <span class="sens-slider-max">30 min</span>
+            </div>
+            <div class="sens-formula">
+              E_idle = (tempo / 60) × 0,65 L/h × 1,335 kg CO₂e/L
+            </div>
+            <p class="sens-fonte">Fonte: CONPET 2022 · GHG Protocol BR 2023 · ANFAVEA 2023</p>
+          </div>
+
+          <div class="sens-result-col">
+            <p class="sens-result-label">E_idle estimado (carro flex)</p>
+            <div class="sens-result-val">
+              <span id="sens-result">43,4</span>
+              <small>g</small>
+            </div>
+            <p class="sens-result-unit">CO₂e por passagem</p>
+            <p class="sens-ref" id="sens-ref">CNT 2023 médio real — 3,0 min → 43,2 g</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── 8. TABELA DE PREMISSAS ─────────────────────────────────── -->
+      <section class="section-card">
+        <div class="premissas-head">
+          <div>
+            <h2 class="section-card__title">Tabela de Premissas</h2>
+            <p class="section-card__fonte">
+              TagGreen Metodologia v1.0 — Edenred Brasil / Taggy — Maio 2025
+            </p>
+          </div>
+          <span class="admin-badge">
+            <span class="material-symbols-outlined">lock</span>
+            Somente admin pode alterar
+          </span>
+        </div>
+
+        <div class="premissas-table-wrap">
+          <table class="premissas-table">
+            <thead>
+              <tr>
+                <th>VARIÁVEL</th>
+                <th>VALOR ADOTADO</th>
+                <th>FONTE</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Fator emissão — Gasolina C</td>
+                <td><span class="pval pval--red">2,212 kg CO₂e/L</span></td>
+                <td>GHG Protocol BR 2023, Tab. 1-A</td>
+              </tr>
+              <tr>
+                <td>Fator emissão — Diesel</td>
+                <td><span class="pval pval--red">2,603 kg CO₂e/L</span></td>
+                <td>GHG Protocol BR 2023, Tab. 1-A</td>
+              </tr>
+              <tr>
+                <td>Fator emissão — Etanol hidratado</td>
+                <td><span class="pval pval--green">0,458 kg CO₂e/L</span></td>
+                <td>GHG Protocol BR 2023, Tab. 1-A</td>
+              </tr>
+              <tr>
+                <td>Fator emissão — Mix flex (50/50)</td>
+                <td><span class="pval pval--orange">1,335 kg CO₂e/L</span></td>
+                <td>ANFAVEA 2023 + GHG Protocol BR</td>
+              </tr>
+              <tr>
+                <td>Fator emissão — Grid elétrico (SIN)</td>
+                <td><span class="pval pval--blue">0,0817 kg CO₂e/kWh</span></td>
+                <td>MCTIC — Fatores SIN 2023</td>
+              </tr>
+              <tr>
+                <td>Fator emissão — Papel (produção)</td>
+                <td><span class="pval">1,100 kg CO₂e/kg</span></td>
+                <td>IPCC AR6 WG3, Cap. 11</td>
+              </tr>
+              <tr>
+                <td>Consumo km — Carro flex 1.0–2.0</td>
+                <td><span class="pval">0,090 L/km (≈ 11,1 km/L)</span></td>
+                <td>INMETRO PBE Veicular 2023</td>
+              </tr>
+              <tr>
+                <td>Consumo km — Carro elétrico</td>
+                <td><span class="pval pval--blue">0,180 kWh/km (≈ 5,6 km/kWh)</span></td>
+                <td>INMETRO PBE Veicular 2023</td>
+              </tr>
+              <tr>
+                <td>Consumo km — Moto 150–200 cc</td>
+                <td><span class="pval">0,038 L/km (≈ 26,3 km/L)</span></td>
+                <td>INMETRO PBE Veicular 2023</td>
+              </tr>
+              <tr>
+                <td>Consumo km — Caminhão (carregado)</td>
+                <td><span class="pval">0,300 L/km (≈ 3,3 km/L)</span></td>
+                <td>ANTT — Plano Log. Sust. 2023</td>
+              </tr>
+              <tr>
+                <td>Consumo idle — Carro flex 1.0–2.0</td>
+                <td><span class="pval">0,65 L/h</span></td>
+                <td>CONPET/Petrobras 2022</td>
+              </tr>
+              <tr>
+                <td>Consumo idle — Carro elétrico</td>
+                <td><span class="pval pval--blue">0,15 kWh/h</span></td>
+                <td>Estimativa fabricantes (Renault/BYD)</td>
+              </tr>
+              <tr>
+                <td>Consumo idle — Moto 150–200 cc</td>
+                <td><span class="pval">0,28 L/h</span></td>
+                <td>CONPET/Petrobras 2022</td>
+              </tr>
+              <tr>
+                <td>Consumo idle — Caminhão diesel 6 cil.</td>
+                <td><span class="pval">2,40 L/h</span></td>
+                <td>CONPET 2022 + specs Cummins/MB</td>
+              </tr>
+              <tr>
+                <td>Distância extra — Pedágio sem Taggy</td>
+                <td><span class="pval pval--red">0,100 km</span></td>
+                <td>Cálculo cinemático (v₀=80 km/h, a=2 m/s²)</td>
+              </tr>
+              <tr>
+                <td>Distância extra — Pedágio com Taggy</td>
+                <td><span class="pval pval--green">0,031 km</span></td>
+                <td>Free-flow: desaceleração até 40 km/h</td>
+              </tr>
+              <tr>
+                <td>Peso ticket — Pedágio (57 mm)</td>
+                <td><span class="pval">5 g</span></td>
+                <td>Rolpaper / Jetpaper 2023</td>
+              </tr>
+              <tr>
+                <td>Peso ticket — Estacionamento (80 mm)</td>
+                <td><span class="pval">8 g</span></td>
+                <td>Rolpaper / Jetpaper 2023</td>
+              </tr>
+              <tr>
+                <td>Peso ticket — Acesso (57 mm)</td>
+                <td><span class="pval">4 g</span></td>
+                <td>Rolpaper / Jetpaper 2023</td>
+              </tr>
+              <tr>
+                <td>Absorção CO₂ por árvore/ano</td>
+                <td><span class="pval pval--green">21,77 kg CO₂/ano</span></td>
+                <td>IPCC — Good Practice Guidance</td>
+              </tr>
+              <tr>
+                <td>CO₂e por litro de gasolina (equiv.)</td>
+                <td><span class="pval pval--red">2,212 kg CO₂e/L</span></td>
+                <td>GHG Protocol BR 2023</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ── 9. LIMITAÇÕES ─────────────────────────────────────────── -->
+      <section class="section-card">
+        <h2 class="section-card__title">Limitações e Premissas</h2>
+        <ol class="limitacoes-list">
+          <li>
+            <strong>Mix flex fixo em 50/50</strong>
+            <span>A proporção real varia por região e sazonalidade. O valor representa a média nacional da ANFAVEA (2023).</span>
+          </li>
+          <li>
+            <strong>Velocidade de referência 80 km/h</strong>
+            <span>Adotada como típica em rodovias. Em perímetros urbanos pode ser menor, resultando em distâncias de frenagem menores.</span>
+          </li>
+          <li>
+            <strong>Desaceleração de 2 m/s²</strong>
+            <span>Representa frenagem confortável. Frenagens bruscas geram maior consumo, mas são menos representativas da média.</span>
+          </li>
+          <li>
+            <strong>Consumo idle do carro elétrico</strong>
+            <span>Sem fonte oficial brasileira. Estimativa baseada em specs técnicos de fabricantes (Renault Kwid E-Tech, BYD Dolphin).</span>
+          </li>
+          <li>
+            <strong>Papel térmico</strong>
+            <span>Fator IPCC (1,1 kg CO₂e/kg) representa papel em geral. Papel térmico pode ter fator levemente superior.</span>
+          </li>
+          <li>
+            <strong>Atualização anual recomendada</strong>
+            <span>Os fatores GHG Protocol BR, INMETRO PBE e MCTIC/SIN devem ser revisados anualmente conforme novas edições oficiais.</span>
+          </li>
+        </ol>
+      </section>
+
+      <!-- ── 10. AVISO ──────────────────────────────────────────────── -->
+      <div class="aviso-box">
+        <span class="material-symbols-outlined aviso-box__icon">warning_amber</span>
+        <div>
+          <strong>Estimativas baseadas em premissas científicas públicas</strong>
+          <p>
+            Os valores reais podem variar conforme condições de tráfego, tipo de veículo e região.
+            A metodologia adota valores conservadores para garantir credibilidade. Atualização anual
+            recomendada conforme novas edições do GHG Protocol Brasil, INMETRO PBE e MCTIC/SIN.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <a href="{% url 'home' %}" class="logo logo--light">
+          <img src="{% static 'images/logo-sem-fundo.png' %}" alt="TagGreen" />
+        </a>
+        <p class="footer__tagline">Menos fila, menos marcha lenta, menos emissão.</p>
+      </div>
+      <div class="footer__col">
+        <h5 class="footer__col-title">PLATAFORMA</h5>
+        <ul class="footer__links">
+          <li><a href="#">Calculadora</a></li>
+          <li><a href="{% url 'meu_impacto' %}">Meu Impacto</a></li>
+          <li><a href="{% url 'metodologia' %}">Metodologia</a></li>
+          <li><a href="{% url 'faq' %}">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h5 class="footer__col-title">CONTATO</h5>
+        <ul class="footer__links footer__links--contact">
+          <li>
+            <span class="material-symbols-outlined">mail</span>
+            <a href="mailto:contato@taggy.com.br">contato@taggy.com.br</a>
+          </li>
+          <li>
+            <span class="material-symbols-outlined">location_on</span>
+            <span>São Paulo, Brasil</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 2026 Taggy. Todos os direitos reservados.</span>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/metodologia.js' %}"></script>
+</body>
+</html>
