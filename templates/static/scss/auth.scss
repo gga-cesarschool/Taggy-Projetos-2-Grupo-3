@@ -1,0 +1,329 @@
+// =============================================
+// TagGreen — Auth (login · registro)
+// base: html { font-size: 62.5% } → 1rem = 10px
+// =============================================
+@import 'global';
+@import 'variables';
+@import 'utils';
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal; font-style: normal;
+  font-size: 2rem; line-height: 1;
+  letter-spacing: normal; text-transform: none;
+  display: inline-block; white-space: nowrap;
+  word-wrap: normal; direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+// =============================================
+// PÁGINA
+// =============================================
+.auth-page {
+  min-height: 100vh;
+  background: $color-bg;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba($color-accent, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba($color-primary, 0.05) 0%, transparent 50%);
+  @include display-flex($justify-content: center, $align-items: center, $gap: 0);
+  @include padding(4rem, 1.6rem, 4rem, 1.6rem);
+  flex-direction: column;
+}
+
+// =============================================
+// CARD
+// =============================================
+.auth-card {
+  background: $color-white;
+  border: 0.1rem solid $color-border;
+  @include border-radius(2.4rem);
+  @include padding(4rem, 4rem, 4rem, 4rem);
+  width: 100%;
+  max-width: 50rem;
+  box-shadow:
+    0 0.4rem 2.4rem rgba($color-text-dark, 0.06),
+    0 0.1rem 0.4rem rgba($color-text-dark, 0.04);
+
+  @media (max-width: 560px) {
+    @include padding(3.2rem, 2.4rem, 3.2rem, 2.4rem);
+    @include border-radius(2rem);
+  }
+}
+
+// ── Logo ──────────────────────────────────────────────────────────
+.auth-card__logo {
+  @include display-flex($justify-content: center, $gap: 0);
+  margin-bottom: 2.4rem;
+  img { height: 3.8rem; width: auto; }
+}
+
+// ── Título e subtítulo ────────────────────────────────────────────
+.auth-card__title {
+  font-family: $font-primary;
+  font-size: 2.4rem;
+  font-weight: $fw-extrabold;
+  color: $color-text-dark;
+  text-align: center;
+  margin: 0 0 0.6rem;
+  line-height: 1.2;
+}
+
+.auth-card__subtitle {
+  font-size: 1.45rem;
+  color: $color-text-muted;
+  text-align: center;
+  line-height: 1.6;
+  margin: 0 0 3rem;
+}
+
+// =============================================
+// SELETOR DE TIPO (Pessoa / Empresa)
+// =============================================
+.auth-type-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  @include padding(0.5rem, 0.5rem, 0.5rem, 0.5rem);
+  background: $color-bg;
+  @include border-radius(1.4rem);
+  border: 0.1rem solid $color-border;
+  margin-bottom: 2.8rem;
+}
+
+.auth-type-tab {
+  @include display-flex($gap: 0.7rem);
+  @include padding(1rem, 1.6rem, 1rem, 1.6rem);
+  @include border-radius(1rem);
+  border: none;
+  background: none;
+  font-family: $font-primary;
+  font-size: 1.4rem;
+  font-weight: $fw-semibold;
+  color: $color-text-muted;
+  cursor: pointer;
+  @include transition(all, 0.18s, ease);
+
+  .material-symbols-outlined { font-size: 1.8rem; flex-shrink: 0; }
+
+  &:hover:not(.auth-type-tab--active) {
+    background: rgba($color-primary, 0.05);
+    color: $color-primary;
+  }
+
+  &--active {
+    background: $color-white;
+    color: $color-primary-dark;
+    box-shadow: 0 0.2rem 0.8rem rgba($color-text-dark, 0.08);
+    border: 0.1rem solid $color-border;
+
+    .material-symbols-outlined { color: $color-primary; }
+  }
+}
+
+// =============================================
+// FORM
+// =============================================
+.auth-form { display: flex; flex-direction: column; gap: 2rem; }
+
+// ── Grupo ────────────────────────────────────────────────────────
+.form-group { display: flex; flex-direction: column; gap: 0.6rem; }
+
+.form-label {
+  font-size: 1.35rem;
+  font-weight: $fw-semibold;
+  color: $color-text-dark;
+}
+
+// ── Wrapper do input ──────────────────────────────────────────────
+.form-field {
+  position: relative;
+
+  &__icon {
+    position: absolute;
+    left: 1.4rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.8rem;
+    color: $color-text-muted;
+    pointer-events: none;
+    @include transition(color, 0.15s, ease);
+  }
+
+  &__toggle {
+    position: absolute;
+    right: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: $color-text-muted;
+    @include display-flex($gap: 0);
+    @include transition(color, 0.15s, ease);
+    line-height: 0;
+    padding: 0.4rem;
+    &:hover { color: $color-primary; }
+    .material-symbols-outlined { font-size: 1.8rem; }
+  }
+}
+
+// ── Input ─────────────────────────────────────────────────────────
+.form-input {
+  width: 100%;
+  height: 4.8rem;
+  @include padding(0, 1.6rem, 0, 4.4rem);
+  @include border-radius(1rem);
+  border: 0.15rem solid $color-border;
+  background: $color-white;
+  font-family: $font-primary;
+  font-size: 1.4rem;
+  color: $color-text-dark;
+  @include transition(all, 0.15s, ease);
+  outline: none;
+  appearance: none;
+
+  &::placeholder { color: $color-text-muted; }
+
+  &:focus {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 0.3rem rgba($color-primary, 0.12);
+    ~ .form-field__icon { color: $color-primary; }
+  }
+
+  &--no-icon { @include padding(0, 1.6rem, 0, 1.6rem); }
+
+  &--has-toggle { padding-right: 4.8rem; }
+
+  &--error {
+    border-color: $color-danger;
+    &:focus { box-shadow: 0 0 0 0.3rem rgba($color-danger, 0.12); }
+  }
+}
+
+// ── Erro por campo ────────────────────────────────────────────────
+.form-error {
+  font-size: 1.25rem;
+  color: $color-danger;
+  font-weight: $fw-medium;
+  @include display-flex($justify-content: flex-start, $gap: 0.4rem);
+  .material-symbols-outlined { font-size: 1.4rem; flex-shrink: 0; }
+}
+
+// ── Alerta geral (credenciais inválidas) ──────────────────────────
+.auth-alert {
+  @include display-flex($justify-content: flex-start, $gap: 1rem);
+  @include padding(1.2rem, 1.6rem, 1.2rem, 1.6rem);
+  @include border-radius(1rem);
+  background: rgba($color-danger, 0.07);
+  border: 0.1rem solid rgba($color-danger, 0.25);
+  .material-symbols-outlined { font-size: 1.8rem; color: $color-danger; flex-shrink: 0; }
+  span { font-size: 1.35rem; color: $color-danger; font-weight: $fw-medium; }
+}
+
+// =============================================
+// FORÇA DA SENHA
+// =============================================
+.password-strength {
+  margin-top: 0.6rem;
+
+  &__bars {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  &__bar {
+    flex: 1;
+    height: 0.35rem;
+    @include border-radius(9999px);
+    background: $color-border;
+    @include transition(background-color, 0.2s, ease);
+
+    &--fraca { background: $color-danger; }
+    &--media { background: #F59E0B; }
+    &--boa   { background: $color-primary-light; }
+    &--forte { background: $color-primary; }
+  }
+
+  &__label {
+    font-size: 1.2rem;
+    font-weight: $fw-medium;
+    color: $color-text-muted;
+    &--fraca { color: $color-danger; }
+    &--media { color: #92400e; }
+    &--boa   { color: $color-primary-light; }
+    &--forte { color: $color-primary-dark; }
+  }
+}
+
+// =============================================
+// BOTÃO DE ENVIO
+// =============================================
+.auth-btn {
+  width: 100%;
+  height: 5rem;
+  @include border-radius(1.2rem);
+  border: none;
+  background: linear-gradient(135deg, $color-primary 0%, $color-accent 100%);
+  color: $color-white;
+  font-family: $font-primary;
+  font-size: 1.5rem;
+  font-weight: $fw-bold;
+  cursor: pointer;
+  @include display-flex($gap: 0.8rem);
+  box-shadow: 0 0.4rem 1.6rem rgba($color-primary, 0.3);
+  @include transition(all, 0.18s, ease);
+
+  .material-symbols-outlined { font-size: 1.8rem; }
+
+  &:hover {
+    background: linear-gradient(135deg, $color-primary-dark 0%, $color-primary 100%);
+    box-shadow: 0 0.6rem 2rem rgba($color-primary, 0.4);
+    transform: translateY(-0.1rem);
+  }
+
+  &:active { transform: translateY(0); }
+
+  &:disabled {
+    background: $color-border;
+    color: $color-text-muted;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+// =============================================
+// LINK PARA OUTRA PÁGINA
+// =============================================
+.auth-switch {
+  text-align: center;
+  font-size: 1.4rem;
+  color: $color-text-muted;
+  margin-top: 1.2rem;
+
+  a {
+    color: $color-primary;
+    font-weight: $fw-semibold;
+    @include transition(color, 0.15s, ease);
+    &:hover { color: $color-primary-dark; text-decoration: underline; }
+  }
+}
+
+// =============================================
+// RODAPÉ MÍNIMO
+// =============================================
+.auth-footer {
+  margin-top: 2.8rem;
+  text-align: center;
+  font-size: 1.25rem;
+  color: $color-text-muted;
+  a {
+    color: $color-text-muted;
+    @include transition(color, 0.15s, ease);
+    &:hover { color: $color-primary; }
+  }
+  span { margin: 0 0.6rem; }
+}

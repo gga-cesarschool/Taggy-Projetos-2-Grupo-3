@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'sass_processor',
     'compressor',
     'home.apps.HomeConfig',
+    'authentication.apps.AuthConfig',
 ]
 
 MIDDLEWARE = [

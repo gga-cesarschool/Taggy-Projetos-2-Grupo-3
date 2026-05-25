@@ -1,0 +1,103 @@
+{% load static %}
+{% load sass_tags %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TagGreen — Entrar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="{% sass_src 'scss/auth.scss' %}">
+</head>
+<body>
+
+  <div class="auth-page">
+    <div class="auth-card">
+
+      <div class="auth-card__logo">
+        <a href="{% url 'home' %}">
+          <img src="{% static 'images/logo-sem-fundo.png' %}" alt="TagGreen" />
+        </a>
+      </div>
+
+      <h1 class="auth-card__title">Bem-vindo de volta</h1>
+      <p class="auth-card__subtitle">Entre na sua conta para ver seu impacto ambiental</p>
+
+      {% if errors.geral %}
+        <div class="auth-alert" role="alert">
+          <span class="material-symbols-outlined">error</span>
+          <span>{{ errors.geral }}</span>
+        </div>
+      {% endif %}
+
+      <form class="auth-form" method="POST" action="{% url 'login' %}" novalidate>
+        {% csrf_token %}
+
+        <!-- E-mail -->
+        <div class="form-group">
+          <label class="form-label" for="email">E-mail</label>
+          <div class="form-field">
+            <span class="material-symbols-outlined form-field__icon">mail</span>
+            <input
+              type="email" id="email" name="email"
+              class="form-input{% if errors.email %} form-input--error{% endif %}"
+              placeholder="seu@email.com"
+              value="{{ form_data.email|default:'' }}"
+              autocomplete="email" required
+            />
+          </div>
+          {% if errors.email %}
+            <span class="form-error">
+              <span class="material-symbols-outlined">error</span>{{ errors.email }}
+            </span>
+          {% endif %}
+        </div>
+
+        <!-- Senha -->
+        <div class="form-group">
+          <label class="form-label" for="password">Senha</label>
+          <div class="form-field">
+            <span class="material-symbols-outlined form-field__icon">lock</span>
+            <input
+              type="password" id="password" name="password"
+              class="form-input form-input--has-toggle{% if errors.password %} form-input--error{% endif %}"
+              placeholder="••••••••"
+              autocomplete="current-password" required
+            />
+            <button type="button" class="form-field__toggle"
+                    id="toggle-pwd" aria-label="Mostrar senha">
+              <span class="material-symbols-outlined" id="toggle-pwd-icon">visibility</span>
+            </button>
+          </div>
+          {% if errors.password %}
+            <span class="form-error">
+              <span class="material-symbols-outlined">error</span>{{ errors.password }}
+            </span>
+          {% endif %}
+        </div>
+
+        <button type="submit" class="auth-btn">
+          <span class="material-symbols-outlined">login</span>
+          Entrar
+        </button>
+      </form>
+
+      <p class="auth-switch">
+        Ainda não tem conta? <a href="{% url 'register' %}">Criar conta grátis</a>
+      </p>
+
+    </div>
+
+    <footer class="auth-footer">
+      <a href="{% url 'home' %}">Início</a>
+      <span>·</span>
+      <a href="{% url 'faq' %}">FAQ</a>
+      <span>·</span>
+      <a href="{% url 'metodologia' %}">Metodologia</a>
+    </footer>
+  </div>
+
+  <script src="{% static 'js/auth.js' %}"></script>
+</body>
+</html>

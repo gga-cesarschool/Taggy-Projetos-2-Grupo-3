@@ -1,0 +1,235 @@
+{% load static %}
+{% load sass_tags %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TagGreen — Criar conta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="{% sass_src 'scss/auth.scss' %}">
+</head>
+<body>
+
+  <div class="auth-page">
+    <div class="auth-card">
+
+      <div class="auth-card__logo">
+        <a href="{% url 'home' %}">
+          <img src="{% static 'images/logo-sem-fundo.png' %}" alt="TagGreen" />
+        </a>
+      </div>
+
+      <h1 class="auth-card__title">Criar conta grátis</h1>
+      <p class="auth-card__subtitle">Acompanhe seu impacto ambiental com a Taggy</p>
+
+      <!-- ── Seletor de tipo ───────────────────────────────────────── -->
+      <div class="auth-type-tabs" role="tablist" aria-label="Tipo de cadastro">
+        <button
+          type="button"
+          class="auth-type-tab auth-type-tab--active"
+          id="tab-pessoa"
+          data-tipo="pessoa"
+          role="tab"
+          aria-selected="true"
+          aria-controls="fields-pessoa"
+        >
+          <span class="material-symbols-outlined">person</span>
+          Pessoa Física
+        </button>
+        <button
+          type="button"
+          class="auth-type-tab"
+          id="tab-empresa"
+          data-tipo="empresa"
+          role="tab"
+          aria-selected="false"
+          aria-controls="fields-empresa"
+        >
+          <span class="material-symbols-outlined">business</span>
+          Empresa
+        </button>
+      </div>
+
+      <form class="auth-form" method="POST" action="{% url 'register' %}" novalidate>
+        {% csrf_token %}
+
+        <!-- Campo oculto com o tipo selecionado -->
+        <input type="hidden" name="tipo" id="tipo-input"
+               value="{{ form_data.tipo|default:'pessoa' }}" />
+
+        <!-- ── Campos exclusivos: PESSOA FÍSICA ─────────────────────── -->
+        <div id="fields-pessoa"
+             role="tabpanel"
+             aria-labelledby="tab-pessoa"
+             {% if form_data.tipo == 'empresa' %}hidden{% endif %}>
+
+          <div class="form-group">
+            <label class="form-label" for="nome">Nome completo</label>
+            <div class="form-field">
+              <span class="material-symbols-outlined form-field__icon">person</span>
+              <input
+                type="text" id="nome" name="nome"
+                class="form-input{% if errors.nome %} form-input--error{% endif %}"
+                placeholder="Seu nome completo"
+                value="{{ form_data.nome|default:'' }}"
+                autocomplete="name"
+              />
+            </div>
+            {% if errors.nome %}
+              <span class="form-error">
+                <span class="material-symbols-outlined">error</span>{{ errors.nome }}
+              </span>
+            {% endif %}
+          </div>
+
+        </div>
+
+        <!-- ── Campos exclusivos: EMPRESA ───────────────────────────── -->
+        <div id="fields-empresa"
+             role="tabpanel"
+             aria-labelledby="tab-empresa"
+             {% if form_data.tipo != 'empresa' %}hidden{% endif %}>
+
+          <div class="form-group" style="margin-bottom: 2rem;">
+            <label class="form-label" for="nome_empresa">Nome da empresa</label>
+            <div class="form-field">
+              <span class="material-symbols-outlined form-field__icon">business</span>
+              <input
+                type="text" id="nome_empresa" name="nome_empresa"
+                class="form-input{% if errors.nome_empresa %} form-input--error{% endif %}"
+                placeholder="Razão social ou nome fantasia"
+                value="{{ form_data.nome_empresa|default:'' }}"
+                autocomplete="organization"
+              />
+            </div>
+            {% if errors.nome_empresa %}
+              <span class="form-error">
+                <span class="material-symbols-outlined">error</span>{{ errors.nome_empresa }}
+              </span>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="cnpj">CNPJ</label>
+            <div class="form-field">
+              <span class="material-symbols-outlined form-field__icon">description</span>
+              <input
+                type="text" id="cnpj" name="cnpj"
+                class="form-input form-input--no-icon{% if errors.cnpj %} form-input--error{% endif %}"
+                placeholder="00.000.000/0001-00"
+                value="{{ form_data.cnpj|default:'' }}"
+                maxlength="18"
+                inputmode="numeric"
+              />
+            </div>
+            {% if errors.cnpj %}
+              <span class="form-error">
+                <span class="material-symbols-outlined">error</span>{{ errors.cnpj }}
+              </span>
+            {% endif %}
+          </div>
+
+        </div>
+
+        <!-- ── Campos comuns ─────────────────────────────────────────── -->
+
+        <div class="form-group">
+          <label class="form-label" for="email">E-mail</label>
+          <div class="form-field">
+            <span class="material-symbols-outlined form-field__icon">mail</span>
+            <input
+              type="email" id="email" name="email"
+              class="form-input{% if errors.email %} form-input--error{% endif %}"
+              placeholder="seu@email.com"
+              value="{{ form_data.email|default:'' }}"
+              autocomplete="email" required
+            />
+          </div>
+          {% if errors.email %}
+            <span class="form-error">
+              <span class="material-symbols-outlined">error</span>{{ errors.email }}
+            </span>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Senha</label>
+          <div class="form-field">
+            <span class="material-symbols-outlined form-field__icon">lock</span>
+            <input
+              type="password" id="password" name="password"
+              class="form-input form-input--has-toggle{% if errors.password %} form-input--error{% endif %}"
+              placeholder="Mínimo 8 caracteres"
+              autocomplete="new-password" required
+            />
+            <button type="button" class="form-field__toggle"
+                    id="toggle-pwd" aria-label="Mostrar senha">
+              <span class="material-symbols-outlined" id="toggle-pwd-icon">visibility</span>
+            </button>
+          </div>
+          {% if errors.password %}
+            <span class="form-error">
+              <span class="material-symbols-outlined">error</span>{{ errors.password }}
+            </span>
+          {% endif %}
+          <!-- Medidor de força -->
+          <div class="password-strength" id="pwd-strength" hidden>
+            <div class="password-strength__bars">
+              <div class="password-strength__bar" id="pwd-bar-1"></div>
+              <div class="password-strength__bar" id="pwd-bar-2"></div>
+              <div class="password-strength__bar" id="pwd-bar-3"></div>
+              <div class="password-strength__bar" id="pwd-bar-4"></div>
+            </div>
+            <span class="password-strength__label" id="pwd-label"></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="confirm_password">Confirmar senha</label>
+          <div class="form-field">
+            <span class="material-symbols-outlined form-field__icon">lock</span>
+            <input
+              type="password" id="confirm_password" name="confirm_password"
+              class="form-input form-input--has-toggle{% if errors.confirm_password %} form-input--error{% endif %}"
+              placeholder="Repita a senha"
+              autocomplete="new-password" required
+            />
+            <button type="button" class="form-field__toggle"
+                    id="toggle-confirm" aria-label="Mostrar confirmação">
+              <span class="material-symbols-outlined" id="toggle-confirm-icon">visibility</span>
+            </button>
+          </div>
+          {% if errors.confirm_password %}
+            <span class="form-error">
+              <span class="material-symbols-outlined">error</span>{{ errors.confirm_password }}
+            </span>
+          {% endif %}
+        </div>
+
+        <button type="submit" class="auth-btn" id="submit-btn">
+          <span class="material-symbols-outlined" id="submit-icon">eco</span>
+          <span id="submit-label">Criar conta grátis</span>
+        </button>
+
+      </form>
+
+      <p class="auth-switch">
+        Já tem conta? <a href="{% url 'login' %}">Entrar</a>
+      </p>
+
+    </div>
+
+    <footer class="auth-footer">
+      <a href="{% url 'home' %}">Início</a>
+      <span>·</span>
+      <a href="{% url 'faq' %}">FAQ</a>
+      <span>·</span>
+      <a href="{% url 'metodologia' %}">Metodologia</a>
+    </footer>
+  </div>
+
+  <script src="{% static 'js/auth.js' %}"></script>
+</body>
+</html>

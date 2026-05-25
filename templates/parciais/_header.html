@@ -1,57 +1,199 @@
 {% load static %}
+
+<style>
+  /* avatar + nome */
+  .header__auth {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex-shrink: 0;
+  }
+  .header__user {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-right: 0.2rem;
+  }
+  .header__user-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 9999px;
+    background-color: #2E7D32;
+    color: #fff;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+  .header__user-name {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #1A2E1A;
+  }
+  @media (max-width: 960px) {
+    .header__user-name { display: none; }
+  }
+
+  /* botões auth */
+  .hbtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    height: 3.6rem;
+    padding: 0 2rem;
+    border-radius: 9999px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: background-color 0.18s ease,
+                color            0.18s ease,
+                border-color     0.18s ease,
+                box-shadow       0.18s ease,
+                transform        0.14s ease;
+  }
+
+  /* "Entrar" — fundo branco, borda verde, texto verde */
+  .hbtn--outline {
+    background-color: #fff;
+    border: 0.2rem solid #2E7D32;
+    color: #2E7D32;
+  }
+  .hbtn--outline:hover {
+    background-color: #2E7D32;
+    color: #fff;
+  }
+
+  /* "Cadastrar" / "Meu Dashboard" — verde sólido */
+  .hbtn--solid {
+    background-color: #2E7D32;
+    border: 0.2rem solid transparent;
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(46,125,50,0.28);
+  }
+  .hbtn--solid:hover {
+    background-color: #1B5E20;
+    box-shadow: 0 4px 14px rgba(46,125,50,0.38);
+    transform: translateY(-1px);
+  }
+  .hbtn--solid:active { transform: translateY(0); }
+
+  /* "Sair" — texto discreto */
+  .hbtn--ghost {
+    background: none;
+    border: none;
+    padding: 0 0.6rem;
+    color: #718096;
+    font-size: 1.3rem;
+    font-weight: 500;
+  }
+  .hbtn--ghost:hover { color: #e53e3e; }
+</style>
+
 <header class="header">
   <div class="header__inner">
+
     <a href="{% url 'home' %}" class="logo">
       <img src="{% static 'images/logo-sem-fundo.png' %}" alt="TagGreen" />
     </a>
 
     <nav class="nav" id="main-nav" aria-label="Menu principal">
       <ul class="nav__list">
-
         <li>
           <a href="{% url 'home' %}"
              class="nav__link{% if request.resolver_match.url_name == 'home' %} nav__link--active{% endif %}">
             Home
           </a>
         </li>
-
-        <li>
-          <a href="#" class="nav__link">Calculadora</a>
-        </li>
-
+        <li><a href="#" class="nav__link">Calculadora</a></li>
+        {% if not user.is_authenticated or user.perfil.tipo != 'empresa' %}
         <li>
           <a href="{% url 'meu_impacto' %}"
              class="nav__link{% if request.resolver_match.url_name == 'meu_impacto' %} nav__link--active{% endif %}">
             Meu Impacto
           </a>
         </li>
-
+        {% endif %}
         <li>
           <a href="{% url 'metodologia' %}"
              class="nav__link{% if request.resolver_match.url_name == 'metodologia' %} nav__link--active{% endif %}">
             Metodologia
           </a>
         </li>
-
         <li>
           <a href="{% url 'faq' %}"
              class="nav__link{% if request.resolver_match.url_name == 'faq' %} nav__link--active{% endif %}">
             FAQ
           </a>
         </li>
-
+        {% if not user.is_authenticated or user.perfil.tipo == 'empresa' %}
         <li>
           <a href="{% url 'empresas_relatorios' %}"
              class="nav__link nav__link--pill{% if request.resolver_match.url_name == 'empresas_relatorios' %} nav__link--pill-active{% endif %}">
             Empresas
           </a>
         </li>
-
+        {% endif %}
       </ul>
     </nav>
+
+    <!-- ── Área de autenticação ───────────────────────────────────── -->
+    <div class="header__auth">
+
+      {% if user.is_authenticated %}
+
+        <div class="header__user">
+          <span class="header__user-avatar">
+            {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
+          </span>
+          <span class="header__user-name">
+            {{ user.first_name|default:user.email }}
+          </span>
+        </div>
+
+        {% if user.perfil.tipo == 'empresa' %}
+          <a href="{% url 'empresas_relatorios' %}" class="hbtn hbtn--solid">Meu Dashboard</a>
+        {% else %}
+          <a href="{% url 'meu_impacto' %}" class="hbtn hbtn--solid">Meu Dashboard</a>
+        {% endif %}
+
+        <a href="#" class="hbtn hbtn--ghost" id="logout-trigger">Sair</a>
+        <form id="logout-form" method="POST" action="{% url 'logout' %}" hidden>
+          {% csrf_token %}
+        </form>
+
+      {% else %}
+
+        <a href="{% url 'login' %}"    class="hbtn hbtn--outline">Entrar</a>
+        <a href="{% url 'register' %}" class="hbtn hbtn--solid">Cadastrar</a>
+
+      {% endif %}
+
+    </div>
 
     <button class="hamburger" id="hamburger-btn" aria-label="Abrir menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
+
   </div>
 </header>
+
+<script>
+  (function () {
+    var t = document.getElementById('logout-trigger');
+    var f = document.getElementById('logout-form');
+    if (t && f) t.addEventListener('click', function (e) { e.preventDefault(); f.submit(); });
+  })();
+</script>

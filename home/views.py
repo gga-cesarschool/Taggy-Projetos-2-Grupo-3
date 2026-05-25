@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 
@@ -12,16 +12,46 @@ from . import dados_empresas as DE
 def home(request):
     return render(request, 'home.html')
 
+
+# =============================================================================
+# Helper — tipo do usuário logado
+# =============================================================================
+
+def _get_tipo(user):
+    """Retorna 'empresa' ou 'pessoa'. Seguro mesmo sem Perfil criado."""
+    try:
+        return user.perfil.tipo
+    except Exception:
+        return 'pessoa'
+
+
+# =============================================================================
+# Páginas protegidas por tipo de usuário
+# =============================================================================
+
 def meu_impacto(request):
+    """Acessível apenas para usuários do tipo pessoa."""
+    if not request.user.is_authenticated:
+        return redirect('login')
+    if _get_tipo(request.user) == 'empresa':
+        return redirect('empresas_relatorios')
     return render(request, 'meu_impacto.html')
+
 
 def metodologia(request):
     return render(request, 'metodologia.html')
 
+
 def faq(request):
     return render(request, 'faq.html')
 
+
 def empresas_relatorios(request):
+    """Acessível apenas para usuários do tipo empresa."""
+    if not request.user.is_authenticated:
+        return redirect('login')
+    if _get_tipo(request.user) == 'pessoa':
+        return redirect('meu_impacto')
     return render(request, 'empresas_relatorios.html')
 
 
