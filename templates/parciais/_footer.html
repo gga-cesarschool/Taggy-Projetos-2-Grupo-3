@@ -1,0 +1,60 @@
+{% load static %}
+<footer class="footer">
+  <div class="footer__inner">
+
+    <div class="footer__brand">
+      <a href="{% url 'home' %}" class="logo logo--light">
+        <img src="{% static 'images/logo-sem-fundo.png' %}" alt="TagGreen" />
+      </a>
+      <p class="footer__tagline">
+        Menos fila, menos marcha lenta, menos emissão. Mobilidade inteligente e sustentável.
+      </p>
+    </div>
+
+    <div class="footer__col">
+      <h5 class="footer__col-title">PLATAFORMA</h5>
+      <ul class="footer__links">
+        <li><a href="#">Calculadora</a></li>
+        <li><a href="{% url 'meu_impacto' %}">Meu Impacto</a></li>
+        <li><a href="{% url 'metodologia' %}">Metodologia</a></li>
+        <li><a href="{% url 'faq' %}">FAQ</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h5 class="footer__col-title">EMPRESAS</h5>
+      <ul class="footer__links">
+        <li><a href="#">Área B2B</a></li>
+        <li><a href="{% url 'empresas_relatorios' %}">Wrapped Corporativo</a></li>
+        <li><a href="{% url 'empresas_relatorios' %}">Relatórios ESG</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h5 class="footer__col-title">CONTATO</h5>
+      <ul class="footer__links footer__links--contact">
+        <li>
+          <span class="material-symbols-outlined">mail</span>
+          <a href="mailto:contato@taggy.com.br">contato@taggy.com.br</a>
+        </li>
+        <li>
+          <span class="material-symbols-outlined">phone</span>
+          <a href="tel:08001234567">0800 123 4567</a>
+        </li>
+        <li>
+          <span class="material-symbols-outlined">location_on</span>
+          <span>São Paulo, Brasil</span>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="footer__bottom">
+    <span>© 2026 Taggy. Todos os direitos reservados.</span>
+    <div class="footer__bottom-links">
+      <a href="#">Termos de Uso</a>
+      <a href="#">Privacidade</a>
+    </div>
+  </div>
+</footer>

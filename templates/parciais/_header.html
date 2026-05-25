@@ -1,1 +1,57 @@
+{% load static %}
+<header class="header">
+  <div class="header__inner">
+    <a href="{% url 'home' %}" class="logo">
+      <img src="{% static 'images/logo-sem-fundo.png' %}" alt="TagGreen" />
+    </a>
 
+    <nav class="nav" id="main-nav" aria-label="Menu principal">
+      <ul class="nav__list">
+
+        <li>
+          <a href="{% url 'home' %}"
+             class="nav__link{% if request.resolver_match.url_name == 'home' %} nav__link--active{% endif %}">
+            Home
+          </a>
+        </li>
+
+        <li>
+          <a href="#" class="nav__link">Calculadora</a>
+        </li>
+
+        <li>
+          <a href="{% url 'meu_impacto' %}"
+             class="nav__link{% if request.resolver_match.url_name == 'meu_impacto' %} nav__link--active{% endif %}">
+            Meu Impacto
+          </a>
+        </li>
+
+        <li>
+          <a href="{% url 'metodologia' %}"
+             class="nav__link{% if request.resolver_match.url_name == 'metodologia' %} nav__link--active{% endif %}">
+            Metodologia
+          </a>
+        </li>
+
+        <li>
+          <a href="{% url 'faq' %}"
+             class="nav__link{% if request.resolver_match.url_name == 'faq' %} nav__link--active{% endif %}">
+            FAQ
+          </a>
+        </li>
+
+        <li>
+          <a href="{% url 'empresas_relatorios' %}"
+             class="nav__link nav__link--pill{% if request.resolver_match.url_name == 'empresas_relatorios' %} nav__link--pill-active{% endif %}">
+            Empresas
+          </a>
+        </li>
+
+      </ul>
+    </nav>
+
+    <button class="hamburger" id="hamburger-btn" aria-label="Abrir menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>

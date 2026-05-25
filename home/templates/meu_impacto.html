@@ -14,26 +14,7 @@
 <body>
 
   <!-- ===== HEADER ===== -->
-  <header class="header">
-    <div class="header__inner">
-      <a href="{% url 'home' %}" class="logo">
-        <img src="{% static 'images/logo-sem-fundo.png' %}" alt="TagGreen" />
-      </a>
-      <nav class="nav" id="main-nav" aria-label="Menu principal">
-        <ul class="nav__list">
-          <li><a href="{% url 'home' %}" class="nav__link">Home</a></li>
-          <li><a href="#" class="nav__link">Calculadora</a></li>
-          <li><a href="{% url 'meu_impacto' %}" class="nav__link nav__link--active">Meu Impacto</a></li>
-          <li><a href="{% url 'metodologia' %}" class="nav__link">Metodologia</a></li>
-          <li><a href="{% url 'faq' %}" class="nav__link">FAQ</a></li>
-          <li><a href="{% url 'empresas_relatorios' %}" class="nav__link nav__link--pill">Empresas</a></li>
-        </ul>
-      </nav>
-      <button class="hamburger" id="hamburger-btn" aria-label="Abrir menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </header>
+  {% include 'parciais/_header.html' %}
 
   <!-- ===== CONTEÚDO PRINCIPAL ===== -->
   <main class="impacto">
@@ -277,41 +258,7 @@
   <div class="wrapped-overlay" id="wrapped-overlay"></div>
 
   <!-- ===== FOOTER ===== -->
-  <footer class="footer">
-    <div class="footer__inner">
-      <div class="footer__brand">
-        <a href="{% url 'home' %}" class="logo logo--light">
-          <img src="{% static 'images/logo-sem-fundo.png' %}" alt="TagGreen" />
-        </a>
-        <p class="footer__tagline">Menos fila, menos marcha lenta, menos emissao.</p>
-      </div>
-      <div class="footer__col">
-        <h5 class="footer__col-title">PLATAFORMA</h5>
-        <ul class="footer__links">
-          <li><a href="#">Calculadora</a></li>
-          <li><a href="{% url 'meu_impacto' %}">Meu Impacto</a></li>
-          <li><a href="{% url 'metodologia' %}">Metodologia</a></li>
-          <li><a href="{% url 'faq' %}">FAQ</a></li>
-        </ul>
-      </div>
-      <div class="footer__col">
-        <h5 class="footer__col-title">CONTATO</h5>
-        <ul class="footer__links footer__links--contact">
-          <li>
-            <span class="material-symbols-outlined">mail</span>
-            <a href="mailto:contato@taggy.com.br">contato@taggy.com.br</a>
-          </li>
-          <li>
-            <span class="material-symbols-outlined">location_on</span>
-            <span>São Paulo, Brasil</span>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer__bottom">
-      <span>© 2026 Taggy. Todos os direitos reservados.</span>
-    </div>
-  </footer>
+  {% include 'parciais/_footer.html' %}
 
   <script src="{% static 'js/meu_impacto.js' %}"></script>
 </body>
