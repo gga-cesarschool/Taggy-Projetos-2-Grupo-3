@@ -71,6 +71,7 @@ def register(request):
         # empresa
         nome_empresa = request.POST.get('nome_empresa', '').strip()
         cnpj         = request.POST.get('cnpj', '').strip()
+        tipo_servico = request.POST.get('tipo_servico', '').strip()
 
         # ── Validações comuns ──────────────────────────────────────────
         if not email:
@@ -98,6 +99,8 @@ def register(request):
                 errors['cnpj'] = 'Informe o CNPJ.'
             elif not _validar_cnpj_formato(cnpj):
                 errors['cnpj'] = 'CNPJ inválido. Use o formato 00.000.000/0001-00.'
+            if not tipo_servico:
+                errors['tipo_servico'] = 'Selecione o tipo de serviço.'
 
         # ── Criação ────────────────────────────────────────────────────
         if not errors:
@@ -123,6 +126,7 @@ def register(request):
                 tipo=tipo,
                 nome_empresa=nome_empresa if tipo == 'empresa' else '',
                 cnpj=cnpj         if tipo == 'empresa' else '',
+                tipo_servico=tipo_servico if tipo == 'empresa' else '',
             )
 
             auth_login(request, user)
@@ -134,6 +138,7 @@ def register(request):
             'email':        email,
             'nome_empresa': nome_empresa,
             'cnpj':         cnpj,
+            'tipo_servico': tipo_servico,
         }
 
     return render(request, 'register.html', {

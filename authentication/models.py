@@ -13,6 +13,13 @@ class Perfil(models.Model):
         ('empresa', 'Empresa'),
     ]
 
+    TIPO_SERVICO_CHOICES = [
+        ('pedagio',           'Pedágio'),
+        ('estacionamento',    'Estacionamento'),
+        ('acesso_controlado', 'Acesso Controlado'),
+        ('multiplo',          'Múltiplos Serviços'),
+    ]
+
     usuario      = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -24,6 +31,13 @@ class Perfil(models.Model):
         default='pessoa',
         verbose_name='Tipo de conta',
     )
+    tipo_servico = models.CharField(
+        max_length=20,
+        choices=TIPO_SERVICO_CHOICES,
+        blank=True,
+        verbose_name='Tipo de serviço',
+        help_text='Preenchido apenas para contas do tipo empresa.',
+    )
 
     # Campos exclusivos de empresa
     nome_empresa = models.CharField(
@@ -32,7 +46,7 @@ class Perfil(models.Model):
         verbose_name='Nome da empresa',
     )
     cnpj         = models.CharField(
-        max_length=18,   # formato: XX.XXX.XXX/XXXX-XX
+        max_length=18,
         blank=True,
         verbose_name='CNPJ',
     )
