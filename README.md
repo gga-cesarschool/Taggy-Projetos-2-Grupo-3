@@ -116,6 +116,38 @@ Aguarde revisão e feedback da equipe.
 ### Contato
 Em caso de dúvidas, entre em contato com os integrantes pelo e-mail listado no README (github.com in Bing).
 
+## 👥 Programação em Par
+Durante o desenvolvimento do projeto, adotamos a prática de programação em par, o que permitiu maior qualidade no código e aprendizado colaborativo.
+
+### Relato das Duplas
+Pessoa 1
+
+Criou o banco de dados.
+
+Estruturou e implementou as tabelas necessárias para o funcionamento do sistema.
+
+Pessoa 2
+
+Testou os tipos de dados para garantir consistência e correção.
+
+Implementou o banco de dados dentro do framework Django, integrando-o ao projeto.
+
+### 🌟 Reflexões sobre Programação em Par
+Aprendizado mútuo  
+Cada integrante contribui com seus conhecimentos e aprende com o outro. Isso acelera a compreensão de conceitos e evita que erros passem despercebidos.
+
+- Complementaridade  
+Enquanto uma pessoa cria o banco de dados e estrutura as tabelas, a outra valida os tipos e integra no Django. Essa complementaridade garante que o trabalho seja mais completo e consistente.
+
+- Feedback imediato  
+Trabalhar lado a lado permite identificar problemas rapidamente e corrigi-los antes que se tornem grandes obstáculos.
+
+- Colaboração e confiança  
+A prática fortalece o espírito de equipe, já que cada um depende do outro para avançar. Isso gera confiança e responsabilidade compartilhada.
+
+- Motivação e engajamento  
+Dividir desafios torna o processo mais leve e motivador. Um apoia o outro, e juntos mantêm o ritmo de desenvolvimento.
+Esse tipo de reflexão mostra que o projeto não é apenas sobre código, mas também sobre crescimento coletivo.
 
 ## 👥 Integrantes
 - **Guilherme Gomes Andrade**  
