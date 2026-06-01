@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TagGreen — Histórico da Frota</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <div class="navbar-logo">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="M4 22L14 6L24 22H4Z" fill="#4ade80" stroke="#22c55e" stroke-width="1"/>
+          <path d="M4 22L14 10L24 22" fill="none" stroke="#16a34a" stroke-width="1.5"/>
+          <line x1="14" y1="2" x2="14" y2="6" stroke="#4ade80" stroke-width="2"/>
+        </svg>
+        <span class="logo-text">Tag<span class="logo-green">Green</span></span>
+      </div>
+      <ul class="navbar-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Calculadora</a></li>
+        <li><a href="#">Dashboard Empresa</a></li>
+        <li><a href="#" class="active">Histórico</a></li>
+        <li><a href="#">Metodologia</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
+      <div class="navbar-actions">
+        <button class="btn-empresa">Empresa</button>
+        <button class="btn-trocar">⇄ Trocar</button>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <!-- mobile menu -->
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#">Home</a>
+      <a href="#">Calculadora</a>
+      <a href="#">Dashboard Empresa</a>
+      <a href="#" class="active">Histórico</a>
+      <a href="#">Metodologia</a>
+      <a href="#">FAQ</a>
+      <div class="mobile-actions">
+        <button class="btn-empresa">Empresa</button>
+        <button class="btn-trocar">⇄ Trocar</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE CONTENT -->
+  <main class="page-content">
+
+    <!-- Back button -->
+    <button class="back-btn" onclick="history.back()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M10 3L5 8L10 13" stroke="#374151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <!-- Page Title -->
+    <div class="page-header">
+      <h1 class="page-title">Histórico da Frota</h1>
+      <p class="page-subtitle">Acompanhe o impacto ambiental dos veículos da sua empresa ao longo do tempo</p>
+    </div>
+
+    <!-- Summary Card -->
+    <div class="summary-card">
+      <div class="summary-left">
+        <div class="summary-fleet-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect x="2" y="10" width="18" height="12" rx="2" fill="none" stroke="white" stroke-width="1.8"/>
+            <rect x="20" y="14" width="10" height="8" rx="1" fill="none" stroke="white" stroke-width="1.8"/>
+            <circle cx="7" cy="22" r="2.5" fill="white"/>
+            <circle cx="15" cy="22" r="2.5" fill="white"/>
+            <circle cx="25" cy="22" r="2.5" fill="white"/>
+          </svg>
+        </div>
+        <div>
+          <span class="summary-label">FROTA ATUAL</span>
+          <p class="summary-fleet-count">3 veículos monitorados</p>
+        </div>
+      </div>
+
+      <div class="summary-stats">
+        <div class="stat-item">
+          <span class="stat-label">CO₂ EVITADO</span>
+          <span class="stat-value">8.4 kg</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">TEMPO ECONOMIZADO</span>
+          <span class="stat-value">42 min</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">TOTAL PASSAGENS</span>
+          <span class="stat-value">12</span>
+        </div>
+      </div>
+
+      <div class="summary-right">
+        <div class="progress-section">
+          <div class="progress-header">
+            <span class="progress-label">Progresso da frota para meta mensal</span>
+            <span class="progress-pct">68%</span>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" style="width: 68%"></div>
+          </div>
+          <p class="progress-note">Faltam <strong>4,0 kg</strong> de CO₂ evitado para bater a meta mensal</p>
+        </div>
+        <button class="btn-esg">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-right:6px">
+            <rect x="1" y="3" width="12" height="9" rx="1" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M4 6h6M4 9h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          Ver relatório ESG
+        </button>
+      </div>
+    </div>
+
+    <!-- Vehicle Cards Section -->
+    <section class="vehicles-section">
+      <h2 class="section-title">Veículos da frota</h2>
+      <div class="vehicles-grid">
+
+        <!-- Moto -->
+        <div class="vehicle-card">
+          <div class="vehicle-card-header">
+            <div class="vehicle-icon-wrap moto">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <circle cx="5" cy="16" r="3.5" stroke="#16a34a" stroke-width="1.6"/>
+                <circle cx="17" cy="16" r="3.5" stroke="#16a34a" stroke-width="1.6"/>
+                <path d="M5 16L8 10H13L15 8H18L17 12" stroke="#16a34a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 10L11 12H17" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span class="vehicle-badge economy">⚡ Boa economia</span>
+          </div>
+          <div class="vehicle-info">
+            <h3 class="vehicle-name">Moto — Honda CG 160</h3>
+            <p class="vehicle-plate">Placa: MTG-2025</p>
+          </div>
+          <div class="vehicle-stats">
+            <span class="vstat"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1C3.46 1 1 3.46 1 6.5s2.46 5.5 5.5 5.5S12 9.54 12 6.5" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round"/><path d="M6.5 3v3.5l2 1" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round"/></svg> 1,2 kg CO₂</span>
+            <span class="vstat"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#6b7280" stroke-width="1.4"/><path d="M6.5 4v3l1.5 1" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round"/></svg> 8 min</span>
+            <span class="vstat blue"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="3" width="11" height="7" rx="1" stroke="#2563eb" stroke-width="1.4"/><path d="M4 3V2M9 3V2" stroke="#2563eb" stroke-width="1.4" stroke-linecap="round"/><path d="M3 6h7M3 8h5" stroke="#2563eb" stroke-width="1.2" stroke-linecap="round"/></svg> 3 passagens</span>
+          </div>
+        </div>
+
+        <!-- Caminhão -->
+        <div class="vehicle-card">
+          <div class="vehicle-card-header">
+            <div class="vehicle-icon-wrap truck">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <rect x="1" y="8" width="13" height="9" rx="1.5" stroke="#ea580c" stroke-width="1.6"/>
+                <path d="M14 11h5l2 3v3h-7V11Z" stroke="#ea580c" stroke-width="1.6" stroke-linejoin="round"/>
+                <circle cx="5" cy="17" r="2" stroke="#ea580c" stroke-width="1.6"/>
+                <circle cx="17" cy="17" r="2" stroke="#ea580c" stroke-width="1.6"/>
+              </svg>
+            </div>
+            <span class="vehicle-badge impact">🌿 Impacto alto</span>
+          </div>
+          <div class="vehicle-info">
+            <h3 class="vehicle-name">Caminhão — Volvo FH</h3>
+            <p class="vehicle-plate">Placa: CMH-2025</p>
+          </div>
+          <div class="vehicle-stats">
+            <span class="vstat"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1C3.46 1 1 3.46 1 6.5s2.46 5.5 5.5 5.5S12 9.54 12 6.5" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round"/><path d="M6.5 3v3.5l2 1" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round"/></svg> 4,5 kg CO₂</span>
+            <span class="vstat"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#6b7280" stroke-width="1.4"/><path d="M6.5 4v3l1.5 1" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round"/></svg> 21 min</span>
+            <span class="vstat blue"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="3" width="11" height="7" rx="1" stroke="#2563eb" stroke-width="1.4"/><path d="M4 3V2M9 3V2" stroke="#2563eb" stroke-width="1.4" stroke-linecap="round"/><path d="M3 6h7M3 8h5" stroke="#2563eb" stroke-width="1.2" stroke-linecap="round"/></svg> 5 passagens</span>
+          </div>
+        </div>
+
+        <!-- Carro Elétrico -->
+        <div class="vehicle-card">
+          <div class="vehicle-card-header">
+            <div class="vehicle-icon-wrap electric">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <path d="M12 2L6 12h5l-1 8 7-10h-5l1-8Z" fill="#eab308" stroke="#ca8a04" stroke-width="1.2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <span class="vehicle-badge eco">🌱 Eco+</span>
+          </div>
+          <div class="vehicle-info">
+            <h3 class="vehicle-name">Carro de passeio elétrico — BYD Dolphin</h3>
+            <p class="vehicle-plate">Placa: ELE-2025</p>
+          </div>
+          <div class="vehicle-stats">
+            <span class="vstat"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1C3.46 1 1 3.46 1 6.5s2.46 5.5 5.5 5.5S12 9.54 12 6.5" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round"/><path d="M6.5 3v3.5l2 1" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round"/></svg> 2,7 kg CO₂</span>
+            <span class="vstat"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#6b7280" stroke-width="1.4"/><path d="M6.5 4v3l1.5 1" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round"/></svg> 13 min</span>
+            <span class="vstat blue"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="3" width="11" height="7" rx="1" stroke="#2563eb" stroke-width="1.4"/><path d="M4 3V2M9 3V2" stroke="#2563eb" stroke-width="1.4" stroke-linecap="round"/><path d="M3 6h7M3 8h5" stroke="#2563eb" stroke-width="1.2" stroke-linecap="round"/></svg> 4 passagens</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Filters Section -->
+    <section class="filters-section">
+
+      <!-- Period Filter -->
+      <div class="filter-group">
+        <label class="filter-label">PERÍODO</label>
+        <div class="filter-buttons" id="periodFilter">
+          <button class="filter-btn" data-group="period">Este mês</button>
+          <button class="filter-btn active" data-group="period">Últimos 3 meses</button>
+          <button class="filter-btn" data-group="period">Este ano</button>
+          <button class="filter-btn" data-group="period">Personalizado</button>
+        </div>
+      </div>
+
+      <!-- Vehicle Filter -->
+      <div class="filter-group">
+        <label class="filter-label">VEÍCULO</label>
+        <div class="filter-buttons" id="vehicleFilter">
+          <button class="filter-btn vehicle-btn active" data-group="vehicle">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M4 7h6M7 4v6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Todos
+          </button>
+          <button class="filter-btn vehicle-btn" data-group="vehicle">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="3" cy="10" r="2" stroke="currentColor" stroke-width="1.3"/><circle cx="11" cy="10" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M3 10L5 6H9L11 5H13L11 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 6L7 8H11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            Moto
+          </button>
+          <button class="filter-btn vehicle-btn" data-group="vehicle">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="5" width="8" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M9 7h3l1 2v2H9V7Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><circle cx="3.5" cy="11" r="1.2" stroke="currentColor" stroke-width="1.2"/><circle cx="10.5" cy="11" r="1.2" stroke="currentColor" stroke-width="1.2"/></svg>
+            Caminhão
+          </button>
+          <button class="filter-btn vehicle-btn" data-group="vehicle">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M8 1L4 8h3l-1 5 5-7H8l1-5Z" fill="currentColor" stroke="currentColor" stroke-width="0.5" stroke-linejoin="round"/></svg>
+            Carro elétrico
+          </button>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="search-wrap">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="7" cy="7" r="5" stroke="#9ca3af" stroke-width="1.5"/>
+          <path d="M11 11l3 3" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input type="text" class="search-input" placeholder="Buscar por veículo, placa, local ou data..." />
+      </div>
+    </section>
+
+    <!-- Activity History List -->
+    <section class="activity-section">
+      <div class="activity-header">
+        <h2 class="section-title">Histórico de atividades da frota</h2>
+        <span class="activity-count">7 registros</span>
+      </div>
+
+      <div class="activity-list" id="activityList">
+
+        <!-- Activity 1 -->
+        <div class="activity-item" data-vehicle="truck">
+          <div class="activity-icon truck">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <rect x="1" y="6" width="10" height="7" rx="1.5" stroke="#ea580c" stroke-width="1.5"/>
+              <path d="M11 8.5h4l1.5 2.5v2h-5.5V8.5Z" stroke="#ea580c" stroke-width="1.5" stroke-linejoin="round"/>
+              <circle cx="4" cy="13" r="1.5" stroke="#ea580c" stroke-width="1.5"/>
+              <circle cx="13" cy="13" r="1.5" stroke="#ea580c" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div class="activity-content">
+            <div class="activity-top">
+              <div>
+                <p class="activity-date"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="margin-right:4px;vertical-align:middle"><rect x="1" y="2" width="9" height="7.5" rx="1" stroke="#6b7280" stroke-width="1.1"/><path d="M3.5 1v1.5M7.5 1v1.5" stroke="#6b7280" stroke-width="1.1" stroke-linecap="round"/><path d="M1.5 4.5h8" stroke="#6b7280" stroke-width="1"/></svg>12 out 2025</p>
+                <h3 class="activity-title">Pedágio</h3>
+                <p class="activity-vehicle"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="margin-right:3px;vertical-align:middle"><rect x="0.5" y="3" width="7" height="5" rx="1" stroke="#6b7280" stroke-width="1.1"/><path d="M7.5 4.5h2.5l1 2v1.5H7.5V4.5Z" stroke="#6b7280" stroke-width="1.1" stroke-linejoin="round"/></svg>Caminhão — Volvo FH · CMH-2025</p>
+                <p class="activity-location"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="margin-right:3px;vertical-align:middle"><path d="M5.5 1C3.57 1 2 2.57 2 4.5c0 2.63 3.5 5.5 3.5 5.5S9 7.13 9 4.5C9 2.57 7.43 1 5.5 1Z" stroke="#6b7280" stroke-width="1.1"/><circle cx="5.5" cy="4.5" r="1" fill="#6b7280"/></svg>Praça São Lourenço</p>
+              </div>
+              <span class="activity-badge impact">🌿 Impacto alto</span>
+            </div>
+            <div class="activity-stats">
+              <span class="vstat"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1C3.46 1 1 3.46 1 6.5s2.46 5.5 5.5 5.5S12 9.54 12 6.5" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round"/><path d="M6.5 3v3.5l2 1" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round"/></svg> 1,8 kg CO₂</span>
+              <span class="vstat"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#6b7280" stroke-width="1.4"/><path d="M6.5 4v3l1.5 1" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round"/></svg> 9 min</span>
+              <span class="vstat blue"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="3" width="11" height="7" rx="1" stroke="#2563eb" stroke-width="1.4"/><path d="M4 3V2M9 3V2" stroke="#2563eb" stroke-width="1.4" stroke-linecap="round"/><path d="M3 6h7M3 8h5" stroke="#2563eb" stroke-width="1.2" stroke-linecap="round"/></svg> 2 passagens</span>
+            </div>
+          </div>
+          <button class="activity-arrow">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="#9ca3af" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+
+        <!-- Activity 2 -->
+        <div class="activity-item" data-vehicle="electric">
+          <div class="activity-icon electric">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M10 2L5 10h4l-1 6 6-8h-4l1-6Z" fill="#eab308" stroke="#ca8a04" stroke-width="1.1" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="activity-content">
+            <div class="activity-top">
+              <div>
+                <p class="activity-date"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="margin-right:4px;vertical-align:middle"><rect x="1" y="2" width="9" height="7.5" rx="1" stroke="#6b7280" stroke-width="1.1"/><path d="M3.5 1v1.5M7.5 1v1.5" stroke="#6b7280" stroke-width="1.1" stroke-linecap="round"/><path d="M1.5 4.5h8" stroke="#6b7280" stroke-width="1"/></svg>08 out 2025</p>
+                <h3 class="activity-title">Estacionamento</h3>
+                <p class="activity-vehicle"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="margin-right:3px;vertical-align:middle"><path d="M7 2L4 7h2.5l-.8 4 4.5-6H7.5L7 2Z" fill="#6b7280"/></svg>Carro elétrico — BYD Dolphin · ELE-2025</p>
+                <p class="activity-location"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="margin-right:3px;vertical-align:middle"><path d="M5.5 1C3.57 1 2 2.57 2 4.5c0 2.63 3.5 5.5 3.5 5.5S9 7.13 9 4.5C9 2.57 7.43 1 5.5 1Z" stroke="#6b7280" stroke-width="1.1"/><circle cx="5.5" cy="4.5" r="1" fill="#6b7280"/></svg>Shopping RioMar Recife</p>
+              </div>
+              <span class="activity-badge eco">🌱 Eco+</span>
+            </div>
+            <div class="activity-stats">
+              <span class="vstat"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1C3.46 1 1 3.46 1 6.5s2.46 5.5 5.5 5.5S12 9.54 12 6.5" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round"/><path d="M6.5 3v3.5l2 1" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round"/></svg> 0,6 kg CO₂</span>
+              <span class="vstat"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#6b7280" stroke-width="1.4"/><path d="M6.5 4v3l1.5 1" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round"/></svg> 4 min</span>
+              <span class="vstat blue"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="3" width="11" height="7" rx="1" stroke="#2563eb" stroke-width="1.4"/><path d="M4 3V2M9 3V2" stroke="#2563eb" stroke-width="1.4" stroke-linecap="round"/><path d="M3 6h7M3 8h5" stroke="#2563eb" stroke-width="1.2" stroke-linecap="round"/></svg> 1 passagem</span>
+            </div>
+          </div>
+          <button class="activity-arrow">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="#9ca3af" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+
+        <!-- Activity 3 -->
+        <div class="activity-item" data-vehicle="moto">
+          <div class="activity-icon moto">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <circle cx="4" cy="13" r="3" stroke="#16a34a" stroke-width="1.5"/>
+              <circle cx="14" cy="13" r="3" stroke="#16a34a" stroke-width="1.5"/>
+              <path d="M4 13L7 8H11L13 6H16L14 10" stroke="#16a34a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M7 8L9 10H14" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="activity-content">
+            <div class="activity-top">
+              <div>
+                <p class="activity-date"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="margin-right:4px;vertical-align:middle"><rect x="1" y="2" width="9" height="7.5" rx="1" stroke="#6b7280" stroke-width="1.1"/><path d="M3.5 1v1.5M7.5 1v1.5" stroke="#6b7280" stroke-width="1.1" stroke-linecap="round"/><path d="M1.5 4.5h8" stroke="#6b7280" stroke-width="1"/></svg>30 set 2025</p>
+                <h3 class="activity-title">Pedágio</h3>
+                <p class="activity-vehicle"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="margin-right:3px;vertical-align:middle"><circle cx="2.5" cy="8" r="1.5" stroke="#6b7280" stroke-width="1.1"/><circle cx="8.5" cy="8" r="1.5" stroke="#6b7280" stroke-width="1.1"/><path d="M2.5 8L4 5h3l1.5-1.5H10L9 7" stroke="#6b7280" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>Moto — Honda CG 160 · MTG-2025</p>
+                <p class="activity-location"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="margin-right:3px;vertical-align:middle"><path d="M5.5 1C3.57 1 2 2.57 2 4.5c0 2.63 3.5 5.5 3.5 5.5S9 7.13 9 4.5C9 2.57 7.43 1 5.5 1Z" stroke="#6b7280" stroke-width="1.1"/><circle cx="5.5" cy="4.5" r="1" fill="#6b7280"/></svg>Praça do Derby</p>
+              </div>
+              <span class="activity-badge economy">⚡ Boa economia</span>
+            </div>
+            <div class="activity-stats">
+              <span class="vstat"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1C3.46 1 1 3.46 1 6.5s2.46 5.5 5.5 5.5S12 9.54 12 6.5" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round"/><path d="M6.5 3v3.5l2 1" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round"/></svg> 0,4 kg CO₂</span>
+              <span class="vstat"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#6b7280" stroke-width="1.4"/><path d="M6.5 4v3l1.5 1" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round"/></svg> 5 min</span>
+              <span class="vstat blue"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="3" width="11" height="7" rx="1" stroke="#2563eb" stroke-width="1.4"/><path d="M4 3V2M9 3V2" stroke="#2563eb" stroke-width="1.4" stroke-linecap="round"/><path d="M3 6h7M3 8h5" stroke="#2563eb" stroke-width="1.2" stroke-linecap="round"/></svg> 1 passagem</span>
+            </div>
+          </div>
+          <button class="activity-arrow">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="#9ca3af" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+
+        <!-- Activity 4 -->
+        <div class="activity-item" data-vehicle="truck">
+          <div class="activity-icon truck">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <rect x="1" y="6" width="10" height="7" rx="1.5" stroke="#ea580c" stroke-width="1.5"/>
+              <path d="M11 8.5h4l1.5 2.5v2h-5.5V8.5Z" stroke="#ea580c" stroke-width="1.5" stroke-linejoin="round"/>
+              <circle cx="4" cy="13" r="1.5" stroke="#ea580c" stroke-width="1.5"/>
+              <circle cx="13" cy="13" r="1.5" stroke="#ea580c" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div class="activity-content">
+            <div class="activity-top">
+              <div>
+                <p class="activity-date"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="margin-right:4px;vertical-align:middle"><rect x="1" y="2" width="9" height="7.5" rx="1" stroke="#6b7280" stroke-width="1.1"/><path d="M3.5 1v1.5M7.5 1v1.5" stroke="#6b7280" stroke-width="1.1" stroke-linecap="round"/><path d="M1.5 4.5h8" stroke="#6b7280" stroke-width="1"/></svg>15 set 2025</p>
+                <h3 class="activity-title">Pedágio</h3>
+                <p class="activity-vehicle"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="margin-right:3px;vertical-align:middle"><rect x="0.5" y="3" width="7" height="5" rx="1" stroke="#6b7280" stroke-width="1.1"/><path d="M7.5 4.5h2.5l1 2v1.5H7.5V4.5Z" stroke="#6b7280" stroke-width="1.1" stroke-linejoin="round"/></svg>Caminhão — Volvo FH · CMH-2025</p>
+                <p class="activity-location"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="margin-right:3px;vertical-align:middle"><path d="M5.5 1C3.57 1 2 2.57 2 4.5c0 2.63 3.5 5.5 3.5 5.5S9 7.13 9 4.5C9 2.57 7.43 1 5.5 1Z" stroke="#6b7280" stroke-width="1.1"/><circle cx="5.5" cy="4.5" r="1" fill="#6b7280"/></svg>Via Dutra — Km 145</p>
+              </div>
+              <span class="activity-badge impact">🌿 Impacto alto</span>
+            </div>
+            <div class="activity-stats">
+              <span class="vstat"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1C3.46 1 1 3.46 1 6.5s2.46 5.5 5.5 5.5S12 9.54 12 6.5" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round"/><path d="M6.5 3v3.5l2 1" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round"/></svg> 2,1 kg CO₂</span>
+              <span class="vstat"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#6b7280" stroke-width="1.4"/><path d="M6.5 4v3l1.5 1" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round"/></svg> 12 min</span>
+              <span class="vstat blue"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="3" width="11" height="7" rx="1" stroke="#2563eb" stroke-width="1.4"/><path d="M4 3V2M9 3V2" stroke="#2563eb" stroke-width="1.4" stroke-linecap="round"/><path d="M3 6h7M3 8h5" stroke="#2563eb" stroke-width="1.2" stroke-linecap="round"/></svg> 3 passagens</span>
+            </div>
+          </div>
+          <button class="activity-arrow">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="#9ca3af" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating Help Button -->
+  <button class="fab-help" aria-label="Ajuda">?</button>
+
+  <script src="scripts/main.js"></script>
+</body>
+</html>
