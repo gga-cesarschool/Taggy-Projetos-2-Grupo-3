@@ -723,3 +723,152 @@ def api_ranking(request):
         },
         'ranking': lista_final[:10],
     })
+
+RANKING_EMPRESAS_SIMULADO = [
+    {'nome': 'TechLog Brasil S/A',        'cnpj': '12.345.678/0001-90', 'co2e_ton': 19.8,  'passagens': 502000, 'frota': 512},
+    {'nome': 'Rota Sul Transportes',      'cnpj': '98.765.432/0001-11', 'co2e_ton': 17.4,  'passagens': 441000, 'frota': 430},
+    {'nome': 'Expresso Norte Ltda',       'cnpj': '11.222.333/0001-44', 'co2e_ton': 14.2,  'passagens': 360000, 'frota': 370},
+    {'nome': 'Grupo Mobilidade SP',       'cnpj': '44.555.666/0001-77', 'co2e_ton': 11.9,  'passagens': 301000, 'frota': 310},
+    {'nome': 'Logística Verde RJ',        'cnpj': '55.666.777/0001-88', 'co2e_ton':  9.5,  'passagens': 240000, 'frota': 248},
+    {'nome': 'FleetGo Soluções',          'cnpj': '66.777.888/0001-99', 'co2e_ton':  7.8,  'passagens': 197000, 'frota': 204},
+    {'nome': 'Conecta Frotas MG',         'cnpj': '77.888.999/0001-00', 'co2e_ton':  6.1,  'passagens': 154000, 'frota': 160},
+    {'nome': 'Trânsito Ágil Paraná',      'cnpj': '88.999.000/0001-22', 'co2e_ton':  4.7,  'passagens': 119000, 'frota': 123},
+    {'nome': 'Sul Mobilidade RS',         'cnpj': '99.000.111/0001-33', 'co2e_ton':  3.2,  'passagens':  81000, 'frota':  84},
+    {'nome': 'Acesso Rápido Goiás',       'cnpj': '00.111.222/0001-55', 'co2e_ton':  1.9,  'passagens':  48000, 'frota':  50},
+]
+
+
+@require_GET
+def api_ranking_empresas(request):
+    err = _auth_required(request)
+    if err:
+        return err
+
+    if _get_tipo(request.user) != 'empresa':
+        return JsonResponse({'ok': False, 'erro': 'Acesso restrito a empresas.'}, status=403)
+
+    try:
+        nome_empresa = request.user.perfil.nome_empresa or request.user.email.split('@')[0]
+        iniciais = ''.join(p[0].upper() for p in nome_empresa.split()[:2])
+    except Exception:
+        nome_empresa = request.user.email.split('@')[0]
+        iniciais = nome_empresa[0].upper()
+
+    # Busca empresas reais com CO₂ acumulado via passagens vinculadas
+    empresas_reais = (
+        User.objects
+        .filter(perfil__tipo='empresa', passagens_na_empresa__isnull=False)
+        .annotate(
+            co2e_total=Sum(
+                F('passagens_na_empresa__co2e_por_passagem') * F('passagens_na_empresa__quantidade')
+            ),
+            qtd_passagens=Sum('passagens_na_empresa__quantidade'),
+        )
+        .order_by('-co2e_total')
+        .distinct()
+    )
+
+    lista_real = []
+    for u in empresas_reais:
+        if not u.co2e_total:
+            continue
+        try:
+            nome = u.perfil.nome_empresa or u.email.split('@')[0]
+        except Exception:
+            nome = u.email.split('@')[0]
+        iniciais_emp = ''.join(p[0].upper() for p in nome.split()[:2])
+        lista_real.append({
+            'nome':       nome,
+            'iniciais':   iniciais_emp,
+            'co2e_ton':   round(float(u.co2e_total) / 1000, 2),
+            'passagens':  int(u.qtd_passagens or 0),
+            'frota':      0,
+            'real':       True,
+            'e_voce':     u.id == request.user.id,
+        })
+
+    # Simulados
+    lista_simulada = [
+        {
+            'nome':      item['nome'],
+            'iniciais':  ''.join(p[0].upper() for p in item['nome'].split()[:2]),
+            'co2e_ton':  item['co2e_ton'],
+            'passagens': item['passagens'],
+            'frota':     item['frota'],
+            'real':      False,
+            'e_voce':    False,
+        }
+        for item in RANKING_EMPRESAS_SIMULADO
+    ]
+
+    # Empresa logada — usa dados simulados da TechLog como referência
+    empresa_na_lista = any(u['e_voce'] for u in lista_real)
+    if not empresa_na_lista:
+        co2e_empresa = round(DE.ANNUAL_TOTALS_KG.get(2025, 0) / 1000, 2)
+        passagens_empresa = DE.ANNUAL_PASSAGENS.get(2025, 0)
+        lista_real.append({
+            'nome':      nome_empresa,
+            'iniciais':  iniciais,
+            'co2e_ton':  co2e_empresa,
+            'passagens': passagens_empresa,
+            'frota':     DE.EMPRESA_PERFIL.get('frota_total', 0),
+            'real':      True,
+            'e_voce':    True,
+        })
+
+    # Mescla e ordena
+    lista_completa = lista_simulada + lista_real
+    lista_completa.sort(key=lambda x: x['co2e_ton'], reverse=True)
+
+    # Remove duplicatas
+    vistos = set()
+    lista_final = []
+    for item in lista_completa:
+        if item['nome'] not in vistos:
+            vistos.add(item['nome'])
+            lista_final.append(item)
+
+    # Posição da empresa logada
+    posicao = next((i + 1 for i, u in enumerate(lista_final) if u.get('e_voce')), None)
+    empresa_logada = next((u for u in lista_final if u.get('e_voce')), None)
+
+    co2e_empresa  = empresa_logada['co2e_ton']  if empresa_logada else 0.0
+    pass_empresa  = empresa_logada['passagens'] if empresa_logada else 0
+
+    if posicao is None:
+        posicao = len(lista_final) + 1
+
+    # Quanto falta para subir uma posição
+    falta_ton = 0.0
+    if posicao and posicao > 1:
+        acima = lista_final[posicao - 2]
+        falta_ton = round(acima['co2e_ton'] - co2e_empresa, 2)
+
+    # Barra proporcional
+    max_co2 = lista_final[0]['co2e_ton'] if lista_final else 1
+    for item in lista_final:
+        item['barra_pct'] = round(item['co2e_ton'] / max_co2 * 100)
+
+    def _nivel_empresa(co2_ton):
+        if co2_ton >= 15:  return 'Impacto Platinum'
+        if co2_ton >= 10:  return 'Impacto Gold'
+        if co2_ton >= 5:   return 'Impacto Silver'
+        return 'Impacto Bronze'
+
+    for item in lista_final:
+        item['nivel'] = _nivel_empresa(item['co2e_ton'])
+
+    return JsonResponse({
+        'ok':      True,
+        'empresa': {
+            'nome':      nome_empresa,
+            'iniciais':  iniciais,
+            'posicao':   posicao,
+            'total':     len(lista_final),
+            'co2e_ton':  co2e_empresa,
+            'passagens': pass_empresa,
+            'falta_ton': falta_ton,
+            'nivel':     _nivel_empresa(co2e_empresa),
+        },
+        'ranking': lista_final[:10],
+    })

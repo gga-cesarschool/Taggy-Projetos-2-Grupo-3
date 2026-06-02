@@ -26,4 +26,5 @@ urlpatterns = [
     path('api/empresas/dados/',  views.api_empresas_dados,  name='api_empresas_dados'),
     path('api/fatores-emissao/', views.fatores_emissao,     name='fatores_emissao'),
     path('api/ranking/', views.api_ranking, name='api_ranking'),
+    path('api/ranking/empresas/', views.api_ranking_empresas, name='api_ranking_empresas'),
 ]

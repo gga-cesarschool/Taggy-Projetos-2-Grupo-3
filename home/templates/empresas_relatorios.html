@@ -184,7 +184,331 @@
           </div>
         </div>
       </div>
+<!-- Ranking entre Empresas -->
+<section class="emp-ranking-section">
+  <div class="emp-ranking-header">
+    <div>
+      <h2 class="emp-ranking-titulo">🏆 Ranking entre Empresas</h2>
+      <p class="emp-ranking-subtitulo">Compare o impacto ESG da sua empresa com outras organizações Taggy</p>
+    </div>
+  </div>
 
+  <!-- Card da posição da empresa -->
+  <div class="emp-ranking-hero">
+    <div class="emp-ranking-hero__left">
+      <div class="emp-ranking-hero__avatar" id="emp-ranking-avatar">EM</div>
+      <div>
+        <p class="emp-ranking-hero__label">SUA POSIÇÃO</p>
+        <p class="emp-ranking-hero__posicao"><span id="emp-ranking-posicao-num">#—</span> no ranking</p>
+        <p class="emp-ranking-hero__co2">Sua empresa evitou <span id="emp-ranking-hero-co2">0</span> toneladas de CO₂</p>
+      </div>
+    </div>
+    <div class="emp-ranking-hero__nivel" id="emp-ranking-hero-nivel">Impacto Bronze</div>
+
+    <div class="emp-ranking-hero__stats">
+      <div class="emp-ranking-hero__stat">
+        <span class="emp-ranking-hero__stat-label">PASSAGENS TOTAIS</span>
+        <span class="emp-ranking-hero__stat-val" id="emp-ranking-passagens">—</span>
+      </div>
+      <div class="emp-ranking-hero__stat">
+        <span class="emp-ranking-hero__stat-label">TOTAL DE EMPRESAS</span>
+        <span class="emp-ranking-hero__stat-val" id="emp-ranking-total">—</span>
+      </div>
+    </div>
+
+    <div class="emp-ranking-hero__progress-wrap">
+      <span class="emp-ranking-hero__progress-label" id="emp-ranking-progress-label">Progresso para a posição acima</span>
+      <span class="emp-ranking-hero__progress-falta" id="emp-ranking-falta"></span>
+    </div>
+    <div class="emp-ranking-hero__progress-bar">
+      <div class="emp-ranking-hero__progress-fill" id="emp-ranking-progress-fill" style="width:0%"></div>
+    </div>
+
+    <p class="emp-ranking-hero__msg">Continue registrando passagens e ampliando sua frota com Taggy para subir no ranking ESG.</p>
+  </div>
+
+  <!-- Lista de classificação -->
+  <div class="emp-ranking-lista-wrap">
+    <div class="emp-ranking-lista-header">
+      <span class="emp-ranking-lista-titulo">Classificação geral — Empresas</span>
+      <span class="emp-ranking-lista-total" id="emp-ranking-lista-total">— empresas</span>
+    </div>
+    <ul class="emp-ranking-lista" id="emp-ranking-lista">
+      <li class="emp-ranking-lista__loading">Carregando ranking...</li>
+    </ul>
+  </div>
+
+</section>
+
+<style>
+  .emp-ranking-section { margin-top: 3.2rem; }
+
+  .emp-ranking-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.6rem;
+    margin-bottom: 2rem;
+  }
+  .emp-ranking-titulo {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1A2E1A;
+    margin: 0;
+  }
+  .emp-ranking-subtitulo {
+    font-size: 1.3rem;
+    color: #718096;
+    margin: .4rem 0 0;
+  }
+
+  /* Hero card */
+  .emp-ranking-hero {
+    background: linear-gradient(135deg, #1B3A6B, #1E4D8C, #162D52);
+    border-radius: 2rem;
+    padding: 2.8rem;
+    color: #fff;
+    margin-bottom: 2rem;
+  }
+  .emp-ranking-hero__left {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+    margin-bottom: 2rem;
+  }
+  .emp-ranking-hero__avatar {
+    width: 5.6rem;
+    height: 5.6rem;
+    border-radius: 1.2rem;
+    background: rgba(255,255,255,.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .emp-ranking-hero__label {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    color: rgba(255,255,255,.6);
+    margin: 0 0 .4rem;
+  }
+  .emp-ranking-hero__posicao {
+    font-size: 3.2rem;
+    font-weight: 800;
+    margin: 0;
+    line-height: 1;
+  }
+  .emp-ranking-hero__co2 {
+    font-size: 1.3rem;
+    color: rgba(255,255,255,.7);
+    margin: .4rem 0 0;
+  }
+  .emp-ranking-hero__nivel {
+    display: inline-flex;
+    align-items: center;
+    padding: .5rem 1.4rem;
+    border-radius: 9999px;
+    background: rgba(255,255,255,.15);
+    border: .1rem solid rgba(255,255,255,.3);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 2rem;
+  }
+  .emp-ranking-hero__stats {
+    display: flex;
+    gap: 3.2rem;
+    margin-bottom: 2rem;
+  }
+  .emp-ranking-hero__stat {
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+  }
+  .emp-ranking-hero__stat-label {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    color: rgba(255,255,255,.6);
+  }
+  .emp-ranking-hero__stat-val {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+  }
+  .emp-ranking-hero__progress-wrap {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: .8rem;
+  }
+  .emp-ranking-hero__progress-label {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,.7);
+  }
+  .emp-ranking-hero__progress-falta {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #76C4F0;
+  }
+  .emp-ranking-hero__progress-bar {
+    height: .8rem;
+    background: rgba(255,255,255,.2);
+    border-radius: 9999px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+  .emp-ranking-hero__progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4A9EFF, #76C4F0);
+    border-radius: 9999px;
+    transition: width .6s ease;
+  }
+  .emp-ranking-hero__msg {
+    font-size: 1.3rem;
+    color: rgba(255,255,255,.6);
+    margin: 0;
+  }
+
+  /* Lista */
+  .emp-ranking-lista-wrap {
+    background: #fff;
+    border: .15rem solid #E2E8F0;
+    border-radius: 1.6rem;
+    padding: 2rem 2.4rem;
+  }
+  .emp-ranking-lista-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.6rem;
+  }
+  .emp-ranking-lista-titulo {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #1A2E1A;
+  }
+  .emp-ranking-lista-total {
+    font-size: 1.3rem;
+    color: #718096;
+  }
+  .emp-ranking-lista {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .8rem;
+  }
+  .emp-ranking-lista__loading {
+    font-size: 1.35rem;
+    color: #718096;
+    font-style: italic;
+  }
+
+  /* Item */
+  .emp-ranking-item {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.2rem 1.6rem;
+    border-radius: 1.2rem;
+    border: .15rem solid #E2E8F0;
+    position: relative;
+    overflow: hidden;
+  }
+  .emp-ranking-item--voce {
+    border-color: #1E4D8C;
+    background: #f0f5ff;
+  }
+  .emp-ranking-item__barra {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: rgba(30,77,140,.05);
+    border-radius: 1.2rem 0 0 1.2rem;
+    transition: width .6s ease;
+    z-index: 0;
+  }
+  .emp-ranking-item__pos {
+    font-size: 1.8rem;
+    width: 3.2rem;
+    text-align: center;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .emp-ranking-item__avatar {
+    width: 4rem;
+    height: 4rem;
+    border-radius: .8rem;
+    background: #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #4A5568;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .emp-ranking-item--voce .emp-ranking-item__avatar {
+    background: #1E4D8C;
+    color: #fff;
+  }
+  .emp-ranking-item__info {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+  }
+  .emp-ranking-item__nome {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1A2E1A;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    flex-wrap: wrap;
+  }
+  .emp-ranking-item__badge {
+    font-size: 1.1rem;
+    padding: .2rem .8rem;
+    border-radius: 9999px;
+    font-weight: 700;
+  }
+  .emp-ranking-item__badge--voce {
+    background: #1E4D8C;
+    color: #fff;
+  }
+  .emp-ranking-item__badge--nivel {
+    background: #EFF6FF;
+    border: .1rem solid #BFDBFE;
+    color: #1E4D8C;
+  }
+  .emp-ranking-item__detalhes {
+    font-size: 1.2rem;
+    color: #718096;
+    margin-top: .3rem;
+    display: flex;
+    gap: 1.2rem;
+  }
+  .emp-ranking-item__co2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1E4D8C;
+    white-space: nowrap;
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 768px) {
+    .emp-ranking-hero__stats { flex-direction: column; gap: 1.6rem; }
+  }
+</style>
     </div>
   </main>
 
