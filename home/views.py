@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET, require_POST
+from django.db.models import Sum, F
 
 from . import dados_empresas as DE
 from .models import Veiculo, VeiculoEmpresa, Passagem
@@ -559,4 +560,166 @@ def api_empresas_dados(request):
         'meta_vs_realizado':     _meta_vs_realizado(ano),
         'equivalencias':         DE.EQUIVALENCIAS_2025 if ano == 2025 else {'arvores_ano': round(DE.ANNUAL_TOTALS_KG.get(ano, 0) / 21.77), 'litros_gasolina': round(DE.ANNUAL_TOTALS_KG.get(ano, 0) / 2.212), 'papel_kg_total': round(DE.ANNUAL_PASSAGENS.get(ano, 0) * 0.00455), 'tempo_fila_horas': round(DE.ANNUAL_PASSAGENS.get(ano, 0) * 3 / 60 * 0.62)},
         'ranking_mensal':        {'labels': _MESES_LABEL, 'series': DE.RANKING_MENSAL_2025 if ano == 2025 else []},
+})
+
+#ranking dos usuarios
+RANKING_SIMULADO = [
+    {'nome': 'Ana Lima',      'co2e_total': 312.4},
+    {'nome': 'Carlos Souza',  'co2e_total': 289.1},
+    {'nome': 'Beatriz Melo',  'co2e_total': 241.7},
+    {'nome': 'Diego Ferreira','co2e_total': 198.3},
+    {'nome': 'Fernanda Costa','co2e_total': 176.9},
+    {'nome': 'Gabriel Nunes', 'co2e_total': 154.2},
+    {'nome': 'Helena Rocha',  'co2e_total': 132.8},
+    {'nome': 'Igor Teixeira',  'co2e_total': 110.5},
+    {'nome': 'Julia Alves',   'co2e_total': 89.3},
+    {'nome': 'Lucas Pereira', 'co2e_total': 67.1},
+]
+
+@require_GET
+def api_ranking(request):
+    err = _auth_required(request)
+    if err:
+        return err
+
+    from django.db.models import Sum, F, Q
+    from datetime import date as date_cls
+    from dateutil.relativedelta import relativedelta
+
+    # Filtro de período
+    periodo = request.GET.get('periodo', 'total')
+    hoje = date_cls.today()
+
+    if periodo == 'mes':
+        data_inicio = hoje.replace(day=1)
+    elif periodo == 'trimestre':
+        data_inicio = (hoje - relativedelta(months=3)).replace(day=1)
+    elif periodo == 'ano':
+        data_inicio = hoje.replace(month=1, day=1)
+    else:
+        data_inicio = None
+
+    # Filtra passagens por período se necessário
+    filtro_passagens = Q(passagens__isnull=False)
+    if data_inicio:
+        filtro_passagens &= Q(passagens__data__gte=data_inicio)
+
+    # Busca usuários reais com CO₂, tempo e passagens acumulados
+    usuarios_reais = (
+        User.objects
+        .filter(perfil__tipo='pessoa')
+        .filter(filtro_passagens)
+        .annotate(
+            co2e_total=Sum(
+                F('passagens__co2e_por_passagem') * F('passagens__quantidade'),
+                filter=Q(passagens__data__gte=data_inicio) if data_inicio else None,
+            ),
+            qtd_passagens=Sum(
+                'passagens__quantidade',
+                filter=Q(passagens__data__gte=data_inicio) if data_inicio else None,
+            ),
+        )
+        .order_by('-co2e_total')
+        .distinct()
+    )
+
+    def _tempo_min(user_passagens):
+        """Calcula tempo economizado em minutos para um usuário real."""
+        total = 0
+        for p in user_passagens:
+            ctx = CALC_CONTEXTOS.get(p.contexto)
+            if ctx:
+                total += p.quantidade * (ctx['tempo_sem'] - ctx['tempo_com'])
+        return round(total, 1)
+
+    lista_real = []
+    for u in usuarios_reais:
+        if not u.co2e_total:
+            continue
+        passagens_qs = u.passagens.all()
+        if data_inicio:
+            passagens_qs = passagens_qs.filter(data__gte=data_inicio)
+        lista_real.append({
+            'nome':         u.first_name or u.email.split('@')[0],
+            'iniciais':     (u.first_name or u.email)[0].upper(),
+            'co2e_total':   round(float(u.co2e_total), 2),
+            'passagens':    int(u.qtd_passagens or 0),
+            'tempo_min':    _tempo_min(passagens_qs),
+            'real':         True,
+            'e_voce':       u.id == request.user.id,
+        })
+
+    # Dados simulados
+    lista_simulada = [
+        {'nome': n, 'iniciais': n[0], 'co2e_total': co2, 'passagens': int(co2 / 0.65), 'tempo_min': round(co2 * 2.8), 'real': False, 'e_voce': False}
+        for n, co2 in [
+            ('Ana Lima', 312.4), ('Carlos Souza', 289.1), ('Beatriz Melo', 241.7),
+            ('Diego Ferreira', 198.3), ('Fernanda Costa', 176.9), ('Gabriel Nunes', 154.2),
+            ('Helena Rocha', 132.8), ('Igor Teixeira', 110.5), ('Julia Alves', 89.3),
+            ('Lucas Pereira', 67.1),
+        ]
+    ]
+
+    # Mescla e ordena
+    lista_completa = lista_simulada + lista_real
+    lista_completa.sort(key=lambda x: x['co2e_total'], reverse=True)
+
+    # Remove duplicatas
+    vistos = set()
+    lista_final = []
+    for item in lista_completa:
+        if item['nome'] not in vistos:
+            vistos.add(item['nome'])
+            lista_final.append(item)
+
+    # Posição do usuário logado
+    posicao = next((i + 1 for i, u in enumerate(lista_final) if u.get('e_voce')), None)
+    usuario_logado = next((u for u in lista_final if u.get('e_voce')), None)
+
+    co2e_usuario  = usuario_logado['co2e_total'] if usuario_logado else 0.0
+    tempo_usuario = usuario_logado['tempo_min']  if usuario_logado else 0.0
+    pass_usuario  = usuario_logado['passagens']  if usuario_logado else 0
+
+    if posicao is None:
+        posicao = len(lista_final) + 1
+
+    # Quanto falta para subir uma posição
+    falta_kg = 0.0
+    if posicao and posicao > 1:
+        acima = lista_final[posicao - 2]
+        falta_kg = round(acima['co2e_total'] - co2e_usuario, 2)
+
+    # Barra proporcional — máximo é o primeiro colocado
+    max_co2 = lista_final[0]['co2e_total'] if lista_final else 1
+    for item in lista_final:
+        item['barra_pct'] = round(item['co2e_total'] / max_co2 * 100)
+
+    # Nível baseado no CO₂
+    def _nivel(co2):
+        if co2 >= 200: return 'Impacto alto'
+        if co2 >= 100: return 'Eco+'
+        if co2 >= 50:  return 'Intermediário'
+        return 'Iniciante'
+
+    for item in lista_final:
+        item['nivel'] = _nivel(item['co2e_total'])
+
+    nome_usuario = request.user.first_name or request.user.email.split('@')[0]
+    iniciais = nome_usuario[0].upper() if nome_usuario else '?'
+
+    return JsonResponse({
+        'ok':       True,
+        'periodo':  periodo,
+        'usuario': {
+            'nome':       nome_usuario,
+            'iniciais':   iniciais,
+            'posicao':    posicao,
+            'total':      len(lista_final),
+            'co2e':       co2e_usuario,
+            'tempo_min':  tempo_usuario,
+            'passagens':  pass_usuario,
+            'falta_kg':   falta_kg,
+            'nivel':      _nivel(co2e_usuario),
+        },
+        'ranking': lista_final[:10],
     })
