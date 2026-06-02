@@ -7,7 +7,16 @@
 O projeto **TagGreen** tem como objetivo desenvolver uma solução que permita calcular e comunicar o impacto ambiental evitado pelos usuários ao utilizarem pagamentos automáticos em pedágios e estacionamentos. A proposta é criar uma calculadora que estime a redução de emissões de carbono e consumo de papel, tornando esses dados mais visíveis e compreensíveis para os clientes.
 
 ---
-## 🎥 Vídeo Demonstrativo
+## 🎥 Evidência Funcionalidades Projeto
+
+<p>
+  <a href="https://drive.google.com/file/d/18sCcP6f7g7F64KJe6baqqokbMOscTgll/view?usp=sharing" target="_blank">
+    <img src="https://img.shields.io/badge/▶️%20Assistir%20Vídeo-28a745?style=for-the-badge" alt="Assistir vídeo">
+  </a>
+</p>
+
+---
+## 🎥 Vídeo Demonstrativo Protótipo
 
 <p>
   <a href="https://drive.google.com/file/d/1eGZh8Gm10CKeFlkVmJf_YrAAAOEHZ7kI/view?usp=sharing" target="_blank">
