@@ -119,6 +119,10 @@ Aguarde revisão e feedback da equipe.
 Em caso de dúvidas, entre em contato com os integrantes pelo e-mail listado no README (github.com in Bing).
 
 ## 👥 Programação em Par
+<p align="left">
+  <img src="./templates/static/images/WhatsApp%20Image%202026-06-01%20at%2021.45.06.jpeg" alt="Acessar Trello">
+</p>
+
 Durante o desenvolvimento do projeto, adotamos a prática de programação em par, o que permitiu maior qualidade no código e aprendizado colaborativo.
 
 ### Relato das Duplas
