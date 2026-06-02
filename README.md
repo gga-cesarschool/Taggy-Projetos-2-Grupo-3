@@ -119,7 +119,11 @@ Aguarde revisão e feedback da equipe.
 Em caso de dúvidas, entre em contato com os integrantes pelo e-mail listado no README (github.com in Bing).
 
 ## Programação em Par 
+Durante esta etapa do projeto, dedicamos aproximadamente 4 horas à implementação da retrospectiva Taggy Seeds. Conseguimos concluir a funcionalidade na área de Pessoa Física, validando a exibição dos dados e o fluxo da retrospectiva.
 
+Na área de Pessoa Jurídica, a implementação não foi finalizada devido à ausência de alguns dados necessários para compor a retrospectiva completa. Ainda assim, o processo foi importante para entendermos melhor a estrutura dos dados da plataforma, a lógica de integração e os desafios técnicos envolvidos.
+
+A atividade proporcionou aprendizado relevante sobre o funcionamento do sistema e deixou identificados os ajustes necessários para concluir a retrospectiva na área empresarial em uma próxima etapa.
 
 ### 🌟 Reflexões sobre Programação em Par
 Aprendizado mútuo  
