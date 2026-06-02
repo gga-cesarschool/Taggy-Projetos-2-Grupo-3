@@ -118,21 +118,8 @@ Aguarde revisão e feedback da equipe.
 ### Contato
 Em caso de dúvidas, entre em contato com os integrantes pelo e-mail listado no README (github.com in Bing).
 
-## 👥 Programação em Par
-Durante o desenvolvimento do projeto, adotamos a prática de programação em par, o que permitiu maior qualidade no código e aprendizado colaborativo.
+## Programação em Par 
 
-### Relato das Duplas
-Pessoa 1
-
-Criou o banco de dados.
-
-Estruturou e implementou as tabelas necessárias para o funcionamento do sistema.
-
-Pessoa 2
-
-Testou os tipos de dados para garantir consistência e correção.
-
-Implementou o banco de dados dentro do framework Django, integrando-o ao projeto.
 
 ### 🌟 Reflexões sobre Programação em Par
 Aprendizado mútuo  
