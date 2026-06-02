@@ -132,11 +132,9 @@ Criou o banco de dados.
 
 Estruturou e implementou as tabelas necessárias para o funcionamento do sistema.
 
-Pessoa 2
+Na área de Pessoa Jurídica, a implementação não foi finalizada devido à ausência de alguns dados necessários para compor a retrospectiva completa. Ainda assim, o processo foi importante para entendermos melhor a estrutura dos dados da plataforma, a lógica de integração e os desafios técnicos envolvidos.
 
-Testou os tipos de dados para garantir consistência e correção.
-
-Implementou o banco de dados dentro do framework Django, integrando-o ao projeto.
+A atividade proporcionou aprendizado relevante sobre o funcionamento do sistema e deixou identificados os ajustes necessários para concluir a retrospectiva na área empresarial em uma próxima etapa.
 
 ### 🌟 Reflexões sobre Programação em Par
 Aprendizado mútuo  
