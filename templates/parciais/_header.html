@@ -117,7 +117,7 @@
             Home
           </a>
         </li>
-        <li><a href="#" class="nav__link">Calculadora</a></li>
+        <li><a href="/#calc-section" class="nav__link" id="nav-calculadora">Calculadora</a></li>
         {% if not user.is_authenticated or user.perfil.tipo != 'empresa' %}
         <li>
           <a href="{% url 'meu_impacto' %}"

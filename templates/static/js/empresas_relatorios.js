@@ -68,31 +68,68 @@
   // RENDERIZAÇÃO — KPI Cards
   // ======================================================================
 
+  function fmtCo2e(kg) {
+    if (kg === 0) return '0 kg';
+    if (kg < 1)   return (kg * 1000).toFixed(1) + ' g';
+    if (kg < 1000) return kg.toFixed(2) + ' kg';
+    return (kg / 1000).toFixed(2) + ' ton';
+  }
+
   function renderKPIs(kpis) {
     const co2e = kpis.co2e_evitado;
-    $('kpi-co2e-val').textContent = co2e.valor_ton + ' ton';
-    $('kpi-co2e-trend').innerHTML =
-      `<span class="material-symbols-outlined">${co2e.trend_dir === 'up' ? 'trending_up' : 'trending_down'}</span>` +
-      `${co2e.trend_pct > 0 ? '+' : ''}${co2e.trend_pct}%`;
+    $('kpi-co2e-val').textContent = fmtCo2e(co2e.valor_kg !== undefined ? co2e.valor_kg : co2e.valor_ton * 1000);
+    const coTrend = $('kpi-co2e-trend');
+    if (coTrend) {
+      if (co2e.trend_pct === 0 || co2e.trend_pct === null) {
+        coTrend.style.display = 'none';
+      } else {
+        coTrend.style.display = '';
+        coTrend.innerHTML =
+          `<span class="material-symbols-outlined">${co2e.trend_dir === 'up' ? 'trending_up' : 'trending_down'}</span>` +
+          `${co2e.trend_pct > 0 ? '+' : ''}${co2e.trend_pct}%`;
+      }
+    }
 
     const pass    = kpis.passagens;
     const passVal = pass.valor >= 1000
       ? (pass.valor / 1000).toFixed(0) + 'K'
       : pass.valor.toLocaleString('pt-BR');
     $('kpi-pass-val').textContent = passVal;
-    $('kpi-pass-trend').innerHTML =
-      `<span class="material-symbols-outlined">${pass.trend_dir === 'up' ? 'trending_up' : 'trending_down'}</span>` +
-      `${pass.trend_pct > 0 ? '+' : ''}${pass.trend_pct}%`;
+    const paTrend = $('kpi-pass-trend');
+    if (paTrend) {
+      if (pass.trend_pct === 0 || pass.trend_pct === null) {
+        paTrend.style.display = 'none';
+      } else {
+        paTrend.style.display = '';
+        paTrend.innerHTML =
+          `<span class="material-symbols-outlined">${pass.trend_dir === 'up' ? 'trending_up' : 'trending_down'}</span>` +
+          `${pass.trend_pct > 0 ? '+' : ''}${pass.trend_pct}%`;
+      }
+    }
 
     const est = kpis.estados_ativos;
     $('kpi-est-val').textContent = est.valor;
-    $('kpi-est-trend').innerHTML =
-      `<span class="material-symbols-outlined">${est.trend_dir === 'up' ? 'trending_up' : 'trending_down'}</span>` +
-      `${est.trend_abs > 0 ? '+' : ''}${est.trend_abs}`;
+    const estTrend = $('kpi-est-trend');
+    if (estTrend) {
+      if (est.trend_abs === 0) { estTrend.style.display = 'none'; }
+      else {
+        estTrend.style.display = '';
+        estTrend.innerHTML =
+          `<span class="material-symbols-outlined">${est.trend_dir === 'up' ? 'trending_up' : 'trending_down'}</span>` +
+          `${est.trend_abs > 0 ? '+' : ''}${est.trend_abs}`;
+      }
+    }
 
     const rank = kpis.ranking_nacional;
-    $('kpi-rank-val').textContent  = '#' + rank.posicao;
-    $('kpi-rank-trend').textContent = rank.grupo;
+    const rankVal = $('kpi-rank-val');
+    const rankTrend = $('kpi-rank-trend');
+    if (rank.posicao !== null && rank.posicao !== undefined) {
+      if (rankVal)   rankVal.textContent   = '#' + rank.posicao;
+      if (rankTrend) rankTrend.textContent = rank.grupo;
+    } else {
+      if (rankVal)   rankVal.textContent   = '—';
+      if (rankTrend) rankTrend.textContent = '';
+    }
   }
 
 
@@ -226,6 +263,10 @@
 
   function renderRanking(lista) {
     const ul = $('state-ranking-list');
+    if (!lista || lista.length === 0) {
+      if (ul) ul.innerHTML = '<li style="color:#718096;padding:1rem;font-size:1.3rem;">Sem dados de ranking por estado disponíveis.</li>';
+      return;
+    }
     if (!ul) return;
     ul.innerHTML = lista.map(item => `
       <li class="state-ranking__item">
@@ -341,6 +382,7 @@
     renderRanking(dados.ranking_estados);
     renderAnual(dados.evolucao_anual);
     renderWrappedValues(dados);
+    checkDemoBanner(dados);
   }
 
 
@@ -354,6 +396,8 @@
     Chart.defaults.font.family = "'Inter', 'Segoe UI', sans-serif";
     Chart.defaults.font.size   = 11;
     Chart.defaults.color       = MUTED;
+
+    initRegistrarUso();
 
     // Hamburger menu (mantido do JS original)
     const hamburgerBtn = $('hamburger-btn');
@@ -479,7 +523,7 @@
     function gerarCSV(dados) {
       const linhas = [
         ['TagGreen — Relatório ESG Corporativo'],
-        [`Empresa: ${dados.empresa.nome}`],
+        [`Empresa: ${dados.empresa ? dados.empresa.nome : ''}`],
         [`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`],
         [`Ano: ${dados.filtros_ativos.ano}`],
         [],
@@ -598,5 +642,214 @@
     });
 
   }); // DOMContentLoaded
+
+
+  // ======================================================================
+  // BANNER DE DADOS DEMONSTRATIVOS
+  // ======================================================================
+  function checkDemoBanner(dados) {
+    const banner = $('demo-banner');
+    if (!banner) return;
+    if (dados.empresa && dados.empresa.is_demo) {
+      banner.style.display = 'flex';
+      const btnBanner = $('demo-banner-registrar');
+      if (btnBanner) btnBanner.addEventListener('click', abrirRegistrarUso);
+    } else {
+      banner.style.display = 'none';
+    }
+  }
+
+  // ======================================================================
+  // MODAL REGISTRAR USO — com selecao de veiculo da frota
+  // ======================================================================
+
+  // Fatores de CO2e (espelha views.py)
+  const RU_CALC = {
+    fatores:  { gasolina:2.212, diesel:2.603, flex_mix:1.335, grid_br:0.0817, papel:1.100 },
+    veiculos: {
+      carro_combustao: { combustivel:'flex_mix',  consumo_idle:0.65 },
+      carro_eletrico:  { combustivel:'grid_br',   consumo_idle:0.15 },
+      moto:            { combustivel:'gasolina',  consumo_idle:0.28 },
+      caminhao:        { combustivel:'diesel',    consumo_idle:2.40 },
+    },
+    contextos: {
+      pedagio:           { tempo_sem:3.0, tempo_com:0.05, dist_sem:0.100, dist_com:0.031, papel_sem:5.0 },
+      estacionamento:    { tempo_sem:1.5, tempo_com:0.05, dist_sem:0.050, dist_com:0.010, papel_sem:8.0 },
+      acesso_controlado: { tempo_sem:1.0, tempo_com:0.05, dist_sem:0.030, dist_com:0.010, papel_sem:4.0 },
+    },
+  };
+
+  function ruCalcCo2e(tipoVeiculo, contexto) {
+    const v = RU_CALC.veiculos[tipoVeiculo];
+    const c = RU_CALC.contextos[contexto];
+    if (!v || !c) return 0;
+    const f    = RU_CALC.fatores[v.combustivel];
+    const eSem = (c.tempo_sem / 60) * v.consumo_idle * f
+                + c.dist_sem * (v.consumo_idle * f / 60)
+                + (c.papel_sem / 1000) * RU_CALC.fatores.papel;
+    const eCom = (c.tempo_com / 60) * v.consumo_idle * f
+                + c.dist_com * (v.consumo_idle * f / 60);
+    return Math.max(0, eSem - eCom);
+  }
+
+  let _frotaCache = [];
+
+  async function carregarFrota() {
+    const sel  = $('ru-veiculo');
+    const hint = $('ru-frota-hint');
+    if (!sel) return;
+
+    sel.innerHTML = '<option value="">Carregando...</option>';
+    sel.disabled  = true;
+
+    try {
+      const controller = new AbortController();
+      const tid = setTimeout(() => controller.abort(), 8000);
+      const res  = await fetch('/api/empresa/frota/', { signal: controller.signal });
+      clearTimeout(tid);
+      const data = await res.json();
+      _frotaCache = (data.ok && data.veiculos) ? data.veiculos : [];
+    } catch(e) {
+      _frotaCache = [];
+    }
+
+    if (_frotaCache.length) {
+      sel.innerHTML =
+        '<option value="">Selecione um veiculo...</option>' +
+        _frotaCache.map(v =>
+          `<option value="${v.id}" data-tipo="${v.tipo}">${v.nome}${v.placa ? ' · ' + v.placa : ''} (${v.tipo_label}) — ${v.proprietario}</option>`
+        ).join('');
+      if (hint) hint.style.display = 'none';
+    } else {
+      sel.innerHTML = '<option value="">Nenhum veiculo vinculado ainda</option>';
+      if (hint) hint.style.display = 'block';
+    }
+
+    sel.disabled = false;
+    atualizarPreviewRU();
+  }
+
+  function atualizarPreviewRU() {
+    const sel     = $('ru-veiculo');
+    const ctxEl   = document.querySelector('input[name="ru-ctx"]:checked');
+    const qtdEl   = $('ru-qtd');
+    const prev    = $('ru-preview');
+    const prevVal = $('ru-preview-val');
+    if (!sel || !ctxEl || !qtdEl || !prev) return;
+
+    const opt  = sel.options[sel.selectedIndex];
+    const tipo = opt ? opt.dataset.tipo : null;
+    const ctx  = ctxEl.value;
+    const qtd  = parseInt(qtdEl.value) || 1;
+
+    if (!tipo || !ctx) { prev.style.display = 'none'; return; }
+
+    const co2eUnit  = ruCalcCo2e(tipo, ctx) * qtd;
+    const co2eTotal = co2eUnit * qtd;
+    const display   = co2eUnit < 1
+      ? (co2eUnit * 1000).toFixed(1) + ' g'
+      : co2eUnit.toFixed(3) + ' kg';
+    prevVal.textContent = display + ' CO2e evitados por passagem × ' + qtd + ' = ' +
+      (co2eUnit * qtd < 1 ? (co2eUnit * qtd * 1000).toFixed(1) + ' g' : (co2eUnit * qtd).toFixed(3) + ' kg') + ' total';
+    prev.style.display = 'flex';
+  }
+
+  function _setModalVisible(visible) {
+    const modal   = $('ru-modal');
+    const overlay = $('ru-overlay');
+    if (!modal || !overlay) return;
+    if (visible) {
+      modal.hidden          = false;
+      overlay.hidden        = false;
+      modal.style.display   = 'flex';
+      overlay.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    } else {
+      modal.hidden          = true;
+      overlay.hidden        = true;
+      modal.style.display   = 'none';
+      overlay.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  }
+
+  function abrirRegistrarUso() {
+    const dataEl = $('ru-data');
+    if (dataEl) dataEl.value = new Date().toISOString().split('T')[0];
+    if ($('ru-err'))     { $('ru-err').style.display = 'none'; }
+    if ($('ru-suc'))     { $('ru-suc').style.display = 'none'; }
+    if ($('ru-preview')) { $('ru-preview').style.display = 'none'; }
+    _setModalVisible(true);
+    carregarFrota();
+  }
+
+  function fecharRegistrarUso() {
+    _setModalVisible(false);
+  }
+
+  async function salvarRegistrarUso() {
+    const btnSave  = $('ru-save');
+    const errEl    = $('ru-err');
+    const sucEl    = $('ru-suc');
+    if (errEl) errEl.style.display = 'none';
+    if (sucEl) sucEl.style.display = 'none';
+
+    const veiculoId = $('ru-veiculo')?.value;
+    const ctx       = document.querySelector('input[name="ru-ctx"]:checked')?.value;
+    const qtd       = parseInt($('ru-qtd')?.value) || 0;
+    const data      = $('ru-data')?.value;
+
+    if (!veiculoId) {
+      if (errEl) { errEl.textContent = 'Selecione um veiculo da frota.'; errEl.style.display = 'block'; }
+      return;
+    }
+    if (!ctx || qtd < 1 || !data) {
+      if (errEl) { errEl.textContent = 'Preencha todos os campos.'; errEl.style.display = 'block'; }
+      return;
+    }
+
+    if (btnSave) btnSave.disabled = true;
+    try {
+      const res = await fetch('/api/empresa/registrar-passagem/', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': window._CSRF || '' },
+        body:    JSON.stringify({ veiculo_id: parseInt(veiculoId), contexto: ctx, data, quantidade: qtd }),
+      });
+      const d = await res.json();
+      if (d.ok) {
+        if (sucEl) { sucEl.textContent = d.mensagem || 'Registrado com sucesso!'; sucEl.style.display = 'block'; }
+        setTimeout(() => { fecharRegistrarUso(); carregarDados(); }, 1600);
+      } else {
+        if (errEl) { errEl.textContent = d.erro || 'Erro ao registrar.'; errEl.style.display = 'block'; }
+      }
+    } catch(e) {
+      console.error('[Registrar Uso] Erro:', e);
+      if (errEl) {
+        errEl.textContent = 'Erro ao registrar. Verifique se o CSRF está configurado e tente novamente.';
+        errEl.style.display = 'block';
+      }
+    } finally {
+      if (btnSave) btnSave.disabled = false;
+    }
+  }
+
+  function initRegistrarUso() {
+    const btnAbrir = $('btn-registrar-uso');
+    if (btnAbrir) btnAbrir.addEventListener('click', abrirRegistrarUso);
+    if ($('ru-cancel'))  $('ru-cancel').addEventListener('click',  fecharRegistrarUso);
+    if ($('ru-close'))   $('ru-close').addEventListener('click',   fecharRegistrarUso);
+    if ($('ru-overlay')) $('ru-overlay').addEventListener('click', fecharRegistrarUso);
+    if ($('ru-save'))    $('ru-save').addEventListener('click',    salvarRegistrarUso);
+    if ($('demo-banner-registrar')) $('demo-banner-registrar').addEventListener('click', abrirRegistrarUso);
+
+    // Preview em tempo real
+    document.querySelectorAll('input[name="ru-ctx"]').forEach(r => r.addEventListener('change', atualizarPreviewRU));
+    if ($('ru-qtd'))     $('ru-qtd').addEventListener('input', atualizarPreviewRU);
+    if ($('ru-veiculo')) $('ru-veiculo').addEventListener('change', atualizarPreviewRU);
+  }
+
+  // ======================================================================
+  // HOOK: checkDemoBanner chamado no renderDashboard
+  // ======================================================================
 
 })();

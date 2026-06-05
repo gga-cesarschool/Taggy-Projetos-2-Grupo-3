@@ -1,0 +1,142 @@
+{% load static %}
+{% load sass_tags %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taggy Seeds</title>
+  <link rel="stylesheet" href="{% sass_src 'scss/taggy_seeds.scss' %}">
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head>
+<body class="seeds-page">
+<div class="seeds-wrapper">
+
+  <a href="{% if tipo_usuario == 'empresa' %}{% url 'empresas_relatorios' %}{% else %}{% url 'meu_impacto' %}{% endif %}" class="seeds-back">
+    &larr; Voltar
+  </a>
+
+  <header class="seeds-header">
+    <h1 class="seeds-title">Taggy Seeds</h1>
+    <p class="seeds-subtitle">Reveja o impacto das suas escolhas</p>
+  </header>
+
+  <section class="seeds-carousel-wrapper">
+
+    <div class="seeds-carousel">
+
+      <!-- Card 1 — CO2e total -->
+      <article class="seed-card seed-card--co2 active">
+        <p class="seed-card__eyebrow" id="s-eyebrow">TOTAL CO2E EVITADO EM 2025</p>
+        <p class="seed-card__number" id="s-co2e">—</p>
+        <p class="seed-card__unit"   id="s-co2e-unit">kg CO2e</p>
+        <p class="seed-card__phrase" id="s-phrase-co2e">Carregando...</p>
+      </article>
+
+      <!-- Card 2 — Comparativo mensal -->
+      <article class="seed-card seed-card--compare">
+        <p class="seed-card__compare-title" id="s-compare-title">COMPARATIVO</p>
+        <div class="seed-card__compare-row">
+          <div class="seed-card__compare-col">
+            <span class="seed-card__compare-label" id="s-mes-ant-label">—</span>
+            <span class="seed-card__compare-val"   id="s-mes-ant-val">0</span>
+          </div>
+          <span class="seed-card__compare-arrow">&rarr;</span>
+          <div class="seed-card__compare-col">
+            <span class="seed-card__compare-label" id="s-mes-at-label">—</span>
+            <span class="seed-card__compare-val seed-card__compare-val--current" id="s-mes-at-val">0</span>
+          </div>
+        </div>
+        <p class="seed-card__compare-unit" id="s-compare-unit">kg CO2e</p>
+        <p class="seed-card__compare-msg"  id="s-compare-msg">Carregando...</p>
+      </article>
+
+      <!-- Card 3 — Equivalencias -->
+      <article class="seed-card seed-card--equiv">
+        <div class="seed-card__grid">
+          <div class="seed-card__equiv-item">
+            <span class="seed-card__equiv-icon material-symbols-outlined">forest</span>
+            <span class="seed-card__equiv-val" id="s-arvores">—</span>
+            <span class="seed-card__equiv-label">Arvores</span>
+          </div>
+          <div class="seed-card__equiv-item">
+            <span class="seed-card__equiv-icon material-symbols-outlined">local_gas_station</span>
+            <span class="seed-card__equiv-val seed-card__equiv-val--blue" id="s-combustivel">—</span>
+            <span class="seed-card__equiv-label">Combustivel</span>
+          </div>
+          <div class="seed-card__equiv-item">
+            <span class="seed-card__equiv-icon material-symbols-outlined">schedule</span>
+            <span class="seed-card__equiv-val seed-card__equiv-val--blue" id="s-tempo">—</span>
+            <span class="seed-card__equiv-label">Tempo Poupado</span>
+          </div>
+          <div class="seed-card__equiv-item">
+            <span class="seed-card__equiv-icon material-symbols-outlined">description</span>
+            <span class="seed-card__equiv-val seed-card__equiv-val--blue" id="s-papeis">—</span>
+            <span class="seed-card__equiv-label">Papeis Evitados</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 4 — Nivel -->
+      <article class="seed-card seed-card--nivel">
+        <div class="seed-card__nivel-circle">
+          <span class="material-symbols-outlined" style="font-size:3rem;color:#69b516;">forest</span>
+        </div>
+        <p class="seed-card__nivel-name" id="s-nivel-nome">—</p>
+        <p class="seed-card__nivel-pts"  id="s-nivel-pts">Carregando...</p>
+        <div class="seed-card__medals" id="s-medals">
+          <div class="seed-card__medal"><span class="material-symbols-outlined">bolt</span></div>
+          <div class="seed-card__medal"><span class="material-symbols-outlined">star</span></div>
+          <div class="seed-card__medal"><span class="material-symbols-outlined">forest</span></div>
+          <div class="seed-card__medal seed-card__medal--inactive"><span class="material-symbols-outlined">military_tech</span></div>
+        </div>
+      </article>
+
+      <!-- Card 5 — Compartilhavel -->
+      <article class="seed-card seed-card--share" id="card-share">
+        <p class="seed-card__share-logo"><span>Tag</span>Green</p>
+        <div class="seed-card__share-main">
+          <p class="seed-card__share-kg"  id="s-share-kg">—</p>
+          <p class="seed-card__share-sub" id="s-share-sub">de CO2e evitados</p>
+          <div class="seed-card__chips">
+            <span class="seed-card__chip" id="s-chip-arvores">0 arvores</span>
+            <span class="seed-card__chip" id="s-chip-combustivel">0L poupados</span>
+          </div>
+        </div>
+        <p class="seed-card__share-footer">taggy.com.br/impacto</p>
+      </article>
+
+    </div><!-- .seeds-carousel -->
+
+    <!-- Navegacao -->
+    <nav class="seeds-nav">
+      <button class="seeds-nav-btn" id="seeds-prev" disabled>&#8249;</button>
+      <div class="seed-dots">
+        <div class="seed-dot active"></div>
+        <div class="seed-dot"></div>
+        <div class="seed-dot"></div>
+        <div class="seed-dot"></div>
+        <div class="seed-dot"></div>
+      </div>
+      <button class="seeds-nav-btn" id="seeds-next">&#8250;</button>
+    </nav>
+
+    <!-- Botoes -->
+    <div class="seed-actions">
+      <button class="seed-share-btn" id="seeds-share">
+        <span class="material-symbols-outlined" style="font-size:1.6rem;">share</span>
+        Compartilhar meu impacto
+      </button>
+      <button class="seed-save-btn" id="seeds-save">
+        <span class="material-symbols-outlined" style="font-size:1.6rem;">download</span>
+        Salvar imagem
+      </button>
+    </div>
+
+  </section>
+
+</div><!-- .seeds-wrapper -->
+
+<script src="{% static 'js/taggy_seeds.js' %}"></script>
+</body>
+</html>

@@ -117,7 +117,7 @@
               <span class="material-symbols-outlined form-field__icon">description</span>
               <input
                 type="text" id="cnpj" name="cnpj"
-                class="form-input form-input--no-icon{% if errors.cnpj %} form-input--error{% endif %}"
+                class="form-input{% if errors.cnpj %} form-input--error{% endif %}"
                 placeholder="00.000.000/0001-00"
                 value="{{ form_data.cnpj|default:'' }}"
                 maxlength="18"
@@ -141,10 +141,10 @@
                 style="padding-left:4.4rem;cursor:pointer"
               >
                 <option value="">Selecione o tipo de serviço...</option>
-                <option value="pedagio"           {% if form_data.tipo_servico == 'pedagio'           %}selected{% endif %}>🚗 Pedágio</option>
-                <option value="estacionamento"    {% if form_data.tipo_servico == 'estacionamento'    %}selected{% endif %}>🅿️ Estacionamento</option>
-                <option value="acesso_controlado" {% if form_data.tipo_servico == 'acesso_controlado' %}selected{% endif %}>🔒 Acesso Controlado</option>
-                <option value="multiplo"          {% if form_data.tipo_servico == 'multiplo'          %}selected{% endif %}>⚡ Múltiplos Serviços</option>
+                <option value="pedagio"           {% if form_data.tipo_servico == 'pedagio'           %}selected{% endif %}>Pedágio</option>
+                <option value="estacionamento"    {% if form_data.tipo_servico == 'estacionamento'    %}selected{% endif %}>Estacionamento</option>
+                <option value="acesso_controlado" {% if form_data.tipo_servico == 'acesso_controlado' %}selected{% endif %}>Acesso Controlado</option>
+                <option value="multiplo"          {% if form_data.tipo_servico == 'multiplo'          %}selected{% endif %}>Múltiplos Serviços</option>
               </select>
             </div>
             {% if errors.tipo_servico %}
@@ -180,7 +180,6 @@
         <div class="form-group">
           <label class="form-label" for="password">Senha</label>
           <div class="form-field">
-            <span class="material-symbols-outlined form-field__icon">lock</span>
             <input
               type="password" id="password" name="password"
               class="form-input form-input--has-toggle{% if errors.password %} form-input--error{% endif %}"
@@ -212,7 +211,6 @@
         <div class="form-group">
           <label class="form-label" for="confirm_password">Confirmar senha</label>
           <div class="form-field">
-            <span class="material-symbols-outlined form-field__icon">lock</span>
             <input
               type="password" id="confirm_password" name="confirm_password"
               class="form-input form-input--has-toggle{% if errors.confirm_password %} form-input--error{% endif %}"
