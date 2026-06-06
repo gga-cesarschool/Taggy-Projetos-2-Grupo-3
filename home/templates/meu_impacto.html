@@ -23,7 +23,7 @@
       <!-- Saudação + botões -->
       <div class="impacto__greeting">
         <div>
-          <h1 class="impacto__hello" id="greeting-title">Olá, {{ nome_usuario }}! 👋</h1>
+          <h1 class="impacto__hello" id="greeting-title">Olá, {{ nome_usuario }}! </h1>
           <p class="impacto__hello-sub">Veja o impacto das suas escolhas sustentáveis</p>
         </div>
         <div style="display:flex;gap:1.2rem;flex-wrap:wrap">
@@ -31,10 +31,10 @@
             <span class="material-symbols-outlined" style="font-size:1.8rem">receipt</span>
             Registrar Passagem
           </button>
-          <button class="btn btn--primary" id="btn-wrapped">
+          <a href="{% url 'taggy_seeds' %}" class="btn btn--primary" id="btn-wrapped" style="text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;">
             <span class="material-symbols-outlined">auto_awesome</span>
-            Meu Wrapped
-          </button>
+            Taggy Seeds
+          </a>
         </div>
       </div>
 
@@ -46,12 +46,12 @@
             <span class="kpi-card__icon kpi-card__icon--green">
               <span class="material-symbols-outlined">eco</span>
             </span>
-            <span class="kpi-card__trend kpi-card__trend--up">
+            <span class="kpi-card__trend kpi-card__trend--up" id="kpi-trend-co2e">
               <span class="material-symbols-outlined">trending_up</span>+12%
             </span>
           </div>
-          <strong class="kpi-card__value" id="kpi-co2e-mes">27.6 kg</strong>
-          <span class="kpi-card__label">CO2e Evitado (Mês)</span>
+          <strong class="kpi-card__value" id="kpi-co2e-mes">—</strong>
+          <span class="kpi-card__label">CO2e Evitado (<span id="kpi-mes-label">este mês</span>)</span>
         </div>
 
         <div class="kpi-card">
@@ -59,12 +59,12 @@
             <span class="kpi-card__icon kpi-card__icon--blue">
               <span class="material-symbols-outlined">bolt</span>
             </span>
-            <span class="kpi-card__trend kpi-card__trend--up">
+            <span class="kpi-card__trend kpi-card__trend--up" id="kpi-trend-qtd">
               <span class="material-symbols-outlined">trending_up</span>+8
             </span>
           </div>
-          <strong class="kpi-card__value" id="kpi-passagens">42</strong>
-          <span class="kpi-card__label">Passagens no Mês</span>
+          <strong class="kpi-card__value" id="kpi-passagens">—</strong>
+          <span class="kpi-card__label">Total de Passagens</span>
         </div>
 
         <div class="kpi-card">
@@ -72,9 +72,9 @@
             <span class="kpi-card__icon kpi-card__icon--teal">
               <span class="material-symbols-outlined">forest</span>
             </span>
-            <span class="kpi-card__trend kpi-card__trend--badge">2025</span>
+            <span class="kpi-card__trend kpi-card__trend--badge" id="kpi-ano-label">{{ ano_atual }}</span>
           </div>
-          <strong class="kpi-card__value" id="kpi-total">268 kg</strong>
+          <strong class="kpi-card__value" id="kpi-total">—</strong>
           <span class="kpi-card__label">Total Acumulado</span>
         </div>
 
@@ -85,7 +85,7 @@
             </span>
             <span class="kpi-card__trend kpi-card__trend--badge">este mês</span>
           </div>
-          <strong class="kpi-card__value" id="kpi-tempo">105 min</strong>
+          <strong class="kpi-card__value" id="kpi-tempo">—</strong>
           <span class="kpi-card__label">Tempo Economizado</span>
         </div>
 
@@ -114,11 +114,11 @@
             </span>
           </div>
 
-          <p class="nivel-card__nome" id="nivel-nome">Intermediário</p>
-          <p class="nivel-card__sub" id="nivel-sub">134 pontos para o próximo nível</p>
+          <p class="nivel-card__nome" id="nivel-nome">—</p>
+          <p class="nivel-card__sub" id="nivel-sub">—</p>
 
           <div class="nivel-bar-wrap">
-            <div class="nivel-bar" id="nivel-bar" style="width: 87%"></div>
+            <div class="nivel-bar" id="nivel-bar" style="width: 0%"></div>
           </div>
 
           <div class="nivel-labels">
@@ -158,46 +158,15 @@
 
       </div>
 
-      <!-- Medalhas & Conquistas -->
+      <!-- Medalhas & Conquistas — renderizadas dinamicamente pelo JS -->
       <section class="medals-section">
         <h2 class="medals-section__title">Medalhas &amp; Conquistas</h2>
         <div class="medals-grid" id="medals-grid">
-
-          <div class="medal-card medal-card--earned">
-            <div class="medal-card__icon">
-              <span class="material-symbols-outlined">bolt</span>
-            </div>
-            <span class="medal-card__label">Primeira Passagem</span>
-          </div>
-
-          <div class="medal-card medal-card--earned">
-            <div class="medal-card__icon">
-              <span class="material-symbols-outlined">emoji_events</span>
-            </div>
-            <span class="medal-card__label">100 Passagens</span>
-          </div>
-
-          <div class="medal-card medal-card--earned">
-            <div class="medal-card__icon">
-              <span class="material-symbols-outlined">eco</span>
-            </div>
-            <span class="medal-card__label">Eco Warrior</span>
-          </div>
-
+          <!-- carregando... -->
           <div class="medal-card medal-card--locked">
-            <div class="medal-card__icon">
-              <span class="material-symbols-outlined">lock</span>
-            </div>
-            <span class="medal-card__label">500 Passagens</span>
+            <div class="medal-card__icon"><span class="material-symbols-outlined">lock</span></div>
+            <span class="medal-card__label">Carregando...</span>
           </div>
-
-          <div class="medal-card medal-card--locked">
-            <div class="medal-card__icon">
-              <span class="material-symbols-outlined">lock</span>
-            </div>
-            <span class="medal-card__label">1 Tonelada Evitada</span>
-          </div>
-
         </div>
       </section>
 <!-- Ranking de Usuários -->
@@ -693,6 +662,10 @@
           <select id="pm-empresa" class="pm-select">
             <option value="">Nenhuma selecionada</option>
           </select>
+          <p class="pm-hint" id="pm-empresa-hint" style="font-size:1.2rem;color:#718096;margin-top:.4rem;display:none;">
+            Nenhuma empresa cadastrada ainda.
+            <a href="/register" target="_blank" style="color:#2E7D32;font-weight:600;">Cadastrar empresa</a>
+          </p>
         </div>
 
         <!-- Preview CO₂e -->
@@ -884,30 +857,30 @@
         <span class="material-symbols-outlined">auto_awesome</span>
         Meu Wrapped 2025
       </div>
-      <p class="wrapped-greeting">Incrível, João! 🎉</p>
+      <p class="wrapped-greeting" id="w-greeting">Carregando...</p>
       <span class="wrapped-hero__label">Você evitou em 2025</span>
-      <span class="wrapped-hero__number" id="w-total">268</span>
+      <span class="wrapped-hero__number" id="w-total">—</span>
       <span class="wrapped-hero__unit">kg de CO₂ equivalente</span>
       <div class="wrapped-divider"></div>
       <div class="wrapped-cards">
         <div class="wrapped-card">
-          <span class="wrapped-card__icon">🚦</span>
+          <span class="wrapped-card__icon"></span>
           <span class="wrapped-card__value" id="w-passagens">384</span>
           <span class="wrapped-card__label">passagens no total</span>
         </div>
         <div class="wrapped-card">
-          <span class="wrapped-card__icon">⏱️</span>
+          <span class="wrapped-card__icon">⏱</span>
           <span class="wrapped-card__value" id="w-tempo">19,2 h</span>
           <span class="wrapped-card__label">de fila economizadas</span>
         </div>
         <div class="wrapped-card">
-          <span class="wrapped-card__icon">🌳</span>
+          <span class="wrapped-card__icon"></span>
           <span class="wrapped-card__value" id="w-arvores">12</span>
           <span class="wrapped-card__label">árvores equivalentes</span>
         </div>
         <div class="wrapped-card">
-          <span class="wrapped-card__icon">🏅</span>
-          <span class="wrapped-card__value" id="w-nivel">Intermediário</span>
+          <span class="wrapped-card__icon"></span>
+          <span class="wrapped-card__value" id="w-nivel">—</span>
           <span class="wrapped-card__label">seu nível atual</span>
         </div>
       </div>

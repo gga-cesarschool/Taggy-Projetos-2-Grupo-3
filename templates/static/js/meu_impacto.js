@@ -12,7 +12,7 @@
   function fmtKg(kg)        { return kg >= 1 ? fmt(kg) + ' kg' : fmt(kg * 1000, 0) + ' g'; }
   function fmtTempo(min)    { return min >= 60 ? fmt(min / 60) + ' h' : fmt(min, 0) + ' min'; }
 
-  // ── Cálculo de CO₂e (espelha views.py) ─────────────────────────────────
+  //  Cálculo de CO₂e (espelha views.py) 
   const CALC = {
     fatores:  { gasolina:2.212, diesel:2.603, flex_mix:1.335, grid_br:0.0817, papel:1.100 },
     veiculos: {
@@ -38,12 +38,43 @@
     return eSem - eCom;
   }
 
-  // ── Cache de veículos (compartilhado pelos dois modais) ─────────────────
+  //  Cache de veículos (compartilhado pelos dois modais) 
   let _veiculosCache = [];
 
   // ==========================================================================
   // DASHBOARD — carrega KPIs e gráficos reais
   // ==========================================================================
+
+  //  Mapa de ícones das conquistas 
+  const CONQUISTA_ICONS = {
+    'Primeira Passagem': 'bolt',
+    '100 Passagens':     'emoji_events',
+    'Eco Warrior':       'eco',
+    '500 Passagens':     'emoji_events',
+    '1 Tonelada Evitada':'forest',
+  };
+
+  function _renderConquistas(conquistas) {
+    const grid = document.getElementById('medals-grid');
+    if (!grid) return;
+    if (!conquistas.length) {
+      grid.innerHTML = '<p style="color:#718096;font-size:1.3rem;padding:1rem;">Nenhuma conquista disponível.</p>';
+      return;
+    }
+    grid.innerHTML = conquistas.map(c => {
+      const icone = CONQUISTA_ICONS[c.titulo] || 'star';
+      const cls   = c.ativa ? 'medal-card medal-card--earned' : 'medal-card medal-card--locked';
+      const iconeName = c.ativa ? icone : 'lock';
+      const tooltip = c.descricao ? ` title="${esc(c.descricao)}"` : '';
+      return `
+        <div class="${cls}"${tooltip}>
+          <div class="medal-card__icon">
+            <span class="material-symbols-outlined">${iconeName}</span>
+          </div>
+          <span class="medal-card__label">${esc(c.titulo)}</span>
+        </div>`;
+    }).join('');
+  }
 
   let _chartMonthly = null;
   let _chartAnnual  = null;
@@ -56,9 +87,11 @@
 
       // Greeting
       const g = document.getElementById('greeting-title');
-      if (g) g.textContent = `Olá, ${data.nome}! 👋`;
+      if (g) g.textContent = `Olá, ${data.nome}!`;
+      const wg = document.getElementById('w-greeting');
+      if (wg) wg.textContent = `Incrível, ${data.nome}!`;
 
-      // KPIs
+      // KPIs — valores reais
       const co2e = data.kpis.co2e_mes;
       const tot  = data.kpis.co2e_total;
       _setKpi('kpi-co2e-mes',  fmtKg(co2e));
@@ -66,8 +99,68 @@
       _setKpi('kpi-total',     fmtKg(tot));
       _setKpi('kpi-tempo',     fmtTempo(data.kpis.tempo_mes));
 
+      // Label do mes no KPI (ex: "Mai", "Jun")
+      const mesLabel = data.kpis.mes_label || 'este mês';
+      _setKpi('kpi-mes-label', mesLabel);
+
+      // Trends reais — CO2e %
+      const trendCo2eEl = document.getElementById('kpi-trend-co2e');
+      if (trendCo2eEl) {
+        const pct = data.kpis.trend_co2e_pct;
+        if (pct !== null && pct !== undefined) {
+          const up = pct >= 0;
+          trendCo2eEl.className = `kpi-card__trend kpi-card__trend--${up ? 'up' : 'down'}`;
+          trendCo2eEl.innerHTML = `<span class="material-symbols-outlined">${up ? 'trending_up' : 'trending_down'}</span>${up ? '+' : ''}${pct}%`;
+        } else {
+          trendCo2eEl.style.display = 'none';
+        }
+      }
+
+      // Trends reais — passagens absoluto
+      const trendQtdEl = document.getElementById('kpi-trend-qtd');
+      if (trendQtdEl) {
+        const abs = data.kpis.trend_qtd_abs;
+        if (abs !== 0 && abs !== undefined) {
+          const up = abs >= 0;
+          trendQtdEl.className = `kpi-card__trend kpi-card__trend--${up ? 'up' : 'down'}`;
+          trendQtdEl.innerHTML = `<span class="material-symbols-outlined">${up ? 'trending_up' : 'trending_down'}</span>${up ? '+' : ''}${abs}`;
+        } else {
+          trendQtdEl.style.display = 'none';
+        }
+      }
+
       // Charts
       _initCharts(data.grafico_mensal, data.grafico_anual);
+
+      // Medalhas & Conquistas
+      _renderConquistas(data.conquistas || []);
+
+      // Nivel do usuario — calculado com dados reais
+      if (data.nivel) {
+        const n = data.nivel;
+
+        // Nivel nome
+        const nomeEl = document.getElementById('nivel-nome');
+        if (nomeEl) nomeEl.textContent = n.nome;
+
+        const wNivelEl = document.getElementById('w-nivel');
+        if (wNivelEl) wNivelEl.textContent = n.nome;
+
+        // Nivel sub
+        const subEl = document.getElementById('nivel-sub');
+        if (subEl) subEl.textContent = n.pontos_para_proximo > 0
+          ? n.pontos_para_proximo + ' pontos para o próximo nível'
+          : 'Nível máximo atingido!';
+
+        // Nivel progress bar
+        const barEl = document.getElementById('nivel-bar');
+        if (barEl) {
+          const pct = n.pontos_para_proximo > 0
+            ? Math.min(100, Math.round((n.pontos / (n.pontos + n.pontos_para_proximo)) * 100))
+            : 100;
+          barEl.style.width = pct + '%';
+        }
+      }
 
     } catch (e) {
       console.error('[dashboard]', e);
@@ -180,17 +273,47 @@
     prev.hidden = false;
   }
 
-  function _popularEmpresasPassagem(veiculo) {
+  async function _popularEmpresasPassagem(veiculo) {
     const sel = document.getElementById('pm-empresa');
     if (!sel) return;
     sel.innerHTML = '<option value="">Nenhuma selecionada</option>';
-    if (!veiculo?.empresas?.length) return;
-    veiculo.empresas.forEach(e => {
-      const opt = document.createElement('option');
-      opt.value       = e.id;
-      opt.textContent = e.nome + (e.tipo_servico_label ? ` (${e.tipo_servico_label})` : '');
-      sel.appendChild(opt);
-    });
+
+    const hintEl = document.getElementById('pm-empresa-hint');
+
+    // Se o veiculo tem empresas vinculadas, mostra so elas
+    if (veiculo?.empresas?.length) {
+      veiculo.empresas.forEach(e => {
+        const opt = document.createElement('option');
+        opt.value       = e.id;
+        opt.textContent = e.nome + (e.tipo_servico_label ? ` (${e.tipo_servico_label})` : '');
+        sel.appendChild(opt);
+      });
+      if (hintEl) hintEl.style.display = 'none';
+      return;
+    }
+
+    // Sem vinculo: carrega TODAS as empresas disponiveis para o usuario escolher
+    try {
+      const grupos = await carregarEmpresas();
+      const keys   = Object.keys(grupos);
+      if (!keys.length) {
+        if (hintEl) hintEl.style.display = 'block';
+        return;
+      }
+      if (hintEl) hintEl.style.display = 'none';
+      keys.forEach(k => {
+        const g = grupos[k];
+        const grp = document.createElement('optgroup');
+        grp.label = g.label;
+        g.items.forEach(emp => {
+          const opt = document.createElement('option');
+          opt.value       = emp.id;
+          opt.textContent = emp.nome;
+          grp.appendChild(opt);
+        });
+        sel.appendChild(grp);
+      });
+    } catch(e) { /* silencia */ }
   }
 
   function _preSelectContexto(veiculo) {
@@ -394,7 +517,7 @@
     }
   }
 
-  // ── Modal veículo (cache de empresas) ──────────────────────────────────
+  //  Modal veículo (cache de empresas) 
   let _empresasCache = null;
 
   const vmModal   = () => document.getElementById('vm-modal');
@@ -415,7 +538,10 @@
     container.innerHTML = '<p class="vm-emp-vazio">Carregando...</p>';
     const grupos = await carregarEmpresas();
     const keys   = Object.keys(grupos);
-    if (!keys.length) { container.innerHTML = '<p class="vm-emp-vazio">Nenhuma empresa cadastrada ainda.</p>'; return; }
+    if (!keys.length) {
+      container.innerHTML = '<p class="vm-emp-vazio">Nenhuma empresa cadastrada no sistema ainda. Para vincular, uma empresa precisa criar uma conta em <strong>Cadastrar</strong>.</p>';
+      return;
+    }
     container.innerHTML = keys.map(k => {
       const g = grupos[k];
       return `<div class="vm-emp-grupo"><span class="vm-emp-grupo-label">${esc(g.label)}</span>

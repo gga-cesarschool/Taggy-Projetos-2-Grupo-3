@@ -32,26 +32,40 @@
         </div>
         <div class="dashboard__actions">
 
-          <!-- ── Botão FILTROS ── -->
+          <!--  Botão FILTROS  -->
           <button class="dash-btn dash-btn--ghost" id="btn-filtros" aria-label="Abrir filtros">
             <span class="material-symbols-outlined">filter_list</span>
             Filtros
             <span class="filter-count" id="filter-count">0</span>
           </button>
 
-          <!-- ── Botão EXPORTAR ── -->
+          <!--  Botão EXPORTAR  -->
           <button class="dash-btn dash-btn--outline" id="btn-exportar" aria-label="Exportar relatório">
             <span class="material-symbols-outlined">download</span>
             Exportar Relatorio
           </button>
 
-          <!-- ── Botão WRAPPED ── -->
-          <button class="dash-btn dash-btn--primary" id="btn-wrapped" aria-label="Ver Wrapped">
-            <span class="material-symbols-outlined">auto_awesome</span>
-            Wrapped
+          <!--  Botão REGISTRAR USO  -->
+          <button class="dash-btn dash-btn--outline" id="btn-registrar-uso" aria-label="Registrar uso">
+            <span class="material-symbols-outlined">edit</span>
+            Registrar Uso
           </button>
 
+          <!--  Botão TAGGY SEEDS  -->
+          <a href="{% url 'taggy_seeds' %}" class="dash-btn dash-btn--primary" id="btn-wrapped" style="text-decoration:none;" aria-label="Ver Taggy Seeds">
+            <span class="material-symbols-outlined">auto_awesome</span>
+            Taggy Seeds
+          </a>
+
         </div>
+      </div>
+
+      <!-- Banner de dados demonstrativos -->
+      <div class="demo-banner" id="demo-banner" style="display:none;">
+        <span class="material-symbols-outlined" style="font-size:1.8rem;">info</span>
+        <span>Voce ainda nao tem passagens registradas. Estes dados sao demonstrativos.
+          <button id="demo-banner-registrar" style="background:none;border:none;color:inherit;font-weight:700;cursor:pointer;text-decoration:underline;font-size:inherit;">Registre seu primeiro uso</button>
+        </span>
       </div>
 
       <!-- KPI Cards -->
@@ -510,6 +524,77 @@
   }
 </style>
     </div>
+  <!-- Modal Registrar Uso -->
+  <div class="ru-overlay" id="ru-overlay" hidden></div>
+  <div class="ru-modal" id="ru-modal" role="dialog" aria-modal="true" hidden>
+    <div class="ru-card">
+
+      <div class="ru-head">
+        <h2 class="ru-title">Registrar Uso da Frota</h2>
+        <button class="ru-close" id="ru-close" aria-label="Fechar" type="button">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <p class="ru-desc">Selecione o veiculo da frota e informe as passagens realizadas.</p>
+
+      <div class="ru-body">
+
+        <!-- Veiculo da frota -->
+        <div class="ru-group">
+          <label class="ru-label" for="ru-veiculo">Veiculo da frota</label>
+          <select id="ru-veiculo" class="ru-input ru-select">
+            <option value="">Selecione um veiculo...</option>
+          </select>
+          <p id="ru-frota-hint" style="display:none;font-size:1.25rem;color:#e53e3e;margin-top:.5rem;">
+            Nenhum veiculo vinculado a esta empresa ainda. Peca ao usuario que vincule o veiculo a sua empresa no painel
+            <strong>Meu Impacto &gt; Meus Veiculos</strong>.
+          </p>
+        </div>
+
+        <!-- Contexto -->
+        <div class="ru-group">
+          <label class="ru-label">Tipo de uso</label>
+          <div class="ru-radios">
+            <label class="ru-radio"><input type="radio" name="ru-ctx" value="pedagio" checked><span>Pedagio</span></label>
+            <label class="ru-radio"><input type="radio" name="ru-ctx" value="estacionamento"><span>Estacionamento</span></label>
+            <label class="ru-radio"><input type="radio" name="ru-ctx" value="acesso_controlado"><span>Acesso Controlado</span></label>
+          </div>
+        </div>
+
+        <!-- Quantidade -->
+        <div class="ru-group">
+          <label class="ru-label" for="ru-qtd">Quantidade de passagens</label>
+          <input type="number" id="ru-qtd" class="ru-input" min="1" max="9999" value="1" placeholder="Ex: 50">
+        </div>
+
+        <!-- Data -->
+        <div class="ru-group">
+          <label class="ru-label" for="ru-data">Data</label>
+          <input type="date" id="ru-data" class="ru-input">
+        </div>
+
+        <!-- Preview CO2e -->
+        <div class="ru-preview" id="ru-preview" style="display:none;">
+          <span class="material-symbols-outlined" style="color:#2E7D32;font-size:1.8rem;">eco</span>
+          <span id="ru-preview-val">0 g CO2e evitados</span>
+        </div>
+
+        <div id="ru-err" style="display:none;color:#e53e3e;font-size:1.3rem;margin-top:.5rem;font-weight:600;"></div>
+        <div id="ru-suc" style="display:none;color:#2E7D32;font-size:1.3rem;margin-top:.5rem;font-weight:600;"></div>
+      </div>
+
+      <div class="ru-foot">
+        <button class="ru-btn-cancel" id="ru-cancel" type="button">Cancelar</button>
+        <button class="ru-btn-save" id="ru-save" type="button">
+          <span class="material-symbols-outlined">check_circle</span>
+          Registrar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   </main>
 
   <!-- ===== FOOTER ===== -->
@@ -550,15 +635,15 @@
         <div class="filter-checks" id="filter-contextos">
           <label class="filter-check">
             <input type="checkbox" name="contexto" value="pedagio" checked>
-            <span>🛣️ Pedágio</span>
+            <span> Pedágio</span>
           </label>
           <label class="filter-check">
             <input type="checkbox" name="contexto" value="estacionamento" checked>
-            <span>🅿️ Estacionamento</span>
+            <span> Estacionamento</span>
           </label>
           <label class="filter-check">
             <input type="checkbox" name="contexto" value="acesso_controlado" checked>
-            <span>🔒 Acesso Controlado</span>
+            <span> Acesso Controlado</span>
           </label>
         </div>
       </div>
@@ -569,19 +654,19 @@
         <div class="filter-checks" id="filter-veiculos">
           <label class="filter-check">
             <input type="checkbox" name="veiculo" value="carro_combustao" checked>
-            <span>🚗 Carro (combustão)</span>
+            <span> Carro (combustão)</span>
           </label>
           <label class="filter-check">
             <input type="checkbox" name="veiculo" value="carro_eletrico" checked>
-            <span>⚡ Carro (elétrico)</span>
+            <span> Carro (elétrico)</span>
           </label>
           <label class="filter-check">
             <input type="checkbox" name="veiculo" value="moto" checked>
-            <span>🏍️ Moto</span>
+            <span> Moto</span>
           </label>
           <label class="filter-check">
             <input type="checkbox" name="veiculo" value="caminhao" checked>
-            <span>🚛 Caminhão</span>
+            <span> Caminhão</span>
           </label>
         </div>
       </div>
@@ -627,22 +712,22 @@
 
       <div class="wrapped-cards">
         <div class="wrapped-card">
-          <span class="wrapped-card__icon">🌳</span>
+          <span class="wrapped-card__icon"></span>
           <span class="wrapped-card__value" id="wrapped-arvores">757</span>
           <span class="wrapped-card__label">árvores absorvendo CO₂ por 1 ano</span>
         </div>
         <div class="wrapped-card">
-          <span class="wrapped-card__icon">⛽</span>
+          <span class="wrapped-card__icon"></span>
           <span class="wrapped-card__value" id="wrapped-gasolina">7.453</span>
           <span class="wrapped-card__label">litros de gasolina não queimada</span>
         </div>
         <div class="wrapped-card">
-          <span class="wrapped-card__icon">🗂️</span>
+          <span class="wrapped-card__icon"></span>
           <span class="wrapped-card__value" id="wrapped-papel">2.558</span>
           <span class="wrapped-card__label">kg de papel de ticket evitados</span>
         </div>
         <div class="wrapped-card">
-          <span class="wrapped-card__icon">⏱️</span>
+          <span class="wrapped-card__icon">⏱</span>
           <span class="wrapped-card__value" id="wrapped-fila">17.935</span>
           <span class="wrapped-card__label">horas de fila economizadas</span>
         </div>
@@ -671,6 +756,7 @@
     <span id="export-toast-msg">Relatório exportado com sucesso!</span>
   </div>
 
+  <script>window._CSRF = '{{ csrf_token }}';</script>
   <script src="{% static 'js/home.js' %}"></script>
   <script src="{% static 'js/empresas_relatorios.js' %}"></script>
 

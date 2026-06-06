@@ -30,11 +30,10 @@
           Menos fila, menos marcha lenta, menos emissão.
         </p>
         <div class="hero__actions">
-          <a href="#" class="btn btn--primary">
+          <a href="#calc-section" class="btn btn--primary" id="hero-calc-btn">
             Calcular meu impacto
             <span class="material-symbols-outlined">arrow_forward</span>
           </a>
-          <a href="#" class="btn btn--outline">Como funciona</a>
         </div>
       </div>
       <div class="hero__media">
@@ -62,7 +61,7 @@
   </section>
 
   <!-- ===== CALCULADORA ===== -->
-  <section class="calc-section">
+  <section class="calc-section" id="calc-section">
     <div class="calc-section__header">
       <h2 class="calc-section__title">Calcule suas emissões evitadas</h2>
       <p class="calc-section__subtitle">Simule seu impacto comparando o cenário com e sem Taggy</p>
@@ -243,22 +242,50 @@
   <!-- ===== CTA DUPLO ===== -->
   <section class="cta-section">
     <div class="cta-section__inner">
-      <div class="cta-card cta-card--green">
-        <span class="cta-card__icon"><span class="material-symbols-outlined">shield</span></span>
-        <h3 class="cta-card__title">Acompanhe seu Impacto pessoal</h3>
-        <p class="cta-card__desc">Crie sua conta gratuita e veja seu histórico mensal, evolução e Wrapped personalizado.</p>
-        <a href="#" class="btn btn--cta-light">
-          Criar conta grátis <span class="material-symbols-outlined">arrow_forward</span>
-        </a>
-      </div>
-      <div class="cta-card cta-card--dark">
-        <span class="cta-card__icon"><span class="material-symbols-outlined">insert_chart</span></span>
-        <h3 class="cta-card__title">Relatórios ESG para empresas</h3>
-        <p class="cta-card__desc">Acesse dashboards com indicadores por estado, evolução anual e Wrapped corporativo.</p>
-        <a href="#" class="btn btn--cta-blue">
-          Área Empresa <span class="material-symbols-outlined">arrow_forward</span>
-        </a>
-      </div>
+
+      {% if not user.is_authenticated %}
+        <!-- Visitante: mostra os dois cards -->
+        <div class="cta-card cta-card--green">
+          <span class="cta-card__icon"><span class="material-symbols-outlined">shield</span></span>
+          <h3 class="cta-card__title">Acompanhe seu Impacto pessoal</h3>
+          <p class="cta-card__desc">Crie sua conta gratuita e veja seu histórico mensal, evolução e Wrapped personalizado.</p>
+          <a href="{% url 'register' %}" class="btn btn--cta-light">
+            Criar conta grátis <span class="material-symbols-outlined">arrow_forward</span>
+          </a>
+        </div>
+        <div class="cta-card cta-card--dark">
+          <span class="cta-card__icon"><span class="material-symbols-outlined">insert_chart</span></span>
+          <h3 class="cta-card__title">Relatórios ESG para empresas</h3>
+          <p class="cta-card__desc">Acesse dashboards com indicadores por estado, evolução anual e Wrapped corporativo.</p>
+          <a href="{% url 'login' %}" class="btn btn--cta-blue">
+            Área Empresa <span class="material-symbols-outlined">arrow_forward</span>
+          </a>
+        </div>
+
+      {% elif user.perfil.tipo == 'empresa' %}
+        <!-- Empresa logada: só card de empresa -->
+        <div class="cta-card cta-card--dark">
+          <span class="cta-card__icon"><span class="material-symbols-outlined">insert_chart</span></span>
+          <h3 class="cta-card__title">Relatórios ESG para empresas</h3>
+          <p class="cta-card__desc">Acesse dashboards com indicadores por estado, evolução anual e Wrapped corporativo.</p>
+          <a href="{% url 'empresas_relatorios' %}" class="btn btn--cta-blue">
+            Meu Dashboard <span class="material-symbols-outlined">arrow_forward</span>
+          </a>
+        </div>
+
+      {% else %}
+        <!-- Pessoa física logada: só card pessoal -->
+        <div class="cta-card cta-card--green">
+          <span class="cta-card__icon"><span class="material-symbols-outlined">eco</span></span>
+          <h3 class="cta-card__title">Veja seu impacto pessoal</h3>
+          <p class="cta-card__desc">Acompanhe seu histórico mensal, evolução e retrospectiva anual personalizada.</p>
+          <a href="{% url 'meu_impacto' %}" class="btn btn--cta-light">
+            Meu Impacto <span class="material-symbols-outlined">arrow_forward</span>
+          </a>
+        </div>
+
+      {% endif %}
+
     </div>
   </section>
 
