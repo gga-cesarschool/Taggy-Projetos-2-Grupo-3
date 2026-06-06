@@ -44,4 +44,26 @@
     });
   }
 
+  // ===========================================
+  // SCROLL SUAVE PARA A CALCULADORA (apenas na home)
+  // ===========================================
+  document.querySelectorAll('a[href="/#calc-section"], a[href="#calc-section"]').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      var target = document.getElementById('calc-section');
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (nav && nav.classList.contains('is-open')) {
+          nav.classList.remove('is-open');
+          if (hamburger) {
+            hamburger.classList.remove('is-open');
+            hamburger.setAttribute('aria-expanded', 'false');
+          }
+        }
+      }
+      // Se não há #calc-section na página, o href="/#calc-section" navega normalmente
+    });
+  });
+
+
 })();

@@ -32,7 +32,46 @@ def meu_impacto(request):
         return redirect('empresas_relatorios')
     return render(request, 'meu_impacto.html', {
         'nome_usuario': request.user.first_name or request.user.email.split('@')[0],
+        'ano_atual':    date_cls.today().year,
     })
+
+def calcular_conquistas(total_passagens, total_co2e):
+    return [
+        {
+            "titulo": "Primeira Passagem",
+            "icone": "",
+            "ativa": total_passagens >= 1,
+            "descricao": f"{total_passagens}/1 passagem"
+        },
+        {
+            "titulo": "100 Passagens",
+            "icone": "",
+            "ativa": total_passagens >= 100,
+            "descricao": f"{total_passagens}/100 passagens"
+        },
+        {
+            "titulo": "Eco Warrior",
+            "icone": "",
+            "ativa": total_co2e >= 10,
+            "descricao": f"{total_co2e:.2f}/10 kg CO₂e"
+        },
+        {
+            "titulo": "500 Passagens",
+            "icone": "",
+            "ativa": total_passagens >= 500,
+            "descricao": f"{total_passagens}/500 passagens"
+        },
+        {
+            "titulo": "1 Tonelada Evitada",
+            "icone": "",
+            "ativa": total_co2e >= 1000,
+            "descricao": f"{total_co2e:.2f}/1000 kg CO₂e"
+        },
+    ]
+
+
+
+
 
 
 def metodologia(request):
@@ -105,13 +144,12 @@ MESES_LABEL = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
 
 @require_GET
 def api_meu_impacto_dados(request):
-    """KPIs e dados dos gráficos calculados a partir das passagens reais."""
+    """KPIs e dados dos graficos calculados a partir das passagens reais."""
     err = _auth_required(request)
     if err:
         return err
 
     hoje          = date_cls.today()
-    primeiro_mes  = hoje.replace(day=1)
     ano_atual     = hoje.year
 
     todas = list(
@@ -120,8 +158,16 @@ def api_meu_impacto_dados(request):
         .order_by('data')
     )
 
-    # ── KPIs do mês ─────────────────────────────────────────────────────────
-    do_mes   = [p for p in todas if p.data >= primeiro_mes]
+    # Usa o mes mais recente com passagens (nao necessariamente o mes atual)
+    # Assim, se o usuario registrou passagens no mes passado, elas aparecem
+    if todas:
+        ultimo_mes   = todas[-1].data.month
+        ultimo_ano   = todas[-1].data.year
+        do_mes = [p for p in todas if p.data.month == ultimo_mes and p.data.year == ultimo_ano]
+        mes_label = ultima_data = todas[-1].data
+    else:
+        do_mes = []
+
     co2e_mes = sum(p.co2e_total for p in do_mes)
     qtd_mes  = sum(p.quantidade for p in do_mes)
     tempo_mes = sum(
@@ -130,23 +176,39 @@ def api_meu_impacto_dados(request):
         if p.contexto in CALC_CONTEXTOS
     )
 
-    # ── Total acumulado ──────────────────────────────────────────────────────
+    # Variacao em relacao ao mes anterior
+    if todas and do_mes:
+        mes_ant_num = ultimo_mes - 1 if ultimo_mes > 1 else 12
+        ano_ant     = ultimo_ano if ultimo_mes > 1 else ultimo_ano - 1
+        do_mes_ant  = [p for p in todas if p.data.month == mes_ant_num and p.data.year == ano_ant]
+        co2e_ant    = sum(p.co2e_total for p in do_mes_ant)
+        qtd_ant     = sum(p.quantidade for p in do_mes_ant)
+        if co2e_ant > 0:
+            trend_co2e_pct = round((co2e_mes - co2e_ant) / co2e_ant * 100, 1)
+        else:
+            trend_co2e_pct = None
+        trend_qtd_abs = qtd_mes - qtd_ant
+    else:
+        trend_co2e_pct = None
+        trend_qtd_abs  = 0
+
+    #  Total acumulado 
     co2e_total = sum(p.co2e_total for p in todas)
 
-    # ── Gráfico mensal (ano atual) ───────────────────────────────────────────
+    #  Gráfico mensal (ano atual) 
     mensal = [0.0] * 12
     for p in todas:
         if p.data.year == ano_atual:
             mensal[p.data.month - 1] = round(mensal[p.data.month - 1] + p.co2e_total, 4)
 
-    # ── Gráfico anual ────────────────────────────────────────────────────────
+    #  Gráfico anual 
     anual_dict: dict[int, float] = {}
     for p in todas:
         anual_dict[p.data.year] = round(anual_dict.get(p.data.year, 0) + p.co2e_total, 4)
     anos  = sorted(anual_dict) or [ano_atual]
     vals  = [anual_dict[a] for a in anos]
 
-    # ── Últimas passagens (histórico recente) ────────────────────────────────
+    #  Últimas passagens (histórico recente) 
     recentes = []
     for p in reversed(todas[-20:]):
         empresa_nome = ''
@@ -165,18 +227,30 @@ def api_meu_impacto_dados(request):
             'empresa':    empresa_nome,
         })
 
+    total_passagens_all = sum(p.quantidade for p in todas)
+
+    MESES_PT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
+    mes_kpi_label = MESES_PT[do_mes[0].data.month - 1] if do_mes else MESES_PT[hoje.month - 1]
+
+    nivel = _calcular_nivel(co2e_total)
+
     return JsonResponse({
         'ok': True,
         'nome': request.user.first_name or request.user.email.split('@')[0],
         'kpis': {
-            'co2e_mes':   round(co2e_mes, 3),
-            'qtd_mes':    qtd_mes,
-            'co2e_total': round(co2e_total, 3),
-            'tempo_mes':  round(tempo_mes, 1),
+            'co2e_mes':        round(co2e_mes, 3),
+            'qtd_mes':         qtd_mes,
+            'co2e_total':      round(co2e_total, 3),
+            'tempo_mes':       round(tempo_mes, 1),
+            'mes_label':       mes_kpi_label,
+            'trend_co2e_pct':  trend_co2e_pct,
+            'trend_qtd_abs':   trend_qtd_abs,
         },
         'grafico_mensal': {'labels': MESES_LABEL, 'data': mensal},
         'grafico_anual':  {'labels': [str(a) for a in anos], 'data': vals},
         'recentes':       recentes,
+        'conquistas':     calcular_conquistas(total_passagens_all, co2e_total),
+        'nivel':          nivel,
     })
 
 
@@ -420,6 +494,104 @@ def api_empresas_lista(request):
 
 
 # =============================================================================
+# FROTA DA EMPRESA — listar veiculos vinculados
+# =============================================================================
+
+@require_GET
+def api_empresa_frota(request):
+    """Retorna veiculos vinculados a esta empresa (VeiculoEmpresa)."""
+    err = _auth_required(request)
+    if err:
+        return err
+    if _get_tipo(request.user) != 'empresa':
+        return JsonResponse({'ok': False, 'erro': 'Apenas empresas.'}, status=403)
+
+    veiculos_empresa = (
+        VeiculoEmpresa.objects
+        .filter(empresa=request.user)
+        .select_related('veiculo__usuario')
+    )
+    data = []
+    for ve in veiculos_empresa:
+        v = ve.veiculo
+        data.append({
+            'id':         v.id,
+            'nome':       v.nome,
+            'tipo':       v.tipo,
+            'tipo_label': v.get_tipo_display(),
+            'placa':      v.placa,
+            'proprietario': v.usuario.first_name or v.usuario.email.split('@')[0],
+        })
+    return JsonResponse({'ok': True, 'veiculos': data})
+
+
+@require_POST
+def api_empresa_registrar_passagem(request):
+    """
+    Empresa registra passagem em nome de um veiculo da sua frota.
+    O veiculo deve estar vinculado a esta empresa via VeiculoEmpresa.
+    """
+    err = _auth_required(request)
+    if err:
+        return err
+    if _get_tipo(request.user) != 'empresa':
+        return JsonResponse({'ok': False, 'erro': 'Apenas empresas.'}, status=403)
+
+    try:
+        body = json.loads(request.body)
+    except Exception:
+        return JsonResponse({'ok': False, 'erro': 'JSON invalido.'}, status=400)
+
+    veiculo_id = body.get('veiculo_id')
+    contexto   = body.get('contexto', '')
+    data_str   = body.get('data', '')
+    quantidade = body.get('quantidade', 1)
+
+    if not veiculo_id:
+        return JsonResponse({'ok': False, 'erro': 'Selecione um veiculo.'})
+    if contexto not in CALC_CONTEXTOS:
+        return JsonResponse({'ok': False, 'erro': 'Contexto invalido.'})
+    try:
+        quantidade = int(quantidade)
+        assert 1 <= quantidade <= 9999
+    except Exception:
+        return JsonResponse({'ok': False, 'erro': 'Quantidade deve ser entre 1 e 9999.'})
+
+    # Verifica que o veiculo pertence a frota desta empresa
+    try:
+        ve = VeiculoEmpresa.objects.select_related('veiculo').get(
+            empresa=request.user, veiculo_id=int(veiculo_id)
+        )
+        veiculo = ve.veiculo
+    except VeiculoEmpresa.DoesNotExist:
+        return JsonResponse({'ok': False, 'erro': 'Veiculo nao encontrado na sua frota.'}, status=404)
+
+    try:
+        data = date_cls.fromisoformat(data_str) if data_str else date_cls.today()
+    except ValueError:
+        data = date_cls.today()
+
+    co2e = calcular_co2e_passagem(veiculo.tipo, contexto)
+
+    passagem = Passagem.objects.create(
+        usuario          = veiculo.usuario,
+        veiculo          = veiculo,
+        empresa          = request.user,
+        contexto         = contexto,
+        data             = data,
+        quantidade       = quantidade,
+        co2e_por_passagem = co2e,
+    )
+
+    return JsonResponse({
+        'ok':         True,
+        'id':         passagem.id,
+        'co2e_total': round(passagem.co2e_total, 4),
+        'mensagem':   f'{quantidade} passagem(ns) registrada(s) para {veiculo.nome}. +{round(passagem.co2e_total * 1000, 1)} g CO2e evitados.',
+    })
+
+
+# =============================================================================
 # FATORES DE EMISSÃO (público)
 # =============================================================================
 
@@ -525,38 +697,381 @@ def _meta_vs_realizado(ano):
 
 @require_GET
 def api_empresas_dados(request):
+    """
+    Painel ESG Corporativo.
+    Usa dados reais da empresa logada (Passagem) quando existirem.
+    Cai para dados demonstrativos quando o banco esta vazio.
+    """
+    import datetime as _dt
+
+    # Empresa logada
+    user = request.user if request.user.is_authenticated else None
     try:
-        ano = int(request.GET.get('ano', 2025))
-        ano = ano if ano in DE.ANNUAL_TOTALS_KG else 2025
-    except ValueError:
-        ano = 2025
+        perfil       = user.perfil
+        nome_empresa = perfil.nome_empresa or (user.first_name or user.email.split('@')[0])
+        cnpj         = perfil.cnpj or ''
+    except Exception:
+        nome_empresa = user.first_name or user.email.split('@')[0] if user else 'Empresa'
+        cnpj         = ''
+
+    ano_atual = _dt.date.today().year
+
+    # Passagens onde esta empresa e a empresa vinculada
+    passagens_todas = list(
+        Passagem.objects.filter(empresa=user)
+        .select_related('veiculo')
+        .order_by('data')
+    ) if user else []
+
+    # Anos disponiveis
+    anos_com_dados = sorted({p.data.year for p in passagens_todas}) or [ano_atual]
+
     try:
-        top_n = max(1, min(int(request.GET.get('top_n', 8)), len(DE.STATE_WEIGHTS)))
+        ano = int(request.GET.get('ano', anos_com_dados[-1]))
+        if ano not in anos_com_dados:
+            ano = anos_com_dados[-1]
+    except (ValueError, IndexError):
+        ano = ano_atual
+
+    try:
+        top_n = max(1, min(int(request.GET.get('top_n', 8)), 22))
     except ValueError:
         top_n = 8
 
-    def parse_lista(param, validos):
-        raw = request.GET.get(param, '')
-        parsed = [x.strip() for x in raw.split(',') if x.strip() in validos]
-        return parsed if parsed else None
+    passagens_ano = [p for p in passagens_todas if p.data.year == ano]
 
-    ctx_f  = parse_lista('contexto', DE.CONTEXT_WEIGHTS)
-    vei_f  = parse_lista('veiculo',  DE.VEHICLE_WEIGHTS)
-    est_f  = parse_lista('estado',   {k.upper(): v for k, v in DE.STATE_WEIGHTS.items()})
-    mensal = _co2e_mensal(ano, ctx_f, vei_f, est_f)
-    anual  = _co2e_anual(ctx_f, vei_f, est_f)
+    #  Sem dados reais: usa demonstrativo 
+    if not passagens_todas:
+        def parse_lista(param, validos):
+            raw = request.GET.get(param, '')
+            parsed = [x.strip() for x in raw.split(',') if x.strip() in validos]
+            return parsed if parsed else None
+
+        ctx_f = parse_lista('contexto', DE.CONTEXT_WEIGHTS)
+        vei_f = parse_lista('veiculo',  DE.VEHICLE_WEIGHTS)
+        est_f = parse_lista('estado',   {k.upper(): v for k, v in DE.STATE_WEIGHTS.items()})
+        ano_demo = ano if ano in DE.ANNUAL_TOTALS_KG else 2025
+        mensal = _co2e_mensal(ano_demo, ctx_f, vei_f, est_f)
+        anual  = _co2e_anual(ctx_f, vei_f, est_f)
+
+        empresa_perfil = {
+            'nome':           nome_empresa,
+            'cnpj':           cnpj,
+            'setor':          'Demonstrativo',
+            'frota_total':    0,
+            'contrato_desde': '',
+            'plano':          '',
+            'contato':        user.email if user else '',
+            'is_demo':        True,
+        }
+
+        MESES_LABEL_PT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
+        zeros = [0.0] * 12
+        return JsonResponse({
+            'empresa':               empresa_perfil,
+            'filtros_opcoes':        {'anos': [ano_atual], 'contextos': [{'valor': k, 'label': v} for k, v in DE.CONTEXT_LABELS.items()], 'veiculos': [{'valor': k, 'label': v} for k, v in DE.VEHICLE_LABELS.items()], 'estados': []},
+            'filtros_ativos':        {'ano': ano_atual, 'contextos': list(DE.CONTEXT_LABELS.keys()), 'veiculos': list(DE.VEHICLE_LABELS.keys()), 'estados': []},
+            'kpis': {
+                'co2e_evitado': {'valor_kg': 0, 'valor_ton': 0, 'trend_pct': 0, 'trend_dir': 'up'},
+                'passagens':    {'valor': 0, 'trend_pct': 0, 'trend_dir': 'up'},
+                'estados_ativos':   {'valor': 0, 'trend_abs': 0, 'trend_dir': 'up'},
+                'ranking_nacional': {'posicao': None, 'grupo': '', 'trend_abs': 0, 'trend_dir': 'up'},
+            },
+            'evolucao_mensal':       {'labels': MESES_LABEL_PT, 'ano': ano_atual, 'series_kg': zeros, 'total_kg': 0},
+            'evolucao_anual':        {'labels': [str(ano_atual)], 'series_kg': [0], 'series_ton': [0], 'metas_kg': [0]},
+            'distribuicao_contexto': {k: {'label': v, 'co2e_kg': 0, 'passagens': 0, 'pct': 0} for k, v in DE.CONTEXT_LABELS.items()},
+            'distribuicao_veiculo':  {k: {'label': v, 'co2e_kg': 0, 'pct': 0} for k, v in DE.VEHICLE_LABELS.items()},
+            'ranking_estados':       [],
+            'meta_vs_realizado':     {'meta_kg': 0, 'realizado_kg': 0, 'pct_atingido': 0, 'status': 'sem_dados'},
+            'equivalencias':         {'arvores_ano': 0, 'litros_gasolina': 0, 'papel_kg_total': 0, 'tempo_fila_horas': 0},
+            'ranking_mensal':        {'labels': MESES_LABEL_PT, 'series': []},
+        })
+
+    #  Com dados reais 
+    MESES_LABEL_PT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
+
+    # KPIs do ano selecionado
+    co2e_ano   = sum(p.co2e_total for p in passagens_ano)
+    pass_ano   = sum(p.quantidade for p in passagens_ano)
+
+    # KPIs do ano anterior (para trend)
+    ano_ant       = ano - 1
+    passagens_ant = [p for p in passagens_todas if p.data.year == ano_ant]
+    co2e_ant      = sum(p.co2e_total for p in passagens_ant)
+    pass_ant      = sum(p.quantidade for p in passagens_ant)
+
+    def trend_pct(atual, ant):
+        return round((atual - ant) / ant * 100, 1) if ant else 0
+
+    # Evolucao mensal do ano selecionado
+    mensal_real = [0.0] * 12
+    for p in passagens_ano:
+        mensal_real[p.data.month - 1] = round(mensal_real[p.data.month - 1] + p.co2e_total, 3)
+
+    # Evolucao anual
+    anual_real = {}
+    for p in passagens_todas:
+        anual_real[p.data.year] = round(anual_real.get(p.data.year, 0) + p.co2e_total, 3)
+    anos_ord = sorted(anual_real)
+
+    # Distribuicao por contexto (real)
+    ctx_totais = {}
+    ctx_pass   = {}
+    for p in passagens_ano:
+        ctx_totais[p.contexto] = round(ctx_totais.get(p.contexto, 0) + p.co2e_total, 3)
+        ctx_pass[p.contexto]   = ctx_pass.get(p.contexto, 0) + p.quantidade
+    total_ctx = sum(ctx_totais.values()) or 1
+    dist_ctx  = {
+        ctx: {
+            'label':     CALC_CONTEXTOS.get(ctx, {}).get('tempo_sem', ctx) and DE.CONTEXT_LABELS.get(ctx, ctx),
+            'co2e_kg':   round(v, 3),
+            'passagens': ctx_pass.get(ctx, 0),
+            'pct':       round(v / total_ctx * 100),
+        }
+        for ctx, v in ctx_totais.items()
+    }
+    # Garante todos os contextos
+    for ctx, lbl in DE.CONTEXT_LABELS.items():
+        if ctx not in dist_ctx:
+            dist_ctx[ctx] = {'label': lbl, 'co2e_kg': 0, 'passagens': 0, 'pct': 0}
+
+    # Distribuicao por veiculo (real)
+    vei_totais = {}
+    for p in passagens_ano:
+        t = p.veiculo.tipo
+        vei_totais[t] = round(vei_totais.get(t, 0) + p.co2e_total, 3)
+    total_vei = sum(vei_totais.values()) or 1
+    dist_vei  = {
+        vk: {
+            'label':   DE.VEHICLE_LABELS.get(vk, vk),
+            'co2e_kg': round(vei_totais.get(vk, 0), 3),
+            'pct':     round(vei_totais.get(vk, 0) / total_vei * 100) if vk in vei_totais else 0,
+        }
+        for vk in DE.VEHICLE_LABELS
+    }
+
+    # Equivalencias
+    equiv = {
+        'arvores_ano':      round(co2e_ano / 21.77) if co2e_ano else 0,
+        'litros_gasolina':  round(co2e_ano / 2.212) if co2e_ano else 0,
+        'papel_kg_total':   round(sum(
+            p.quantidade * CALC_CONTEXTOS.get(p.contexto, {}).get('papel_sem', 0) / 1000
+            for p in passagens_ano
+        ), 2),
+        'tempo_fila_horas': round(sum(
+            p.quantidade * (CALC_CONTEXTOS.get(p.contexto, {}).get('tempo_sem', 0) - CALC_CONTEXTOS.get(p.contexto, {}).get('tempo_com', 0)) / 60
+            for p in passagens_ano
+        ), 1),
+    }
+
+    # Frota ativa (veiculos distintos com passagens no ano)
+    frota_ativa = len({p.veiculo_id for p in passagens_ano})
+
+    empresa_perfil = {
+        'nome':           nome_empresa,
+        'cnpj':           cnpj,
+        'setor':          getattr(perfil, 'tipo_servico', '') or 'Empresa',
+        'frota_total':    frota_ativa,
+        'contrato_desde': '',
+        'plano':          '',
+        'contato':        user.email if user else '',
+        'is_demo':        False,
+    }
+
+    filtros_opcoes = {
+        'anos':      anos_com_dados,
+        'contextos': [{'valor': k, 'label': v} for k, v in DE.CONTEXT_LABELS.items()],
+        'veiculos':  [{'valor': k, 'label': v} for k, v in DE.VEHICLE_LABELS.items()],
+        'estados':   [],
+    }
 
     return JsonResponse({
-        'empresa':               DE.EMPRESA_PERFIL,
-        'filtros_opcoes':        DE.FILTROS_OPCOES,
-        'filtros_ativos':        {'ano': ano, 'contextos': ctx_f or list(DE.CONTEXT_WEIGHTS), 'veiculos': vei_f or list(DE.VEHICLE_WEIGHTS), 'estados': est_f or list(DE.STATE_WEIGHTS)},
-        'kpis':                  _kpis(ano, ctx_f, vei_f, est_f),
-        'evolucao_mensal':       {'labels': _MESES_LABEL, 'ano': ano, 'series_kg': mensal, 'total_kg': sum(mensal)},
-        'evolucao_anual':        {'labels': list(anual.keys()), 'series_kg': list(anual.values()), 'series_ton': [round(v / 1000, 2) for v in anual.values()], 'metas_kg': [DE.METAS_ANUAIS_KG.get(a, 0) for a in anual]},
-        'distribuicao_contexto': _distribuicao_contexto(ano, vei_f, est_f),
-        'distribuicao_veiculo':  _distribuicao_veiculo(ano, ctx_f, est_f),
-        'ranking_estados':       _ranking_estados(ano, ctx_f, top_n),
-        'meta_vs_realizado':     _meta_vs_realizado(ano),
-        'equivalencias':         DE.EQUIVALENCIAS_2025 if ano == 2025 else {'arvores_ano': round(DE.ANNUAL_TOTALS_KG.get(ano, 0) / 21.77), 'litros_gasolina': round(DE.ANNUAL_TOTALS_KG.get(ano, 0) / 2.212), 'papel_kg_total': round(DE.ANNUAL_PASSAGENS.get(ano, 0) * 0.00455), 'tempo_fila_horas': round(DE.ANNUAL_PASSAGENS.get(ano, 0) * 3 / 60 * 0.62)},
-        'ranking_mensal':        {'labels': _MESES_LABEL, 'series': DE.RANKING_MENSAL_2025 if ano == 2025 else []},
+        'empresa':               empresa_perfil,
+        'filtros_opcoes':        filtros_opcoes,
+        'filtros_ativos':        {'ano': ano, 'contextos': list(dist_ctx.keys()), 'veiculos': list(dist_vei.keys()), 'estados': []},
+        'kpis': {
+            'co2e_evitado': {
+                'valor_kg':  round(co2e_ano, 3),
+                'valor_ton': round(co2e_ano / 1000, 3),
+                'trend_pct': trend_pct(co2e_ano, co2e_ant),
+                'trend_dir': 'up' if co2e_ano >= co2e_ant else 'down',
+            },
+            'passagens': {
+                'valor':     pass_ano,
+                'trend_pct': trend_pct(pass_ano, pass_ant),
+                'trend_dir': 'up' if pass_ano >= pass_ant else 'down',
+            },
+            'estados_ativos':   {'valor': 1, 'trend_abs': 0, 'trend_dir': 'up'},
+            'ranking_nacional': {'posicao': None, 'grupo': '', 'trend_abs': 0, 'trend_dir': 'up'},
+        },
+        'evolucao_mensal':       {'labels': MESES_LABEL_PT, 'ano': ano, 'series_kg': mensal_real, 'total_kg': sum(mensal_real)},
+        'evolucao_anual':        {'labels': [str(a) for a in anos_ord], 'series_kg': [anual_real[a] for a in anos_ord], 'series_ton': [round(anual_real[a]/1000, 3) for a in anos_ord], 'metas_kg': [0]*len(anos_ord)},
+        'distribuicao_contexto': dist_ctx,
+        'distribuicao_veiculo':  dist_vei,
+        'ranking_estados':       [],
+        'meta_vs_realizado':     {'meta_kg': 0, 'realizado_kg': round(co2e_ano, 3), 'pct_atingido': 0, 'status': 'em_progresso'},
+        'equivalencias':         equiv,
+        'ranking_mensal':        {'labels': MESES_LABEL_PT, 'series': []},
+    })
+
+# =============================================================================
+# Taggy Seeds — Retrospectiva Anual (US2)
+# =============================================================================
+
+from django.contrib.auth.decorators import login_required
+
+_MESES_ABREV = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
+
+# MOCK_SEEDS removido — sem dados fictícios
+
+
+def _calcular_nivel(co2e_kg):
+    if co2e_kg < 50:
+        return {'nome': 'Iniciante', 'pontos': int(co2e_kg * 2), 'pontos_para_proximo': int((50 - co2e_kg) * 2),
+                'medalhas': [{'icone': 'bolt', 'ativo': True}, {'icone': 'star', 'ativo': False}, {'icone': 'forest', 'ativo': False}, {'icone': 'military_tech', 'ativo': False}]}
+    elif co2e_kg < 150:
+        pts = int(co2e_kg * 2)
+        return {'nome': 'Intermediário', 'pontos': pts, 'pontos_para_proximo': int((150 - co2e_kg) * 2),
+                'medalhas': [{'icone': 'bolt', 'ativo': True}, {'icone': 'star', 'ativo': True}, {'icone': 'forest', 'ativo': False}, {'icone': 'military_tech', 'ativo': False}]}
+    elif co2e_kg < 500:
+        pts = int(co2e_kg * 2)
+        return {'nome': 'Avançado', 'pontos': pts, 'pontos_para_proximo': int((500 - co2e_kg) * 2),
+                'medalhas': [{'icone': 'bolt', 'ativo': True}, {'icone': 'star', 'ativo': True}, {'icone': 'forest', 'ativo': True}, {'icone': 'military_tech', 'ativo': False}]}
+    else:
+        pts = int(co2e_kg * 2)
+        return {'nome': 'Eco Master', 'pontos': pts, 'pontos_para_proximo': 0,
+                'medalhas': [{'icone': 'bolt', 'ativo': True}, {'icone': 'star', 'ativo': True}, {'icone': 'forest', 'ativo': True}, {'icone': 'military_tech', 'ativo': True}]}
+
+
+@login_required
+def taggy_seeds(request):
+    tipo = _get_tipo(request.user)
+    nome = request.user.first_name or request.user.email.split('@')[0]
+    return render(request, 'taggy_seeds.html', {
+        'nome_usuario': nome,
+        'tipo_usuario': tipo,
+    })
+
+
+@login_required
+@require_GET
+def api_taggy_seeds(request):
+    """
+    Retrospectiva anual real do usuário logado.
+    Usa exclusivamente dados do modelo Passagem — sem fallback mockado.
+    Retorna zeros quando o usuário não tem passagens (exibe estado vazio honesto).
+    """
+    import datetime
+    user = request.user
+    ano  = datetime.date.today().year
+    nome = user.first_name or user.email.split('@')[0]
+
+    # Todas as passagens do ano atual
+    # Empresa: passagens onde empresa=user (registradas pela empresa)
+    # Pessoa:  passagens onde usuario=user
+    tipo = _get_tipo(user)
+    if tipo == 'empresa':
+        passagens_qs = list(
+            Passagem.objects
+            .filter(empresa=user, data__year=ano)
+            .select_related('veiculo')
+        )
+        # Se nao houver passagens como empresa, tenta como usuario normal
+        if not passagens_qs:
+            passagens_qs = list(
+                Passagem.objects
+                .filter(usuario=user, data__year=ano)
+                .select_related('veiculo')
+            )
+    else:
+        passagens_qs = list(
+            Passagem.objects
+            .filter(usuario=user, data__year=ano)
+            .select_related('veiculo')
+        )
+
+    #  Acumuladores 
+    total_passagens = 0
+    total_co2e      = 0.0   # kg
+    total_tempo_min = 0.0   # minutos poupados
+    total_papeis    = 0.0   # folhas evitadas
+    co2e_por_mes    = [0.0] * 12
+
+    for p in passagens_qs:
+        qtd  = p.quantidade
+        co2e = float(p.co2e_por_passagem) * qtd
+        total_passagens += qtd
+        total_co2e      += co2e
+
+        co2e_por_mes[p.data.month - 1] += co2e
+
+        ctx = CALC_CONTEXTOS.get(p.contexto, {})
+        # minutos poupados por não ficar na fila
+        total_tempo_min += (ctx.get('tempo_sem', 0) - ctx.get('tempo_com', 0)) * qtd
+        # papéis evitados (tickets físicos por passagem)
+        total_papeis    += ctx.get('papel_sem', 0) * qtd
+
+    #  Equivalências ambientais 
+    # 1 árvore absorve ~21,77 kg CO2/ano  (fonte: metodologia TagGreen)
+    arvores     = round(total_co2e / 21.77, 1) if total_co2e else 0
+    # 1 litro de gasolina emite ~2,212 kg CO2e
+    combustivel = round(total_co2e / 2.212, 1) if total_co2e else 0
+    tempo_horas = round(total_tempo_min / 60, 2)
+    papeis      = round(total_papeis, 1)
+
+    #  Comparativo dos dois últimos meses com passagens 
+    meses_com_dados = [(i, round(v, 3)) for i, v in enumerate(co2e_por_mes) if v > 0]
+
+    if len(meses_com_dados) >= 2:
+        mes_ant_idx, mes_ant_co2e = meses_com_dados[-2]
+        mes_at_idx,  mes_at_co2e  = meses_com_dados[-1]
+        if mes_at_co2e < mes_ant_co2e:
+            mensagem = 'Você reduziu ainda mais! '
+        elif mes_at_co2e == mes_ant_co2e:
+            mensagem = 'Consistência é o que importa!'
+        else:
+            mensagem = 'Você está crescendo! Continue assim!'
+        comparativo = {
+            'mes_anterior_label': _MESES_ABREV[mes_ant_idx],
+            'mes_atual_label':    _MESES_ABREV[mes_at_idx],
+            'mes_anterior_co2e':  mes_ant_co2e,
+            'mes_atual_co2e':     mes_at_co2e,
+            'mensagem':           mensagem,
+        }
+    elif len(meses_com_dados) == 1:
+        idx, val = meses_com_dados[0]
+        comparativo = {
+            'mes_anterior_label': _MESES_ABREV[idx],
+            'mes_atual_label':    _MESES_ABREV[idx],
+            'mes_anterior_co2e':  val,
+            'mes_atual_co2e':     val,
+            'mensagem':           'Seu primeiro mês registrado! ',
+        }
+    else:
+        # Sem passagens ainda
+        mes_atual = datetime.date.today().month - 1
+        comparativo = {
+            'mes_anterior_label': _MESES_ABREV[mes_atual - 1] if mes_atual > 0 else _MESES_ABREV[11],
+            'mes_atual_label':    _MESES_ABREV[mes_atual],
+            'mes_anterior_co2e':  0,
+            'mes_atual_co2e':     0,
+            'mensagem':           'Registre passagens para ver seu comparativo!',
+        }
+
+    #  Nível e medalhas 
+    nivel = _calcular_nivel(total_co2e)
+
+    return JsonResponse({
+        'usuario': {'nome': nome},
+        'ano':     ano,
+        'total': {
+            'co2e_kg':           round(total_co2e, 3),
+            'passagens':         total_passagens,
+            'combustivel_litros': combustivel,
+            'tempo_horas':       tempo_horas,
+            'papeis_evitados':   papeis,
+            'arvores':           arvores,
+        },
+        'comparativo_mensal': comparativo,
+        'nivel': nivel,
     })

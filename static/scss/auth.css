@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,-50..200&icon_names=add,arrow_forward,auto_awesome,bolt,business,calculate,check_circle,close,delete,description,directions_car,download,eco,edit,electric_car,emoji_events,error,expand_less,expand_more,filter_list,forest,info,insert_chart,local_gas_station,local_parking,local_shipping,location_on,lock,login,logout,mail,person,phone,receipt,schedule,search,security,shield,speed,trending_down,trending_up,tune,two_wheeler,visibility,visibility_off,volume_off,warning_amber");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,-50..200&icon_names=add,arrow_forward,auto_awesome,bolt,business,calculate,check_circle,close,delete,description,directions_car,download,eco,edit,electric_car,emoji_events,error,expand_less,expand_more,filter_list,forest,info,insert_chart,local_gas_station,local_parking,local_shipping,location_on,lock,login,logout,mail,military_tech,person,phone,receipt,schedule,search,security,share,shield,speed,star,trending_down,trending_up,tune,two_wheeler,visibility,visibility_off,volume_off,warning_amber");
 * {
   margin: 0;
   padding: 0;
@@ -386,5 +386,11 @@ body {
       color: #2E7D32; }
   .auth-footer span {
     margin: 0 0.6rem; }
+
+.form-field:has(.form-input--has-toggle) > .form-field__icon {
+  display: none; }
+
+.form-field:has(.form-input--has-toggle) .form-input--has-toggle {
+  padding-left: 1.6rem; }
 
 /*# sourceMappingURL=auth.css.map */
