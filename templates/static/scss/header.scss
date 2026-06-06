@@ -1,0 +1,344 @@
+// =============================================
+// TagGreen — Layout compartilhado
+// Header · Nav · Auth · Footer · .btn · .container
+//
+// NÃO importa 'global'/'variables'/'utils':
+// o arquivo pai (home.scss, historico.scss, …)
+// deve importá-los ANTES de @import 'header'.
+// =============================================
+
+// ── Feedback ─────────────────────────────────
+div.sucesso, div.erro, div.info {
+  @include border-radius(1rem);
+  @include padding(1rem, 2rem, 1rem, 2rem);
+  font-weight: $fw-bold;
+  width: 100%;
+  text-align: center;
+}
+div.sucesso { color: $color-text-dark; background: #2ff15d; }
+div.erro    { color: $color-white;     background: #e71717; }
+div.info    { color: $color-text-dark; background: #0aa2e9; }
+
+// ── Container ─────────────────────────────────
+.container { max-width: 120rem; margin: 0 auto; padding: 0 3.2rem; }
+
+// =============================================
+// HEADER
+// =============================================
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  height: 6.8rem;
+  background-color: $color-white;
+  border-bottom: 0.1rem solid $color-border;
+  box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.08);
+
+  &__inner {
+    @include display-flex($justify-content: space-between, $gap: 0);
+    max-width: 120rem;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 3.2rem;
+  }
+
+  // ── Área de auth ─────────────────────────────
+  &__auth {
+    @include display-flex($gap: 0.8rem);
+    flex-shrink: 0;
+  }
+
+  &__user {
+    @include display-flex($gap: 0.8rem);
+    margin-right: 0.2rem;
+  }
+
+  &__user-avatar {
+    @include display-flex($gap: 0);
+    @include border-radius(9999px);
+    flex-shrink: 0;
+    width: 3.2rem;
+    height: 3.2rem;
+    background-color: $color-primary;
+    color: $color-white;
+    font-family: $font-primary;
+    font-size: 1.15rem;
+    font-weight: $fw-bold;
+    letter-spacing: 0.03em;
+  }
+
+  &__user-name {
+    font-family: $font-primary;
+    font-size: 1.4rem;
+    font-weight: $fw-semibold;
+    color: $color-text-dark;
+  }
+}
+
+// ── Logo ─────────────────────────────────────
+.logo {
+  @include display-flex($gap: 0);
+  img { height: 3.6rem; width: auto; display: block; }
+}
+.logo--light img { filter: brightness(0) invert(1); }
+
+// ── Nav ──────────────────────────────────────
+.nav {
+  &__list { @include display-flex($gap: 0.4rem); }
+  &__link {
+    @include display-flex($gap: 0);
+    @include padding(0.8rem, 1.6rem, 0.8rem, 1.6rem);
+    @include border-radius(9999px);
+    @include transition(color, 0.15s, ease-in-out);
+    font-family: $font-primary;
+    font-size: 1.4rem;
+    font-weight: $fw-medium;
+    color: $color-text-body;
+    &:hover { color: $color-primary; background-color: rgba($color-primary-light, 0.08); }
+    &--active {
+      color: $color-primary-dark;
+      background-color: rgba(#76C442, 0.18);
+      font-weight: $fw-semibold;
+      &:hover { background-color: rgba(#76C442, 0.26); }
+    }
+    // Variante pill para "Empresas"
+    &--pill {
+      background-color: rgba($color-accent, 0.12);
+      color: $color-primary-dark;
+      font-weight: $fw-semibold;
+      &:hover { background-color: rgba($color-accent, 0.22); color: $color-primary-dark; }
+    }
+    &--pill-active {
+      background-color: $color-accent;
+      color: $color-white;
+      font-weight: $fw-semibold;
+      &:hover { background-color: darken($color-accent, 6%); color: $color-white; }
+    }
+  }
+}
+
+// ── Hamburger ─────────────────────────────────
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.8rem;
+  span {
+    display: block;
+    width: 2.2rem;
+    height: 0.2rem;
+    background-color: $color-text-dark;
+    @include border-radius(9999px);
+    @include transition(transform, 0.25s, ease-in-out);
+  }
+  &.is-open {
+    span:nth-child(1) { transform: translateY(0.7rem) rotate(45deg); }
+    span:nth-child(2) { opacity: 0; }
+    span:nth-child(3) { transform: translateY(-0.7rem) rotate(-45deg); }
+  }
+}
+
+// ── Breakpoint ≤ 1100px ───────────────────────
+@media (max-width: 1100px) {
+  .header__user-name { display: none; }
+
+  .hamburger { display: flex; }
+
+  .nav {
+    display: none;
+    position: absolute;
+    top: 6.8rem;
+    left: 0; right: 0;
+    z-index: 101;
+    background-color: $color-white;
+    border-bottom: 0.1rem solid $color-border;
+    padding: 1.6rem 3.2rem;
+    box-shadow: 0 0.4rem 1.6rem rgba(0, 0, 0, 0.10);
+    &.is-open { display: block; }
+    &__list { @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 0.4rem); }
+    &__link { width: 100%; }
+  }
+}
+
+// =============================================
+// AUTH BUTTONS  (.hbtn)
+// Antes viviam como <style> inline no _header.html
+// =============================================
+.hbtn {
+  @include display-flex($gap: 0.6rem);
+  height: 3.6rem;
+  padding: 0 2rem;
+  @include border-radius(9999px);
+  @include transition(all, 0.18s, ease-in-out);
+  font-family: $font-primary;
+  font-size: 1.4rem;
+  font-weight: $fw-semibold;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  appearance: none;
+  -webkit-appearance: none;
+
+  // "Entrar"
+  &--outline {
+    background-color: $color-white;
+    border: 0.2rem solid $color-primary;
+    color: $color-primary;
+    &:hover { background-color: $color-primary; color: $color-white; }
+  }
+
+  // "Meu Dashboard" / "Cadastrar"
+  &--solid {
+    background-color: $color-primary;
+    border: 0.2rem solid transparent;
+    color: $color-white;
+    box-shadow: 0 2px 10px rgba(46,125,50,0.28);
+    &:hover { background-color: $color-primary-dark; box-shadow: 0 4px 14px rgba(46,125,50,0.38); transform: translateY(-1px); }
+    &:active { transform: translateY(0); }
+  }
+
+  // "Sair" — texto discreto, sem aparência de botão
+  &--ghost {
+    height: auto;          // reset do height: 3.6rem do .hbtn base
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0 0.8rem;
+    color: $color-text-muted;
+    font-size: 1.3rem;
+    font-weight: $fw-medium;
+    &:hover { color: $color-danger; background: none; }
+  }
+}
+
+// =============================================
+// BOTÕES COMPARTILHADOS  (.btn)
+// =============================================
+.btn {
+  @include display-flex($gap: 0.8rem);
+  @include padding(1.4rem, 2.8rem, 1.4rem, 2.8rem);
+  @include border-radius(9999px);
+  @include transition(all, 0.2s, ease-in-out);
+  font-family: $font-primary;
+  font-size: 1.5rem;
+  font-weight: $fw-semibold;
+  cursor: pointer;
+  white-space: nowrap;
+  border: none;
+  .material-symbols-outlined { font-size: 1.8rem; }
+
+  &--primary {
+    background-color: $color-primary;
+    color: $color-white;
+    &:hover { background-color: $color-primary-dark; @include transform-scale(1.02); }
+  }
+  &--outline {
+    background-color: transparent;
+    color: $color-text-dark;
+    border: 0.15rem solid $color-border;
+    &:hover { border-color: $color-primary; color: $color-primary; background-color: rgba($color-primary-light, 0.05); }
+  }
+  &--calc {
+    width: 100%;
+    justify-content: center;
+    background: linear-gradient(90deg, $color-primary 0%, $color-primary-light 100%);
+    color: $color-white;
+    font-size: 1.6rem;
+    @include padding(1.6rem, 2.8rem, 1.6rem, 2.8rem);
+    @include border-radius(1.2rem);
+    margin-top: 0.8rem;
+    &:hover { background: linear-gradient(90deg, $color-primary-dark 0%, $color-primary 100%); @include transform-scale(1.01); }
+  }
+  &--cta-light {
+    @include padding(1.1rem, 2rem, 1.1rem, 2rem);
+    background-color: $color-white;
+    color: $color-primary-dark;
+    font-size: 1.4rem;
+    &:hover { background-color: rgba($color-white, 0.9); @include transform-scale(1.02); }
+  }
+  &--cta-blue {
+    @include padding(1.1rem, 2rem, 1.1rem, 2rem);
+    background-color: $color-blue;
+    color: $color-white;
+    font-size: 1.4rem;
+    &:hover { background-color: darken($color-blue, 8%); @include transform-scale(1.02); }
+  }
+}
+
+// =============================================
+// FOOTER
+// =============================================
+.footer {
+  background-color: $color-card-dark;
+  padding: 6rem 3.2rem 0;
+
+  &__inner {
+    @include display-flex($justify-content: space-between, $align-items: flex-start, $gap: 4rem);
+    max-width: 120rem;
+    margin: 0 auto;
+    padding-bottom: 5rem;
+    border-bottom: 0.1rem solid $color-card-border;
+  }
+
+  &__brand {
+    @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1.6rem);
+    max-width: 26rem;
+    flex-shrink: 0;
+  }
+
+  &__tagline { font-size: 1.4rem; color: rgba($color-white, 0.55); line-height: 1.7; }
+
+  &__col {
+    @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1.6rem);
+    min-width: 14rem;
+  }
+
+  &__col-title {
+    font-family: $font-primary;
+    font-size: 1.1rem;
+    font-weight: $fw-semibold;
+    letter-spacing: 0.1em;
+    color: rgba($color-white, 0.4);
+  }
+
+  &__links {
+    @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1.2rem);
+    li a, li span {
+      font-size: 1.4rem;
+      color: rgba($color-white, 0.7);
+      @include transition(color, 0.15s, ease-in-out);
+      &:hover { color: $color-white; }
+    }
+    &--contact li {
+      @include display-flex($justify-content: flex-start, $gap: 0.8rem);
+      .material-symbols-outlined { font-size: 1.6rem; color: rgba($color-white, 0.4); flex-shrink: 0; }
+    }
+  }
+
+  &__bottom {
+    @include display-flex($justify-content: space-between, $gap: 0);
+    max-width: 120rem;
+    margin: 0 auto;
+    padding: 2.4rem 0;
+    font-size: 1.3rem;
+    color: rgba($color-white, 0.35);
+  }
+
+  &__bottom-links {
+    @include display-flex($gap: 2.4rem);
+    a { font-size: 1.3rem; color: rgba($color-white, 0.35); @include transition(color, 0.15s, ease-in-out); &:hover { color: rgba($color-white, 0.7); } }
+  }
+}
+
+@media (max-width: 900px) {
+  .footer { &__inner { flex-wrap: wrap; gap: 3.2rem; } &__brand { max-width: 100%; } }
+}
+@media (max-width: 560px) {
+  .footer { padding: 4rem 1.6rem 0; }
+  .footer__bottom { flex-direction: column; align-items: center; gap: 1.2rem; text-align: center; }
+}

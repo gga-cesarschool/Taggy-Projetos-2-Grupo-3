@@ -1,0 +1,188 @@
+{% load static sass_tags %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Histórico de Atividades — TagGreen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="{% sass_src 'scss/historico.scss' %}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+{% include 'parciais/_header.html' %}
+
+<main class="hist-main">
+  <div class="hist-container">
+
+    <!-- ── Cabeçalho da página ──────────────────────────────── -->
+    <div class="hist-page-header">
+      <a href="{% url 'meu_impacto' %}" class="hist-back-btn" title="Voltar">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </a>
+      <div class="hist-page-header__text">
+        <h1 class="hist-title">Histórico de Atividades</h1>
+        <p class="hist-subtitle">Acompanhe seu impacto ao longo do tempo</p>
+      </div>
+      <button class="hist-empty-btn" id="hist-ver-conquistas" title="Ver todas as conquistas">
+        Ver conquistas
+      </button>
+    </div>
+
+    <!-- ── KPI Cards ────────────────────────────────────────── -->
+    <div class="hist-kpis" id="hist-kpis">
+      <!-- Card 1 -->
+      <div class="hist-kpi">
+        <div class="hist-kpi__top">
+          <span class="hist-kpi__icon hist-kpi__icon--green">
+            <span class="material-symbols-outlined">eco</span>
+          </span>
+          <span class="hist-kpi__badge" id="kpi-periodo-label">este mês</span>
+        </div>
+        <div class="hist-kpi__value" id="kpi-co2e">—</div>
+        <div class="hist-kpi__label">CO₂e evitado</div>
+      </div>
+      <!-- Card 2 -->
+      <div class="hist-kpi">
+        <div class="hist-kpi__top">
+          <span class="hist-kpi__icon hist-kpi__icon--blue">
+            <span class="material-symbols-outlined">receipt</span>
+          </span>
+          <span class="hist-kpi__badge" id="kpi-passagens-badge">este mês</span>
+        </div>
+        <div class="hist-kpi__value" id="kpi-passagens">—</div>
+        <div class="hist-kpi__label">Passagens registradas</div>
+      </div>
+      <!-- Card 3 -->
+      <div class="hist-kpi">
+        <div class="hist-kpi__top">
+          <span class="hist-kpi__icon hist-kpi__icon--orange">
+            <span class="material-symbols-outlined">schedule</span>
+          </span>
+          <span class="hist-kpi__badge" id="kpi-tempo-badge">este mês</span>
+        </div>
+        <div class="hist-kpi__value" id="kpi-tempo">—</div>
+        <div class="hist-kpi__label">Tempo economizado</div>
+      </div>
+      <!-- Card 4 -->
+      <div class="hist-kpi">
+        <div class="hist-kpi__top">
+          <span class="hist-kpi__icon hist-kpi__icon--teal">
+            <span class="material-symbols-outlined">star</span>
+          </span>
+          <span class="hist-kpi__badge">all-time</span>
+        </div>
+        <div class="hist-kpi__value" id="kpi-mes-sustentavel">—</div>
+        <div class="hist-kpi__label">Mês mais sustentável</div>
+      </div>
+    </div>
+
+    <!-- ── Card de Nível ────────────────────────────────────── -->
+    <div class="hist-nivel-card" id="hist-nivel-card">
+      <div class="hist-nivel__left">
+        <div class="hist-nivel__icon">
+          <span class="material-symbols-outlined">workspace_premium</span>
+        </div>
+        <div class="hist-nivel__info">
+          <span class="hist-nivel__eyebrow">Nível atual</span>
+          <span class="hist-nivel__name" id="nivel-nome">Carregando…</span>
+        </div>
+      </div>
+      <div class="hist-nivel__center">
+        <div class="hist-nivel__prog-top">
+          <span id="nivel-prox-label">Progresso para o próximo nível</span>
+          <span class="hist-nivel__prog-pct" id="nivel-pct">0%</span>
+        </div>
+        <div class="hist-nivel__bar">
+          <div class="hist-nivel__bar-fill" id="nivel-bar" style="width:0%"></div>
+        </div>
+        <div class="hist-nivel__faltam" id="nivel-faltam"></div>
+      </div>
+      <button class="hist-nivel__btn" id="hist-ver-conquistas-2">
+        <span class="material-symbols-outlined">emoji_events</span>
+        Ver conquistas
+      </button>
+    </div>
+
+    <!-- ── Filtros ───────────────────────────────────────────── -->
+    <div class="hist-filters">
+      <!-- Período -->
+      <div class="hist-filter-group">
+        <span class="hist-filter-label">Período</span>
+        <div class="hist-filter-tabs">
+          <button class="hist-tab hist-tab--active" data-periodo="mes">Este mês</button>
+          <button class="hist-tab" data-periodo="trimestre">Últimos 3 meses</button>
+          <button class="hist-tab" data-periodo="ano">Este ano</button>
+          <button class="hist-tab" data-periodo="personalizado">Personalizado</button>
+        </div>
+      </div>
+      <!-- Intervalo personalizado -->
+      <div class="hist-date-range" id="hist-date-range" hidden>
+        <input type="date" id="hist-date-start" class="hist-date-input">
+        <span class="hist-date-sep">até</span>
+        <input type="date" id="hist-date-end" class="hist-date-input">
+        <button class="hist-apply-btn" id="hist-apply-dates">Aplicar</button>
+      </div>
+      <!-- Tipo -->
+      <div class="hist-filter-group">
+        <span class="hist-filter-label">Tipo</span>
+        <div class="hist-filter-tabs">
+          <button class="hist-tab hist-tab--active" data-tipo="todos">
+            <span class="material-symbols-outlined">tune</span>Todos
+          </button>
+          <button class="hist-tab" data-tipo="pedagio">
+            <span class="material-symbols-outlined">directions_car</span>Pedágio
+          </button>
+          <button class="hist-tab" data-tipo="estacionamento">
+            <span class="material-symbols-outlined">local_parking</span>Estacionamento
+          </button>
+          <button class="hist-tab" data-tipo="acesso_controlado">
+            <span class="material-symbols-outlined">security</span>Acesso Controlado
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Busca ─────────────────────────────────────────────── -->
+    <div class="hist-search-wrap">
+      <span class="material-symbols-outlined hist-search-icon">search</span>
+      <input type="text" id="hist-search" class="hist-search-input"
+             placeholder="Buscar por empresa ou local…">
+    </div>
+
+    <!-- ── Lista de atividades ──────────────────────────────── -->
+    <div class="hist-list-header">
+      <h2 class="hist-list-title">Suas atividades</h2>
+      <span class="hist-list-count" id="hist-list-count">— registros</span>
+    </div>
+    <div class="hist-list" id="hist-list">
+      <div class="hist-loading">
+        <span class="material-symbols-outlined hist-loading__icon">history</span>
+        <span class="hist-loading__title">Carregando atividades…</span>
+      </div>
+    </div>
+
+  </div><!-- /hist-container -->
+</main>
+
+<!-- ── Modal de Conquistas ──────────────────────────────── -->
+<div class="hist-modal" id="hist-modal" hidden>
+  <div class="hist-modal__card">
+    <div class="hist-modal__head">
+      <span>Suas Conquistas</span>
+      <button id="hist-modal-close" aria-label="Fechar">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="hist-modal__body" id="hist-modal-body"></div>
+  </div>
+</div>
+
+{% include 'parciais/_footer.html' %}
+
+<script>window._CSRF = '{{ csrf_token }}';</script>
+<script src="{% static 'js/historico.js' %}"></script>
+</body>
+</html>
