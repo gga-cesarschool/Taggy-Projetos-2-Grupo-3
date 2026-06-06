@@ -169,7 +169,366 @@
           </div>
         </div>
       </section>
+<!-- Ranking de Usuários -->
+<section class="ranking-section">
+  <div class="ranking-header">
+    <div>
+      <h2 class="ranking-titulo">🏆 Ranking de Impacto</h2>
+      <p class="ranking-subtitulo">Compare seu impacto ambiental com outros usuários e veja sua posição</p>
+    </div>
+    <div class="ranking-filtros">
+      <button class="ranking-filtro-btn ranking-filtro-btn--ativo" data-periodo="mes">Este mês</button>
+      <button class="ranking-filtro-btn" data-periodo="trimestre">Últimos 3 meses</button>
+      <button class="ranking-filtro-btn" data-periodo="ano">Este ano</button>
+    </div>
+  </div>
 
+  <!-- Card da posição do usuário -->
+  <div class="ranking-hero">
+    <div class="ranking-hero__left">
+      <div class="ranking-hero__avatar" id="ranking-avatar">VC</div>
+      <div>
+        <p class="ranking-hero__label">SUA POSIÇÃO</p>
+        <p class="ranking-hero__posicao"><span id="ranking-posicao-num">#—</span> no ranking</p>
+        <p class="ranking-hero__co2">Você evitou <span id="ranking-hero-co2">0</span> kg de CO₂</p>
+      </div>
+    </div>
+    <div class="ranking-hero__nivel" id="ranking-hero-nivel">Eco+</div>
+
+    <div class="ranking-hero__stats">
+      <div class="ranking-hero__stat">
+        <span class="ranking-hero__stat-label">TEMPO ECONOMIZADO</span>
+        <span class="ranking-hero__stat-val" id="ranking-tempo">— min</span>
+      </div>
+      <div class="ranking-hero__stat">
+        <span class="ranking-hero__stat-label">PASSAGENS SUSTENTÁVEIS</span>
+        <span class="ranking-hero__stat-val" id="ranking-passagens">—</span>
+      </div>
+    </div>
+
+    <div class="ranking-hero__progress-wrap">
+      <span class="ranking-hero__progress-label" id="ranking-progress-label">Progresso para a posição acima</span>
+      <span class="ranking-hero__progress-falta" id="ranking-falta"></span>
+    </div>
+    <div class="ranking-hero__progress-bar">
+      <div class="ranking-hero__progress-fill" id="ranking-progress-fill" style="width:0%"></div>
+    </div>
+
+    <p class="ranking-hero__msg">Continue usando a TagGreen. Cada passagem ajuda você a subir no ranking e aumentar seu impacto positivo.</p>
+  </div>
+
+  <!-- Lista de classificação -->
+  <div class="ranking-lista-wrap">
+    <div class="ranking-lista-header">
+      <span class="ranking-lista-titulo">Classificação geral</span>
+      <span class="ranking-lista-total" id="ranking-lista-total">— usuários</span>
+    </div>
+    <ul class="ranking-lista" id="ranking-lista">
+      <li class="ranking-lista__loading">Carregando ranking...</li>
+    </ul>
+  </div>
+
+</section>
+
+<style>
+  .ranking-section { margin-top: 3.2rem; }
+
+  /* Header */
+  .ranking-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.6rem;
+    margin-bottom: 2rem;
+  }
+  .ranking-titulo {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1A2E1A;
+    margin: 0;
+  }
+  .ranking-subtitulo {
+    font-size: 1.3rem;
+    color: #718096;
+    margin: .4rem 0 0;
+  }
+
+  /* Filtros */
+  .ranking-filtros {
+    display: flex;
+    gap: .8rem;
+    background: #f4faf4;
+    border: .15rem solid #c8e6c9;
+    border-radius: 9999px;
+    padding: .4rem;
+  }
+  .ranking-filtro-btn {
+    padding: .6rem 1.6rem;
+    border-radius: 9999px;
+    border: none;
+    background: none;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #4A5568;
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  .ranking-filtro-btn--ativo {
+    background: #fff;
+    color: #1A2E1A;
+    box-shadow: 0 .1rem .4rem rgba(0,0,0,.1);
+  }
+
+  /* Hero card */
+  .ranking-hero {
+    background: linear-gradient(135deg, #1B5E20, #2E7D32, #1A3A1A);
+    border-radius: 2rem;
+    padding: 2.8rem;
+    color: #fff;
+    margin-bottom: 2rem;
+  }
+  .ranking-hero__left {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+    margin-bottom: 2rem;
+  }
+  .ranking-hero__avatar {
+    width: 5.6rem;
+    height: 5.6rem;
+    border-radius: 1.2rem;
+    background: rgba(255,255,255,.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .ranking-hero__label {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    color: rgba(255,255,255,.6);
+    margin: 0 0 .4rem;
+  }
+  .ranking-hero__posicao {
+    font-size: 3.2rem;
+    font-weight: 800;
+    margin: 0;
+    line-height: 1;
+  }
+  .ranking-hero__co2 {
+    font-size: 1.3rem;
+    color: rgba(255,255,255,.7);
+    margin: .4rem 0 0;
+  }
+  .ranking-hero__nivel {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .5rem 1.4rem;
+    border-radius: 9999px;
+    background: rgba(255,255,255,.15);
+    border: .1rem solid rgba(255,255,255,.3);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 2rem;
+  }
+  .ranking-hero__stats {
+    display: flex;
+    gap: 3.2rem;
+    margin-bottom: 2rem;
+  }
+  .ranking-hero__stat {
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+  }
+  .ranking-hero__stat-label {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    color: rgba(255,255,255,.6);
+  }
+  .ranking-hero__stat-val {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+  }
+  .ranking-hero__progress-wrap {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: .8rem;
+  }
+  .ranking-hero__progress-label {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,.7);
+  }
+  .ranking-hero__progress-falta {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #76C442;
+  }
+  .ranking-hero__progress-bar {
+    height: .8rem;
+    background: rgba(255,255,255,.2);
+    border-radius: 9999px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+  .ranking-hero__progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #76C442, #A8E063);
+    border-radius: 9999px;
+    transition: width .6s ease;
+  }
+  .ranking-hero__msg {
+    font-size: 1.3rem;
+    color: rgba(255,255,255,.6);
+    margin: 0;
+  }
+
+  /* Lista */
+  .ranking-lista-wrap {
+    background: #fff;
+    border: .15rem solid #E2E8F0;
+    border-radius: 1.6rem;
+    padding: 2rem 2.4rem;
+  }
+  .ranking-lista-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.6rem;
+  }
+  .ranking-lista-titulo {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #1A2E1A;
+  }
+  .ranking-lista-total {
+    font-size: 1.3rem;
+    color: #718096;
+  }
+  .ranking-lista {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .8rem;
+  }
+  .ranking-lista__loading {
+    font-size: 1.35rem;
+    color: #718096;
+    font-style: italic;
+  }
+
+  /* Item da lista */
+  .ranking-item {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.2rem 1.6rem;
+    border-radius: 1.2rem;
+    border: .15rem solid #E2E8F0;
+    position: relative;
+    overflow: hidden;
+  }
+  .ranking-item--voce {
+    border-color: #2E7D32;
+    background: #f4faf4;
+  }
+  .ranking-item__barra {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: rgba(46,125,50,.06);
+    border-radius: 1.2rem 0 0 1.2rem;
+    transition: width .6s ease;
+    z-index: 0;
+  }
+  .ranking-item__pos {
+    font-size: 1.8rem;
+    width: 3.2rem;
+    text-align: center;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .ranking-item__avatar {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #4A5568;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .ranking-item--voce .ranking-item__avatar {
+    background: #2E7D32;
+    color: #fff;
+  }
+  .ranking-item__info {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+  }
+  .ranking-item__nome {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1A2E1A;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+  }
+  .ranking-item__badge {
+    font-size: 1.1rem;
+    padding: .2rem .8rem;
+    border-radius: 9999px;
+    font-weight: 700;
+  }
+  .ranking-item__badge--voce {
+    background: #2E7D32;
+    color: #fff;
+  }
+  .ranking-item__badge--nivel {
+    background: #f4faf4;
+    border: .1rem solid #c8e6c9;
+    color: #2E7D32;
+  }
+  .ranking-item__detalhes {
+    font-size: 1.2rem;
+    color: #718096;
+    margin-top: .3rem;
+    display: flex;
+    gap: 1.2rem;
+  }
+  .ranking-item__co2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #2E7D32;
+    white-space: nowrap;
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 768px) {
+    .ranking-header { flex-direction: column; }
+    .ranking-hero__stats { flex-direction: column; gap: 1.6rem; }
+    .ranking-filtros { width: 100%; justify-content: center; }
+  }
+</style>
     </div>
   </main>
 

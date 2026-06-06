@@ -640,7 +640,96 @@
         fecharWrapped();
       }
     });
+// ------------------------------------------------------------------
+    // RANKING ENTRE EMPRESAS
+    // ------------------------------------------------------------------
 
+    fetch('/api/ranking/empresas/')
+      .then(r => r.json())
+      .then(data => {
+        if (!data.ok) return;
+
+        const e = data.empresa;
+
+        // Avatar e posição
+        document.getElementById('emp-ranking-avatar').textContent       = e.iniciais;
+        document.getElementById('emp-ranking-posicao-num').textContent  = `#${e.posicao}`;
+        document.getElementById('emp-ranking-hero-co2').textContent     = e.co2e_ton.toFixed(2);
+        document.getElementById('emp-ranking-hero-nivel').textContent   = `🏢 ${e.nivel}`;
+        document.getElementById('emp-ranking-total').textContent        = e.total;
+        document.getElementById('emp-ranking-lista-total').textContent  = `${e.total} empresas`;
+
+        // Passagens
+        document.getElementById('emp-ranking-passagens').textContent =
+          e.passagens >= 1000
+            ? (e.passagens / 1000).toFixed(0) + 'K'
+            : e.passagens;
+
+        // Barra de progresso
+        const fillEl  = document.getElementById('emp-ranking-progress-fill');
+        const faltaEl = document.getElementById('emp-ranking-falta');
+        const labelEl = document.getElementById('emp-ranking-progress-label');
+
+        if (e.posicao === 1) {
+          fillEl.style.width  = '100%';
+          faltaEl.textContent = '🏆 Líder!';
+          labelEl.textContent = 'Sua empresa está na primeira posição';
+        } else {
+          const pct = Math.min(99, Math.round((e.co2e_ton / (e.co2e_ton + e.falta_ton)) * 100));
+          fillEl.style.width  = `${pct}%`;
+          faltaEl.textContent = `Faltam ${e.falta_ton.toFixed(2)} ton`;
+          labelEl.textContent = `Progresso para a posição #${e.posicao - 1}`;
+        }
+
+        // Lista
+        const lista = document.getElementById('emp-ranking-lista');
+        lista.innerHTML = '';
+
+        if (!data.ranking || data.ranking.length === 0) {
+          lista.innerHTML = '<li class="emp-ranking-lista__loading">Nenhum dado disponível.</li>';
+          return;
+        }
+
+        const medalhas = ['🥇', '🥈', '🥉'];
+
+        data.ranking.forEach((item, idx) => {
+          const pos       = idx + 1;
+          const posLabel  = pos <= 3 ? medalhas[pos - 1] : pos;
+          const voceClass = item.e_voce ? 'emp-ranking-item--voce' : '';
+          const voceBadge = item.e_voce
+            ? '<span class="emp-ranking-item__badge emp-ranking-item__badge--voce">sua empresa</span>'
+            : '';
+          const nivelBadge =
+            `<span class="emp-ranking-item__badge emp-ranking-item__badge--nivel">${item.nivel}</span>`;
+
+          const passFormatado = item.passagens >= 1000
+            ? (item.passagens / 1000).toFixed(0) + 'K'
+            : item.passagens;
+
+          const li = document.createElement('li');
+          li.className = `emp-ranking-item ${voceClass}`.trim();
+          li.innerHTML = `
+            <div class="emp-ranking-item__barra" style="width:${item.barra_pct}%"></div>
+            <span class="emp-ranking-item__pos">${posLabel}</span>
+            <div class="emp-ranking-item__avatar">${item.iniciais}</div>
+            <div class="emp-ranking-item__info">
+              <div class="emp-ranking-item__nome">
+                ${item.nome}${voceBadge}${nivelBadge}
+              </div>
+              <div class="emp-ranking-item__detalhes">
+                <span>🌿 ${item.co2e_ton.toFixed(1)} ton CO₂</span>
+                <span>⚡ ${passFormatado} passagens</span>
+              </div>
+            </div>
+            <span class="emp-ranking-item__co2">${item.co2e_ton.toFixed(1)} ton</span>
+          `;
+          lista.appendChild(li);
+        });
+      })
+      .catch(() => {
+        document.getElementById('emp-ranking-lista').innerHTML =
+          '<li class="emp-ranking-lista__loading">Erro ao carregar ranking.</li>';
+      });
   }); // DOMContentLoaded
 
 

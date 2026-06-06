@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET, require_POST
+from django.db.models import Sum, F
 
 from . import dados_empresas as DE
 from .models import Veiculo, VeiculoEmpresa, Passagem
@@ -886,192 +887,327 @@ def api_empresas_dados(request):
     }
 
     return JsonResponse({
-        'empresa':               empresa_perfil,
-        'filtros_opcoes':        filtros_opcoes,
-        'filtros_ativos':        {'ano': ano, 'contextos': list(dist_ctx.keys()), 'veiculos': list(dist_vei.keys()), 'estados': []},
-        'kpis': {
-            'co2e_evitado': {
-                'valor_kg':  round(co2e_ano, 3),
-                'valor_ton': round(co2e_ano / 1000, 3),
-                'trend_pct': trend_pct(co2e_ano, co2e_ant),
-                'trend_dir': 'up' if co2e_ano >= co2e_ant else 'down',
-            },
-            'passagens': {
-                'valor':     pass_ano,
-                'trend_pct': trend_pct(pass_ano, pass_ant),
-                'trend_dir': 'up' if pass_ano >= pass_ant else 'down',
-            },
-            'estados_ativos':   {'valor': 1, 'trend_abs': 0, 'trend_dir': 'up'},
-            'ranking_nacional': {'posicao': None, 'grupo': '', 'trend_abs': 0, 'trend_dir': 'up'},
-        },
-        'evolucao_mensal':       {'labels': MESES_LABEL_PT, 'ano': ano, 'series_kg': mensal_real, 'total_kg': sum(mensal_real)},
-        'evolucao_anual':        {'labels': [str(a) for a in anos_ord], 'series_kg': [anual_real[a] for a in anos_ord], 'series_ton': [round(anual_real[a]/1000, 3) for a in anos_ord], 'metas_kg': [0]*len(anos_ord)},
-        'distribuicao_contexto': dist_ctx,
-        'distribuicao_veiculo':  dist_vei,
-        'ranking_estados':       [],
-        'meta_vs_realizado':     {'meta_kg': 0, 'realizado_kg': round(co2e_ano, 3), 'pct_atingido': 0, 'status': 'em_progresso'},
-        'equivalencias':         equiv,
-        'ranking_mensal':        {'labels': MESES_LABEL_PT, 'series': []},
-    })
+        'empresa':               DE.EMPRESA_PERFIL,
+        'filtros_opcoes':        DE.FILTROS_OPCOES,
+        'filtros_ativos':        {'ano': ano, 'contextos': ctx_f or list(DE.CONTEXT_WEIGHTS), 'veiculos': vei_f or list(DE.VEHICLE_WEIGHTS), 'estados': est_f or list(DE.STATE_WEIGHTS)},
+        'kpis':                  _kpis(ano, ctx_f, vei_f, est_f),
+        'evolucao_mensal':       {'labels': _MESES_LABEL, 'ano': ano, 'series_kg': mensal, 'total_kg': sum(mensal)},
+        'evolucao_anual':        {'labels': list(anual.keys()), 'series_kg': list(anual.values()), 'series_ton': [round(v / 1000, 2) for v in anual.values()], 'metas_kg': [DE.METAS_ANUAIS_KG.get(a, 0) for a in anual]},
+        'distribuicao_contexto': _distribuicao_contexto(ano, vei_f, est_f),
+        'distribuicao_veiculo':  _distribuicao_veiculo(ano, ctx_f, est_f),
+        'ranking_estados':       _ranking_estados(ano, ctx_f, top_n),
+        'meta_vs_realizado':     _meta_vs_realizado(ano),
+        'equivalencias':         DE.EQUIVALENCIAS_2025 if ano == 2025 else {'arvores_ano': round(DE.ANNUAL_TOTALS_KG.get(ano, 0) / 21.77), 'litros_gasolina': round(DE.ANNUAL_TOTALS_KG.get(ano, 0) / 2.212), 'papel_kg_total': round(DE.ANNUAL_PASSAGENS.get(ano, 0) * 0.00455), 'tempo_fila_horas': round(DE.ANNUAL_PASSAGENS.get(ano, 0) * 3 / 60 * 0.62)},
+        'ranking_mensal':        {'labels': _MESES_LABEL, 'series': DE.RANKING_MENSAL_2025 if ano == 2025 else []},
+})
 
-# =============================================================================
-# Taggy Seeds — Retrospectiva Anual (US2)
-# =============================================================================
+#ranking dos usuarios
+RANKING_SIMULADO = [
+    {'nome': 'Ana Lima',      'co2e_total': 312.4},
+    {'nome': 'Carlos Souza',  'co2e_total': 289.1},
+    {'nome': 'Beatriz Melo',  'co2e_total': 241.7},
+    {'nome': 'Diego Ferreira','co2e_total': 198.3},
+    {'nome': 'Fernanda Costa','co2e_total': 176.9},
+    {'nome': 'Gabriel Nunes', 'co2e_total': 154.2},
+    {'nome': 'Helena Rocha',  'co2e_total': 132.8},
+    {'nome': 'Igor Teixeira',  'co2e_total': 110.5},
+    {'nome': 'Julia Alves',   'co2e_total': 89.3},
+    {'nome': 'Lucas Pereira', 'co2e_total': 67.1},
+]
 
-from django.contrib.auth.decorators import login_required
-
-_MESES_ABREV = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
-
-# MOCK_SEEDS removido — sem dados fictícios
-
-
-def _calcular_nivel(co2e_kg):
-    if co2e_kg < 50:
-        return {'nome': 'Iniciante', 'pontos': int(co2e_kg * 2), 'pontos_para_proximo': int((50 - co2e_kg) * 2),
-                'medalhas': [{'icone': 'bolt', 'ativo': True}, {'icone': 'star', 'ativo': False}, {'icone': 'forest', 'ativo': False}, {'icone': 'military_tech', 'ativo': False}]}
-    elif co2e_kg < 150:
-        pts = int(co2e_kg * 2)
-        return {'nome': 'Intermediário', 'pontos': pts, 'pontos_para_proximo': int((150 - co2e_kg) * 2),
-                'medalhas': [{'icone': 'bolt', 'ativo': True}, {'icone': 'star', 'ativo': True}, {'icone': 'forest', 'ativo': False}, {'icone': 'military_tech', 'ativo': False}]}
-    elif co2e_kg < 500:
-        pts = int(co2e_kg * 2)
-        return {'nome': 'Avançado', 'pontos': pts, 'pontos_para_proximo': int((500 - co2e_kg) * 2),
-                'medalhas': [{'icone': 'bolt', 'ativo': True}, {'icone': 'star', 'ativo': True}, {'icone': 'forest', 'ativo': True}, {'icone': 'military_tech', 'ativo': False}]}
-    else:
-        pts = int(co2e_kg * 2)
-        return {'nome': 'Eco Master', 'pontos': pts, 'pontos_para_proximo': 0,
-                'medalhas': [{'icone': 'bolt', 'ativo': True}, {'icone': 'star', 'ativo': True}, {'icone': 'forest', 'ativo': True}, {'icone': 'military_tech', 'ativo': True}]}
-
-
-@login_required
-def taggy_seeds(request):
-    tipo = _get_tipo(request.user)
-    nome = request.user.first_name or request.user.email.split('@')[0]
-    return render(request, 'taggy_seeds.html', {
-        'nome_usuario': nome,
-        'tipo_usuario': tipo,
-    })
-
-
-@login_required
 @require_GET
-def api_taggy_seeds(request):
-    """
-    Retrospectiva anual real do usuário logado.
-    Usa exclusivamente dados do modelo Passagem — sem fallback mockado.
-    Retorna zeros quando o usuário não tem passagens (exibe estado vazio honesto).
-    """
-    import datetime
-    user = request.user
-    ano  = datetime.date.today().year
-    nome = user.first_name or user.email.split('@')[0]
+def api_ranking(request):
+    err = _auth_required(request)
+    if err:
+        return err
 
-    # Todas as passagens do ano atual
-    # Empresa: passagens onde empresa=user (registradas pela empresa)
-    # Pessoa:  passagens onde usuario=user
-    tipo = _get_tipo(user)
-    if tipo == 'empresa':
-        passagens_qs = list(
-            Passagem.objects
-            .filter(empresa=user, data__year=ano)
-            .select_related('veiculo')
-        )
-        # Se nao houver passagens como empresa, tenta como usuario normal
-        if not passagens_qs:
-            passagens_qs = list(
-                Passagem.objects
-                .filter(usuario=user, data__year=ano)
-                .select_related('veiculo')
-            )
+    from django.db.models import Sum, F, Q
+    from datetime import date as date_cls
+    from dateutil.relativedelta import relativedelta
+
+    # Filtro de período
+    periodo = request.GET.get('periodo', 'total')
+    hoje = date_cls.today()
+
+    if periodo == 'mes':
+        data_inicio = hoje.replace(day=1)
+    elif periodo == 'trimestre':
+        data_inicio = (hoje - relativedelta(months=3)).replace(day=1)
+    elif periodo == 'ano':
+        data_inicio = hoje.replace(month=1, day=1)
     else:
-        passagens_qs = list(
-            Passagem.objects
-            .filter(usuario=user, data__year=ano)
-            .select_related('veiculo')
+        data_inicio = None
+
+    # Filtra passagens por período se necessário
+    filtro_passagens = Q(passagens__isnull=False)
+    if data_inicio:
+        filtro_passagens &= Q(passagens__data__gte=data_inicio)
+
+    # Busca usuários reais com CO₂, tempo e passagens acumulados
+    usuarios_reais = (
+        User.objects
+        .filter(perfil__tipo='pessoa')
+        .filter(filtro_passagens)
+        .annotate(
+            co2e_total=Sum(
+                F('passagens__co2e_por_passagem') * F('passagens__quantidade'),
+                filter=Q(passagens__data__gte=data_inicio) if data_inicio else None,
+            ),
+            qtd_passagens=Sum(
+                'passagens__quantidade',
+                filter=Q(passagens__data__gte=data_inicio) if data_inicio else None,
+            ),
         )
+        .order_by('-co2e_total')
+        .distinct()
+    )
 
-    #  Acumuladores 
-    total_passagens = 0
-    total_co2e      = 0.0   # kg
-    total_tempo_min = 0.0   # minutos poupados
-    total_papeis    = 0.0   # folhas evitadas
-    co2e_por_mes    = [0.0] * 12
+    def _tempo_min(user_passagens):
+        """Calcula tempo economizado em minutos para um usuário real."""
+        total = 0
+        for p in user_passagens:
+            ctx = CALC_CONTEXTOS.get(p.contexto)
+            if ctx:
+                total += p.quantidade * (ctx['tempo_sem'] - ctx['tempo_com'])
+        return round(total, 1)
 
-    for p in passagens_qs:
-        qtd  = p.quantidade
-        co2e = float(p.co2e_por_passagem) * qtd
-        total_passagens += qtd
-        total_co2e      += co2e
+    lista_real = []
+    for u in usuarios_reais:
+        if not u.co2e_total:
+            continue
+        passagens_qs = u.passagens.all()
+        if data_inicio:
+            passagens_qs = passagens_qs.filter(data__gte=data_inicio)
+        lista_real.append({
+            'nome':         u.first_name or u.email.split('@')[0],
+            'iniciais':     (u.first_name or u.email)[0].upper(),
+            'co2e_total':   round(float(u.co2e_total), 2),
+            'passagens':    int(u.qtd_passagens or 0),
+            'tempo_min':    _tempo_min(passagens_qs),
+            'real':         True,
+            'e_voce':       u.id == request.user.id,
+        })
 
-        co2e_por_mes[p.data.month - 1] += co2e
+    # Dados simulados
+    lista_simulada = [
+        {'nome': n, 'iniciais': n[0], 'co2e_total': co2, 'passagens': int(co2 / 0.65), 'tempo_min': round(co2 * 2.8), 'real': False, 'e_voce': False}
+        for n, co2 in [
+            ('Ana Lima', 312.4), ('Carlos Souza', 289.1), ('Beatriz Melo', 241.7),
+            ('Diego Ferreira', 198.3), ('Fernanda Costa', 176.9), ('Gabriel Nunes', 154.2),
+            ('Helena Rocha', 132.8), ('Igor Teixeira', 110.5), ('Julia Alves', 89.3),
+            ('Lucas Pereira', 67.1),
+        ]
+    ]
 
-        ctx = CALC_CONTEXTOS.get(p.contexto, {})
-        # minutos poupados por não ficar na fila
-        total_tempo_min += (ctx.get('tempo_sem', 0) - ctx.get('tempo_com', 0)) * qtd
-        # papéis evitados (tickets físicos por passagem)
-        total_papeis    += ctx.get('papel_sem', 0) * qtd
+    # Mescla e ordena
+    lista_completa = lista_simulada + lista_real
+    lista_completa.sort(key=lambda x: x['co2e_total'], reverse=True)
 
-    #  Equivalências ambientais 
-    # 1 árvore absorve ~21,77 kg CO2/ano  (fonte: metodologia TagGreen)
-    arvores     = round(total_co2e / 21.77, 1) if total_co2e else 0
-    # 1 litro de gasolina emite ~2,212 kg CO2e
-    combustivel = round(total_co2e / 2.212, 1) if total_co2e else 0
-    tempo_horas = round(total_tempo_min / 60, 2)
-    papeis      = round(total_papeis, 1)
+    # Remove duplicatas
+    vistos = set()
+    lista_final = []
+    for item in lista_completa:
+        if item['nome'] not in vistos:
+            vistos.add(item['nome'])
+            lista_final.append(item)
 
-    #  Comparativo dos dois últimos meses com passagens 
-    meses_com_dados = [(i, round(v, 3)) for i, v in enumerate(co2e_por_mes) if v > 0]
+    # Posição do usuário logado
+    posicao = next((i + 1 for i, u in enumerate(lista_final) if u.get('e_voce')), None)
+    usuario_logado = next((u for u in lista_final if u.get('e_voce')), None)
 
-    if len(meses_com_dados) >= 2:
-        mes_ant_idx, mes_ant_co2e = meses_com_dados[-2]
-        mes_at_idx,  mes_at_co2e  = meses_com_dados[-1]
-        if mes_at_co2e < mes_ant_co2e:
-            mensagem = 'Você reduziu ainda mais! '
-        elif mes_at_co2e == mes_ant_co2e:
-            mensagem = 'Consistência é o que importa!'
-        else:
-            mensagem = 'Você está crescendo! Continue assim!'
-        comparativo = {
-            'mes_anterior_label': _MESES_ABREV[mes_ant_idx],
-            'mes_atual_label':    _MESES_ABREV[mes_at_idx],
-            'mes_anterior_co2e':  mes_ant_co2e,
-            'mes_atual_co2e':     mes_at_co2e,
-            'mensagem':           mensagem,
-        }
-    elif len(meses_com_dados) == 1:
-        idx, val = meses_com_dados[0]
-        comparativo = {
-            'mes_anterior_label': _MESES_ABREV[idx],
-            'mes_atual_label':    _MESES_ABREV[idx],
-            'mes_anterior_co2e':  val,
-            'mes_atual_co2e':     val,
-            'mensagem':           'Seu primeiro mês registrado! ',
-        }
-    else:
-        # Sem passagens ainda
-        mes_atual = datetime.date.today().month - 1
-        comparativo = {
-            'mes_anterior_label': _MESES_ABREV[mes_atual - 1] if mes_atual > 0 else _MESES_ABREV[11],
-            'mes_atual_label':    _MESES_ABREV[mes_atual],
-            'mes_anterior_co2e':  0,
-            'mes_atual_co2e':     0,
-            'mensagem':           'Registre passagens para ver seu comparativo!',
-        }
+    co2e_usuario  = usuario_logado['co2e_total'] if usuario_logado else 0.0
+    tempo_usuario = usuario_logado['tempo_min']  if usuario_logado else 0.0
+    pass_usuario  = usuario_logado['passagens']  if usuario_logado else 0
 
-    #  Nível e medalhas 
-    nivel = _calcular_nivel(total_co2e)
+    if posicao is None:
+        posicao = len(lista_final) + 1
+
+    # Quanto falta para subir uma posição
+    falta_kg = 0.0
+    if posicao and posicao > 1:
+        acima = lista_final[posicao - 2]
+        falta_kg = round(acima['co2e_total'] - co2e_usuario, 2)
+
+    # Barra proporcional — máximo é o primeiro colocado
+    max_co2 = lista_final[0]['co2e_total'] if lista_final else 1
+    for item in lista_final:
+        item['barra_pct'] = round(item['co2e_total'] / max_co2 * 100)
+
+    # Nível baseado no CO₂
+    def _nivel(co2):
+        if co2 >= 200: return 'Impacto alto'
+        if co2 >= 100: return 'Eco+'
+        if co2 >= 50:  return 'Intermediário'
+        return 'Iniciante'
+
+    for item in lista_final:
+        item['nivel'] = _nivel(item['co2e_total'])
+
+    nome_usuario = request.user.first_name or request.user.email.split('@')[0]
+    iniciais = nome_usuario[0].upper() if nome_usuario else '?'
 
     return JsonResponse({
-        'usuario': {'nome': nome},
-        'ano':     ano,
-        'total': {
-            'co2e_kg':           round(total_co2e, 3),
-            'passagens':         total_passagens,
-            'combustivel_litros': combustivel,
-            'tempo_horas':       tempo_horas,
-            'papeis_evitados':   papeis,
-            'arvores':           arvores,
+        'ok':       True,
+        'periodo':  periodo,
+        'usuario': {
+            'nome':       nome_usuario,
+            'iniciais':   iniciais,
+            'posicao':    posicao,
+            'total':      len(lista_final),
+            'co2e':       co2e_usuario,
+            'tempo_min':  tempo_usuario,
+            'passagens':  pass_usuario,
+            'falta_kg':   falta_kg,
+            'nivel':      _nivel(co2e_usuario),
         },
-        'comparativo_mensal': comparativo,
-        'nivel': nivel,
+        'ranking': lista_final[:10],
+    })
+
+RANKING_EMPRESAS_SIMULADO = [
+    {'nome': 'TechLog Brasil S/A',        'cnpj': '12.345.678/0001-90', 'co2e_ton': 19.8,  'passagens': 502000, 'frota': 512},
+    {'nome': 'Rota Sul Transportes',      'cnpj': '98.765.432/0001-11', 'co2e_ton': 17.4,  'passagens': 441000, 'frota': 430},
+    {'nome': 'Expresso Norte Ltda',       'cnpj': '11.222.333/0001-44', 'co2e_ton': 14.2,  'passagens': 360000, 'frota': 370},
+    {'nome': 'Grupo Mobilidade SP',       'cnpj': '44.555.666/0001-77', 'co2e_ton': 11.9,  'passagens': 301000, 'frota': 310},
+    {'nome': 'Logística Verde RJ',        'cnpj': '55.666.777/0001-88', 'co2e_ton':  9.5,  'passagens': 240000, 'frota': 248},
+    {'nome': 'FleetGo Soluções',          'cnpj': '66.777.888/0001-99', 'co2e_ton':  7.8,  'passagens': 197000, 'frota': 204},
+    {'nome': 'Conecta Frotas MG',         'cnpj': '77.888.999/0001-00', 'co2e_ton':  6.1,  'passagens': 154000, 'frota': 160},
+    {'nome': 'Trânsito Ágil Paraná',      'cnpj': '88.999.000/0001-22', 'co2e_ton':  4.7,  'passagens': 119000, 'frota': 123},
+    {'nome': 'Sul Mobilidade RS',         'cnpj': '99.000.111/0001-33', 'co2e_ton':  3.2,  'passagens':  81000, 'frota':  84},
+    {'nome': 'Acesso Rápido Goiás',       'cnpj': '00.111.222/0001-55', 'co2e_ton':  1.9,  'passagens':  48000, 'frota':  50},
+]
+
+
+@require_GET
+def api_ranking_empresas(request):
+    err = _auth_required(request)
+    if err:
+        return err
+
+    if _get_tipo(request.user) != 'empresa':
+        return JsonResponse({'ok': False, 'erro': 'Acesso restrito a empresas.'}, status=403)
+
+    try:
+        nome_empresa = request.user.perfil.nome_empresa or request.user.email.split('@')[0]
+        iniciais = ''.join(p[0].upper() for p in nome_empresa.split()[:2])
+    except Exception:
+        nome_empresa = request.user.email.split('@')[0]
+        iniciais = nome_empresa[0].upper()
+
+    # Busca empresas reais com CO₂ acumulado via passagens vinculadas
+    empresas_reais = (
+        User.objects
+        .filter(perfil__tipo='empresa', passagens_na_empresa__isnull=False)
+        .annotate(
+            co2e_total=Sum(
+                F('passagens_na_empresa__co2e_por_passagem') * F('passagens_na_empresa__quantidade')
+            ),
+            qtd_passagens=Sum('passagens_na_empresa__quantidade'),
+        )
+        .order_by('-co2e_total')
+        .distinct()
+    )
+
+    lista_real = []
+    for u in empresas_reais:
+        if not u.co2e_total:
+            continue
+        try:
+            nome = u.perfil.nome_empresa or u.email.split('@')[0]
+        except Exception:
+            nome = u.email.split('@')[0]
+        iniciais_emp = ''.join(p[0].upper() for p in nome.split()[:2])
+        lista_real.append({
+            'nome':       nome,
+            'iniciais':   iniciais_emp,
+            'co2e_ton':   round(float(u.co2e_total) / 1000, 2),
+            'passagens':  int(u.qtd_passagens or 0),
+            'frota':      0,
+            'real':       True,
+            'e_voce':     u.id == request.user.id,
+        })
+
+    # Simulados
+    lista_simulada = [
+        {
+            'nome':      item['nome'],
+            'iniciais':  ''.join(p[0].upper() for p in item['nome'].split()[:2]),
+            'co2e_ton':  item['co2e_ton'],
+            'passagens': item['passagens'],
+            'frota':     item['frota'],
+            'real':      False,
+            'e_voce':    False,
+        }
+        for item in RANKING_EMPRESAS_SIMULADO
+    ]
+
+    # Empresa logada — usa dados simulados da TechLog como referência
+    empresa_na_lista = any(u['e_voce'] for u in lista_real)
+    if not empresa_na_lista:
+        co2e_empresa = round(DE.ANNUAL_TOTALS_KG.get(2025, 0) / 1000, 2)
+        passagens_empresa = DE.ANNUAL_PASSAGENS.get(2025, 0)
+        lista_real.append({
+            'nome':      nome_empresa,
+            'iniciais':  iniciais,
+            'co2e_ton':  co2e_empresa,
+            'passagens': passagens_empresa,
+            'frota':     DE.EMPRESA_PERFIL.get('frota_total', 0),
+            'real':      True,
+            'e_voce':    True,
+        })
+
+    # Mescla e ordena
+    lista_completa = lista_simulada + lista_real
+    lista_completa.sort(key=lambda x: x['co2e_ton'], reverse=True)
+
+    # Remove duplicatas
+    vistos = set()
+    lista_final = []
+    for item in lista_completa:
+        if item['nome'] not in vistos:
+            vistos.add(item['nome'])
+            lista_final.append(item)
+
+    # Posição da empresa logada
+    posicao = next((i + 1 for i, u in enumerate(lista_final) if u.get('e_voce')), None)
+    empresa_logada = next((u for u in lista_final if u.get('e_voce')), None)
+
+    co2e_empresa  = empresa_logada['co2e_ton']  if empresa_logada else 0.0
+    pass_empresa  = empresa_logada['passagens'] if empresa_logada else 0
+
+    if posicao is None:
+        posicao = len(lista_final) + 1
+
+    # Quanto falta para subir uma posição
+    falta_ton = 0.0
+    if posicao and posicao > 1:
+        acima = lista_final[posicao - 2]
+        falta_ton = round(acima['co2e_ton'] - co2e_empresa, 2)
+
+    # Barra proporcional
+    max_co2 = lista_final[0]['co2e_ton'] if lista_final else 1
+    for item in lista_final:
+        item['barra_pct'] = round(item['co2e_ton'] / max_co2 * 100)
+
+    def _nivel_empresa(co2_ton):
+        if co2_ton >= 15:  return 'Impacto Platinum'
+        if co2_ton >= 10:  return 'Impacto Gold'
+        if co2_ton >= 5:   return 'Impacto Silver'
+        return 'Impacto Bronze'
+
+    for item in lista_final:
+        item['nivel'] = _nivel_empresa(item['co2e_ton'])
+
+    return JsonResponse({
+        'ok':      True,
+        'empresa': {
+            'nome':      nome_empresa,
+            'iniciais':  iniciais,
+            'posicao':   posicao,
+            'total':     len(lista_final),
+            'co2e_ton':  co2e_empresa,
+            'passagens': pass_empresa,
+            'falta_ton': falta_ton,
+            'nivel':     _nivel_empresa(co2e_empresa),
+        },
+        'ranking': lista_final[:10],
     })

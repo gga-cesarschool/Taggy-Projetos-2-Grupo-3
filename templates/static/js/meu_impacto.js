@@ -698,6 +698,108 @@
     try { initVeiculos();      } catch (e) { console.error('[veiculos]',   e); }
     try { initPassagens();     } catch (e) { console.error('[passagens]',  e); }
     try { carregarDashboard(); } catch (e) { console.error('[dashboard]',  e); }
+
+    // Ranking
+let _periodoAtivo = 'mes';
+
+function carregarRanking(periodo) {
+  fetch(`/api/ranking/?periodo=${periodo}`)
+    .then(r => r.json())
+    .then(data => {
+      if (!data.ok) return;
+
+      const u = data.usuario;
+
+      // Avatar e posição
+      document.getElementById('ranking-avatar').textContent        = u.iniciais;
+      document.getElementById('ranking-posicao-num').textContent   = `#${u.posicao}`;
+      document.getElementById('ranking-hero-co2').textContent      = u.co2e.toFixed(1);
+      document.getElementById('ranking-hero-nivel').textContent    = `🌿 ${u.nivel}`;
+      document.getElementById('ranking-lista-total').textContent   = `${u.total} usuários`;
+
+      // Tempo e passagens
+      const tempo = u.tempo_min >= 60
+        ? `${(u.tempo_min / 60).toFixed(1).replace('.', ',')} h`
+        : `${Math.round(u.tempo_min)} min`;
+      document.getElementById('ranking-tempo').textContent     = tempo;
+      document.getElementById('ranking-passagens').textContent = u.passagens;
+
+      // Barra de progresso para posição acima
+      const fillEl   = document.getElementById('ranking-progress-fill');
+      const faltaEl  = document.getElementById('ranking-falta');
+      const labelEl  = document.getElementById('ranking-progress-label');
+
+      if (u.posicao === 1) {
+        fillEl.style.width    = '100%';
+        faltaEl.textContent   = '🏆 Líder!';
+        labelEl.textContent   = 'Você está na primeira posição';
+      } else {
+        const pct = Math.min(99, Math.round((u.co2e / (u.co2e + u.falta_kg)) * 100));
+        fillEl.style.width    = `${pct}%`;
+        faltaEl.textContent   = `Faltam ${u.falta_kg.toFixed(1)} kg`;
+        labelEl.textContent   = `Progresso para a posição #${u.posicao - 1}`;
+      }
+
+      // Lista
+      const lista = document.getElementById('ranking-lista');
+      lista.innerHTML = '';
+
+      if (!data.ranking || data.ranking.length === 0) {
+        lista.innerHTML = '<li class="ranking-lista__loading">Nenhum dado disponível.</li>';
+        return;
+      }
+
+      const medalhas = ['🥇', '🥈', '🥉'];
+
+      data.ranking.forEach((item, idx) => {
+        const pos       = idx + 1;
+        const posLabel  = pos <= 3 ? medalhas[pos - 1] : pos;
+        const voceClass = item.e_voce ? 'ranking-item--voce' : '';
+        const voceBadge = item.e_voce ? '<span class="ranking-item__badge ranking-item__badge--voce">você</span>' : '';
+        const nivelBadge = `<span class="ranking-item__badge ranking-item__badge--nivel">${item.nivel}</span>`;
+
+        const tempoItem = item.tempo_min >= 60
+          ? `${(item.tempo_min / 60).toFixed(1)} h`
+          : `${Math.round(item.tempo_min)} min`;
+
+        const li = document.createElement('li');
+        li.className = `ranking-item ${voceClass}`.trim();
+        li.innerHTML = `
+          <div class="ranking-item__barra" style="width:${item.barra_pct}%"></div>
+          <span class="ranking-item__pos">${posLabel}</span>
+          <div class="ranking-item__avatar">${item.iniciais}</div>
+          <div class="ranking-item__info">
+            <div class="ranking-item__nome">
+              ${item.nome}${voceBadge}${nivelBadge}
+            </div>
+            <div class="ranking-item__detalhes">
+              <span>🌿 ${item.co2e_total.toFixed(1)} kg CO₂</span>
+              <span>⏱ ${tempoItem}</span>
+              <span>⚡ ${item.passagens} passagens</span>
+            </div>
+          </div>
+          <span class="ranking-item__co2">${item.co2e_total.toFixed(1)} kg</span>
+        `;
+        lista.appendChild(li);
+      });
+    })
+    .catch(() => {
+      document.getElementById('ranking-lista').innerHTML =
+        '<li class="ranking-lista__loading">Erro ao carregar ranking.</li>';
+    });
+}
+
+// Filtros de período
+document.querySelectorAll('.ranking-filtro-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.ranking-filtro-btn').forEach(b => b.classList.remove('ranking-filtro-btn--ativo'));
+    btn.classList.add('ranking-filtro-btn--ativo');
+    _periodoAtivo = btn.dataset.periodo;
+    carregarRanking(_periodoAtivo);
+  });
+});
+
+carregarRanking(_periodoAtivo);
   });
 
 })();
