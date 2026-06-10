@@ -4,6 +4,11 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "python manage.py runserver",
-    "check": "python manage.py check"
+    "check": "python manage.py check",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
+  },
+  "devDependencies": {
+    "cypress": "^15.15.0"
   }
 }
