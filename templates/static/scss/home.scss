@@ -839,6 +839,197 @@ div.info    { color: $color-text-dark; background: #0aa2e9; }
   }
 }
 
+.concept-section {
+  max-width: 118rem;
+  margin: 0 auto 3rem;
+}
+
+.concept-card {
+  position: relative;
+  overflow: hidden;
+  @include display-flex($flex-direction: column, $align-items: stretch, $gap: 2.2rem);
+  @include padding(3rem, 3rem, 3rem, 3rem);
+  @include border-radius(2.4rem);
+  background:
+    radial-gradient(circle at top left, rgba($color-primary-light, 0.16), transparent 34%),
+    radial-gradient(circle at top right, rgba($color-blue, 0.12), transparent 30%),
+    linear-gradient(180deg, rgba($color-white, 0.96) 0%, rgba(#f6fbf6, 0.98) 100%);
+  border: 0.1rem solid rgba($color-border, 0.95);
+  box-shadow: 0 2rem 5rem rgba(15, 23, 42, 0.08);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(135deg, rgba($color-primary-light, 0.08) 0%, transparent 38%),
+      linear-gradient(315deg, rgba($color-blue, 0.06) 0%, transparent 42%);
+    pointer-events: none;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  &__header {
+    @include display-flex($justify-content: space-between, $align-items: center, $gap: 1.6rem);
+    flex-wrap: wrap;
+  }
+
+  &__eyebrow {
+    @include display-flex($gap: 0.7rem);
+    @include padding(0.8rem, 1.2rem, 0.8rem, 1.2rem);
+    @include border-radius(9999px);
+    background: rgba($color-primary-light, 0.12);
+    color: $color-primary-dark;
+    font-size: 1.2rem;
+    font-weight: $fw-semibold;
+    letter-spacing: 0.02em;
+    .material-symbols-outlined { font-size: 1.7rem; color: $color-primary-light; }
+  }
+
+  &__badge {
+    @include padding(0.8rem, 1.2rem, 0.8rem, 1.2rem);
+    @include border-radius(9999px);
+    background: rgba($color-card-dark, 0.06);
+    color: $color-card-dark;
+    font-size: 1.2rem;
+    font-weight: $fw-semibold;
+    letter-spacing: 0.04em;
+  }
+
+  &__content {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(30rem, 0.9fr);
+    gap: 2rem;
+    align-items: stretch;
+  }
+
+  &__copy {
+    @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1.2rem);
+    @include padding(0.4rem, 0, 0.4rem, 0);
+  }
+
+  &__title {
+    max-width: 52rem;
+    font-family: $font-primary;
+    font-size: 3.2rem;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    font-weight: $fw-extrabold;
+    color: $color-text-dark;
+  }
+
+  &__text {
+    max-width: 54rem;
+    font-size: 1.6rem;
+    line-height: 1.75;
+    color: $color-text-body;
+  }
+
+  &__formula {
+    @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 1.2rem);
+    @include padding(2rem, 2rem, 2rem, 2rem);
+    @include border-radius(1.8rem);
+    background: rgba($color-card-dark, 0.94);
+    border: 0.1rem solid rgba($color-card-border, 0.95);
+    box-shadow: inset 0 0.1rem 0 rgba($color-white, 0.04);
+  }
+
+  &__formula-label {
+    font-size: 1.1rem;
+    font-weight: $fw-semibold;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba($color-white, 0.52);
+  }
+
+  &__equation {
+    width: 100%;
+    @include display-flex($justify-content: flex-start, $align-items: center, $gap: 0.8rem);
+    flex-wrap: wrap;
+  }
+
+  &__token {
+    @include padding(0.9rem, 1.2rem, 0.9rem, 1.2rem);
+    @include border-radius(9999px);
+    font-size: 1.3rem;
+    font-weight: $fw-semibold;
+    letter-spacing: 0.01em;
+
+    &--soft {
+      background: rgba($color-white, 0.08);
+      color: rgba($color-white, 0.86);
+    }
+
+    &--accent {
+      background: rgba($color-primary-light, 0.16);
+      color: $color-accent;
+    }
+
+    &--result {
+      background: linear-gradient(135deg, rgba($color-accent, 0.18), rgba($color-blue, 0.16));
+      color: $color-white;
+    }
+  }
+
+  &__symbol {
+    font-size: 1.8rem;
+    font-weight: $fw-bold;
+    color: rgba($color-white, 0.42);
+  }
+
+  &__formula-note {
+    font-size: 1.35rem;
+    line-height: 1.7;
+    color: rgba($color-white, 0.68);
+  }
+
+  &__steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.2rem;
+  }
+}
+
+.concept-step {
+  @include display-flex($flex-direction: column, $align-items: flex-start, $gap: 0.8rem);
+  @include padding(1.8rem, 1.8rem, 1.8rem, 1.8rem);
+  @include border-radius(1.6rem);
+  background: rgba($color-white, 0.7);
+  border: 0.1rem solid rgba($color-border, 0.95);
+  box-shadow: 0 0.8rem 2rem rgba(15, 23, 42, 0.04);
+
+  &__label {
+    font-size: 1.05rem;
+    font-weight: $fw-semibold;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: $color-text-muted;
+  }
+
+  &__title {
+    font-family: $font-primary;
+    font-size: 1.7rem;
+    line-height: 1.2;
+    font-weight: $fw-bold;
+    color: $color-text-dark;
+  }
+
+  &__text {
+    font-size: 1.35rem;
+    line-height: 1.65;
+    color: $color-text-body;
+  }
+
+  &--highlight {
+    background: linear-gradient(180deg, rgba($color-primary-light, 0.14), rgba($color-white, 0.82));
+    border-color: rgba($color-primary-light, 0.28);
+    .concept-step__label { color: $color-primary-dark; }
+  }
+}
+
 .comparison-section {
   max-width: 118rem;
   margin: 0 auto;
@@ -979,6 +1170,20 @@ div.info    { color: $color-text-dark; background: #0aa2e9; }
     grid-template-columns: 1fr;
   }
 
+  .concept-card {
+    &__content {
+      grid-template-columns: 1fr;
+    }
+
+    &__title {
+      font-size: 2.8rem;
+    }
+
+    &__steps {
+      grid-template-columns: 1fr;
+    }
+  }
+
   .methodology-hero__title {
     font-size: 3.4rem;
   }
@@ -1012,6 +1217,10 @@ div.info    { color: $color-text-dark; background: #0aa2e9; }
 
   .methodology-hero__subtitle {
     font-size: 1.5rem;
+  }
+
+  .concept-card {
+    @include padding(2rem, 1.6rem, 2rem, 1.6rem);
   }
 
   .comparison-card {
