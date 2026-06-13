@@ -38,11 +38,51 @@
           sair de filas em pedágios, estacionamentos e acessos controlados.
         </p>
         <div class="formula-block">
-          <span class="formula-line formula-line--highlight">Emissão evitada = E(sem Taggy) &minus; E(com Taggy)</span>
-          <span class="formula-line">E_passagem = E_idle + E_movimento + E_papel</span>
-          <span class="formula-line formula-line--dim">E_idle &nbsp;&nbsp;&nbsp;&nbsp;= (tempo_fila_min / 60) &times; consumo_idle &times; fator_emissão</span>
-          <span class="formula-line formula-line--dim">E_movimento = dist_extra_km &times; consumo_km &times; fator_emissão</span>
-          <span class="formula-line formula-line--dim">E_papel &nbsp;&nbsp;&nbsp;= (peso_papel_g / 1000) &times; 1,100 kg CO₂e/kg</span>
+
+          <!-- Equação principal -->
+          <div class="fml-principal">
+            <span class="fml-var fml-var--destaque">E<sub>evitada</sub></span>
+            <span class="fml-op">=</span>
+            <span class="fml-var">E<sub>sem&nbsp;Taggy</sub></span>
+            <span class="fml-op fml-op--minus">&minus;</span>
+            <span class="fml-var">E<sub>com&nbsp;Taggy</sub></span>
+          </div>
+
+          <p class="fml-onde-label">onde cada passagem acumula três componentes:</p>
+
+          <!-- Decomposição -->
+          <div class="fml-decomp">
+            <span class="fml-var">E<sub>passagem</sub></span>
+            <span class="fml-op">=</span>
+            <span class="fml-var">E<sub>idle</sub></span>
+            <span class="fml-op">+</span>
+            <span class="fml-var">E<sub>mov</sub></span>
+            <span class="fml-op">+</span>
+            <span class="fml-var">E<sub>papel</sub></span>
+          </div>
+
+          <!-- Definições -->
+          <div class="fml-defs">
+            <div class="fml-def">
+              <span class="fml-def__var">E<sub>idle</sub></span>
+              <span class="fml-op">=</span>
+              <span class="fml-def__expr">(tempo<sub>fila</sub> &div; 60) &times; consumo<sub>idle</sub> &times; fator<sub>emissão</sub></span>
+              <span class="fml-def__desc">marcha lenta em fila</span>
+            </div>
+            <div class="fml-def">
+              <span class="fml-def__var">E<sub>mov</sub></span>
+              <span class="fml-op">=</span>
+              <span class="fml-def__expr">dist<sub>extra</sub> &times; consumo<sub>km</sub> &times; fator<sub>emissão</sub></span>
+              <span class="fml-def__desc">frenagem e aceleração</span>
+            </div>
+            <div class="fml-def">
+              <span class="fml-def__var">E<sub>papel</sub></span>
+              <span class="fml-op">=</span>
+              <span class="fml-def__expr">(peso<sub>papel</sub> &div; 1000) &times; 1,100 kg CO₂e/kg</span>
+              <span class="fml-def__desc">ticket de papel evitado</span>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -135,26 +175,62 @@
           <div class="calc-box calc-box--sem">
             <div class="calc-box__header">SEM TAGGY — POR PASSAGEM</div>
             <div class="calc-box__body">
-              <p>E_idle &nbsp;= (3,0 &div; 60) &times; 0,65 &times; 1,335 = <strong>0,04339 kg</strong></p>
-              <p>E_mov &nbsp;= 0,100 &times; 0,090 &times; 1,335 &nbsp;= <strong>0,01202 kg</strong></p>
-              <p>E_papel = (5 &div; 1000) &times; 1,100 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <strong>0,00550 kg</strong></p>
+              <div class="calc-row">
+                <span class="calc-row__var">E<sub>idle</sub></span>
+                <span class="calc-row__expr">(3,0 &div; 60) &times; 0,65 &times; 1,335</span>
+                <span class="calc-row__result">= <strong>0,04339 kg</strong></span>
+              </div>
+              <div class="calc-row">
+                <span class="calc-row__var">E<sub>mov</sub></span>
+                <span class="calc-row__expr">0,100 &times; 0,090 &times; 1,335</span>
+                <span class="calc-row__result">= <strong>0,01202 kg</strong></span>
+              </div>
+              <div class="calc-row">
+                <span class="calc-row__var">E<sub>papel</sub></span>
+                <span class="calc-row__expr">(5 &div; 1000) &times; 1,100</span>
+                <span class="calc-row__result">= <strong>0,00550 kg</strong></span>
+              </div>
             </div>
             <div class="calc-box__footer">
-              <p>E_sem = 0,06091 kg CO₂e / passagem</p>
-              <p>Total = 40 &times; 0,06091 = <strong>2,436 kg CO₂e</strong></p>
+              <div class="calc-row calc-row--total">
+                <span class="calc-row__var">E<sub>sem</sub></span>
+                <span class="calc-row__result">0,06091 kg CO₂e / passagem</span>
+              </div>
+              <div class="calc-row calc-row--total">
+                <span class="calc-row__var">Total</span>
+                <span class="calc-row__result">40 &times; 0,06091 = <strong>2,436 kg CO₂e</strong></span>
+              </div>
             </div>
           </div>
 
           <div class="calc-box calc-box--com">
             <div class="calc-box__header">COM TAGGY — POR PASSAGEM</div>
             <div class="calc-box__body">
-              <p>E_idle &nbsp;= (0,05 &div; 60) &times; 0,65 &times; 1,335 = <strong>0,000723 kg</strong></p>
-              <p>E_mov &nbsp;= 0,031 &times; 0,090 &times; 1,335 &nbsp;&nbsp;= <strong>0,003726 kg</strong></p>
-              <p>E_papel = 0 &nbsp;(comprovante digital)</p>
+              <div class="calc-row">
+                <span class="calc-row__var">E<sub>idle</sub></span>
+                <span class="calc-row__expr">(0,05 &div; 60) &times; 0,65 &times; 1,335</span>
+                <span class="calc-row__result">= <strong>0,000723 kg</strong></span>
+              </div>
+              <div class="calc-row">
+                <span class="calc-row__var">E<sub>mov</sub></span>
+                <span class="calc-row__expr">0,031 &times; 0,090 &times; 1,335</span>
+                <span class="calc-row__result">= <strong>0,003726 kg</strong></span>
+              </div>
+              <div class="calc-row">
+                <span class="calc-row__var">E<sub>papel</sub></span>
+                <span class="calc-row__expr">0 &nbsp;<em>(comprovante digital)</em></span>
+                <span class="calc-row__result">= <strong>0 kg</strong></span>
+              </div>
             </div>
             <div class="calc-box__footer">
-              <p>E_com = 0,004449 kg CO₂e / passagem</p>
-              <p>Total = 40 &times; 0,004449 = <strong>0,178 kg CO₂e</strong></p>
+              <div class="calc-row calc-row--total">
+                <span class="calc-row__var">E<sub>com</sub></span>
+                <span class="calc-row__result">0,004449 kg CO₂e / passagem</span>
+              </div>
+              <div class="calc-row calc-row--total">
+                <span class="calc-row__var">Total</span>
+                <span class="calc-row__result">40 &times; 0,004449 = <strong>0,178 kg CO₂e</strong></span>
+              </div>
             </div>
           </div>
 
@@ -253,7 +329,7 @@
             Ilustrativo
           </span>
         </div>
-        <p class="section-card__sub">Componente E_idle — carro flex por passagem</p>
+        <p class="section-card__sub">Componente E<sub>idle</sub> — carro flex por passagem</p>
 
         <div class="sens-body">
           <div class="sens-slider-col">
@@ -270,13 +346,13 @@
               <span class="sens-slider-max">30 min</span>
             </div>
             <div class="sens-formula">
-              E_idle = (tempo / 60) × 0,65 L/h × 1,335 kg CO₂e/L
+              E<sub>idle</sub> = (tempo &div; 60) &times; 0,65 L/h &times; 1,335 kg CO₂e/L
             </div>
             <p class="sens-fonte">Fonte: CONPET 2022 · GHG Protocol BR 2023 · ANFAVEA 2023</p>
           </div>
 
           <div class="sens-result-col">
-            <p class="sens-result-label">E_idle estimado (carro flex)</p>
+            <p class="sens-result-label">E<sub>idle</sub> estimado (carro flex)</p>
             <div class="sens-result-val">
               <span id="sens-result">43,4</span>
               <small>g</small>
